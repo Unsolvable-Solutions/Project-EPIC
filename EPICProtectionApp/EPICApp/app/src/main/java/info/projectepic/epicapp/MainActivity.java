@@ -119,8 +119,10 @@ public class MainActivity extends ActionBarActivity {
 
         if (wifi!=null)
         {
-            restoreSettings.add("wifi");
-            wifi.setWifiEnabled(false);
+            if(wifi.isWifiEnabled()) {
+                restoreSettings.add("wifi");
+                wifi.setWifiEnabled(false);
+            }
         }
         //Turn mobile off (Is trickey to do)
     }
