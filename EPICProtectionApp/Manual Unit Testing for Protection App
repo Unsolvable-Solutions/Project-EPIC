@@ -1,0 +1,16 @@
+Manual Unit Testing(Mobile data currently cannot be switched on and off):
+We tested the functions manually on a Sony Xperia Z1 and Samsung S3. Here are the following tests and their results:
+
+1) The phones wifi and Bluetooth were switched on. We called the StoreSnapshot function and the result was that both were turned off.
+   We then called the LoadSnapshot function and both the Wifi and bluetooth were turned on again. Test 1 passed.
+   
+2) The phones Wifi was turned on but the bluetooth turned off. We called the StoreSnapshot function and the result was that the wifi
+   was turned off. We then called the LoadSnappshot function and only the Wifi was turned back on again. Test 2 passed.
+   
+3) The phones bluetooth was turned on but the Wifi turned off. We called the StoreSnapshot function and the result was that the
+   bluetooth was turned off. We then called the LoadSnapshot function and only the bluetooth was turned back on again. Test 3 passed.
+   
+4) Both the Wifi and bluetooth were turned off. Calling StoreSnapshot changed nothing. Calling LoadSnapshot changed nothing. Test
+   4 passed.
+   
+5) Testing the NFC intent, we held an NFC tag with data against the phone. The app opened and the displayed the tags data. Test 5 passed.
