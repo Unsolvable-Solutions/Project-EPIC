@@ -31,7 +31,7 @@ public class MainActivity extends ActionBarActivity {
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View view) {
-                        enterRoom();
+                        StoreSnapshot();
                     }
                 };
         View.OnClickListener ListenerLeave=
@@ -39,7 +39,7 @@ public class MainActivity extends ActionBarActivity {
                     @Override
                     public void onClick(View view) {
                         //Implement event handling
-                        leaveRoom();
+                        LoadSnapShot();
                     }
                 };
 
@@ -92,7 +92,7 @@ public class MainActivity extends ActionBarActivity {
     //Storing info
     List<String> restoreSettings = new ArrayList<String>();
     //My Functions
-    private void enterRoom()
+    private void StoreSnapshot()
     {
         //Store Settings
         NfcAdapter nfc = NfcAdapter.getDefaultAdapter(this);
@@ -127,7 +127,7 @@ public class MainActivity extends ActionBarActivity {
         //Turn mobile off (Is trickey to do)
     }
 
-    private void leaveRoom()
+    private void LoadSnapShot()
     {
         NfcAdapter nfc = NfcAdapter.getDefaultAdapter(this);
         BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
