@@ -1,0 +1,79 @@
+\documentclass[a4paper,12pt,titlepage]{article}
+\usepackage{graphicx}
+
+
+
+\DeclareGraphicsExtensions{.jpg}
+\graphicspath{{./Images/}}
+
+\begin{document}
+	\input{./titlepage}
+	
+	% Table of content
+	\newpage
+	\tableofcontents
+
+\newpage	\section{Access and Itegration Requirements}
+		\subsection{Human Access Channels}
+ 			\subsubsection{Via Web Browser}
+The user must be able to access the data from the server these standard web browser: Mozilla Firefox, Google Chrome and Microsoft Internet Explorer. It must have a user friendly GUI.
+ 			\subsubsection{Via Android device}
+This device is used for the malware as well as the protection software.
+ 			\subsubsection{Via NFC Nodes and an Edison}
+This is used outside the meeting for the access control and the protection application.
+		\subsection{System Access Channels}
+
+
+		\subsection{Integration Access Channels}
+
+
+
+\newpage	\section{Quality Requirements}
+\subsection{Scalability}
+\subsubsection{EPIC} the server must be able to handle a large amount of users and users must be able to use the system simultaneously. However, the controlled access to a meeting, via the Gateway and the Node will only have a limit of one gateway per meeting and at most three nodes per meeting.
+\subsubsection{Malware} The server can only handle one live stream recording at a time.
+
+\subsection{Performance Requirements}
+The system does not have specific performance requirements, but the application to gateway operations should respond within less than 1 second, because it may delay the meeting unnecessarily. The server query operations may process up to 5 seconds long.
+
+\subsection{Maintainability}
+The system must be easily maintainable. The application and server may be updated in time, to fit the latest technologies. 
+
+\subsection{Reliability and Availability}
+The application must be available from the Google play store, and the access to the web server can be found online at projectepic.info.
+
+\subsection{Auditability}
+The system log the entrance and exit of all meetings. For each meeting the log contains the users allowed, the users that attended, their entrance and exit times as well as the initial time and place of the meeting.
+
+\subsection{Security}
+The NFC components should not be hackable. 
+
+\subsection{Monitorability}
+The response of the Nodes is visible with the LED light showing the permission.
+
+\subsection{Testability}
+All the components must be tested separate at first, unit testing, and after completion the whole system must be tested.
+\\ For each service the pre and post conditios must be met.
+
+\subsection{Usability}
+All the components must be intuitive and easy to use. Any user that is Android literate and computer literate must be able to use the system. The physical components must be labelled accordingly. 
+\\ The User Manual may be used for more information on any of the components. 
+
+\subsection{Integrability}
+The different components of the system should work together and the system must also be able to handle future additions to it.\\
+
+\newpage	\section{Architecture constraints}
+\newpage	\section{Technologies Used}
+\begin{itemize}
+\item NFC
+\item NodeJS
+\item Arduino
+\item MongoDB
+\item Passport
+\item Java
+\item Android SDK
+\item TCP
+\item UDP
+\end{itemize}
+
+\end{document}
