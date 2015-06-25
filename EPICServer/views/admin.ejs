@@ -1,2 +1,205 @@
 <h1 id="welcomeMsg">Welcome to the EpicServer</h1>
 <strong>!! To be done, only temp page </strong>
+<h1>API</h1>
+
+<h2>Models</h2>
+<ul>
+	<li>User</li>
+		<pre><code>
+		var User = {
+		  // Enforce model schema in the case of schemaless databases
+		  schema: true,
+
+		  attributes: {
+		    username  : { type: 'string', unique: true },
+		    name  : { type: 'string', required: true },
+		    surname  : { type: 'string', required: true },
+		    email     : { type: 'email',  unique: true },
+		    passports : { collection: 'Passport', via: 'user' },
+		    meetingsOwned : {collection: 'Meeting', via: 'owner'},
+		    meetingsAttended : {collection: 'Meeting', via: 'attendees'},
+		    meetingInvites : {collection: 'Meeting', via: 'invitees'}
+		  }
+		};
+
+		module.exports = User;
+		</code></pre>
+		
+	<li>Meeting</li>
+		<pre><code>
+		var Meeting = {
+			// Enforce model schema in the case of schemaless databases
+			schema: true,
+
+		  attributes: {
+		    owner  : { model: 'user' },
+		    invitees : { collection: 'User', via: 'meetingInvites' },
+		    attendees : { collection: 'User', via: 'meetingsAttended' },
+		    title : {type: 'string', required : true},
+		    description : {type: 'string', required : true},
+		    location : {type: 'string', required : true},
+		    dateTime : {type: 'datetime'}
+		  }
+		};
+
+		module.exports = Meeting;
+		</code></pre>
+</ul>
+
+<h2>Login</h2>
+<ul>
+	<li>POST /auth/local {identifier : *[username || email]*, password : *password*}</li>
+</ul>
+
+<h2>List user(s)</h2>
+<ul>
+	<li>/user/</li>
+	<pre><code>
+		[
+		  {
+		    "passports": [],
+		    "name" : "Jaco",
+		  	"surname" : "Bezuidenhout",
+		    "meetingsOwned": [],
+		    "meetingsAttended": [],
+		    "meetingInvites": [],
+		    "email": "jaco@peoplesoft.co.za",
+		    "createdAt": "2015-06-25T14:06:38.444Z",
+		    "updatedAt": "2015-06-25T14:06:38.444Z",
+		    "id": 5
+		  }
+		]
+	</code></pre>
+	<li>/user/*id*</li>
+	<li>/user/?id=*id*</li>
+	<li>/user/?limit=*N*</li>
+	<li>/user/?sort=*field*%20*[DESC || ASC]*</li>
+</ul>
+
+<h2>Create a new user</h2>
+<ul>
+	<li>/user/create?email=jaco@peoplesoft.co.za&name=Jaco&surname=Bezuidenhout</li>
+	<pre><code>
+		Result = 
+		{
+		  "email": "jaco@peoplesoft.co.za",
+		  "name" : "Jaco",
+		  "surname" : "Bezuidenhout",
+		  "createdAt": "2015-06-25T14:06:38.444Z",
+		  "updatedAt": "2015-06-25T14:06:38.444Z",
+		  "id": 5
+		}
+	</code></pre>
+</ul>
+
+<h2>Create meeting (POST/GET)</h2>
+<p>This will create a new meeting, add the meeting to the *meetingsOwned* array in the User record and also add the User record as the Meeting's owner record</p>
+<ul>
+	<li>Sample validation error</li>
+	<pre><code>
+		{
+		  "error": "E_VALIDATION",
+		  "status": 400,
+		  "summary": "5 attributes are invalid",
+		  "model": "Meeting",
+		  "invalidAttributes": {
+		    "title": [
+		      {
+		        "rule": "string",
+		        "message": "`undefined` should be a string (instead of \"null\", which is a object)"
+		      },
+		      {
+		        "rule": "required",
+		        "message": "\"required\" validation rule failed for input: null"
+		      }
+		    ],
+		    "description": [
+		      {
+		        "rule": "string",
+		        "message": "`undefined` should be a string (instead of \"null\", which is a object)"
+		      },
+		      {
+		        "rule": "required",
+		        "message": "\"required\" validation rule failed for input: null"
+		      }
+		    ],
+		    "location": [
+		      {
+		        "rule": "string",
+		        "message": "`undefined` should be a string (instead of \"null\", which is a object)"
+		      },
+		      {
+		        "rule": "required",
+		        "message": "\"required\" validation rule failed for input: null"
+		      }
+		    ]
+		  }
+		}
+	</code></pre>
+	<li>/user/*OWNERID*/add?title=*MeetingTitle*&description=*DESC*&location=*LOCATION*&dateTime=*DATETIME*&... </li>
+	<li>eg. /user/5/meetingsOwned/add?title=NewMeeting&description=OurMeetingTodayAtOffice&location=Office </li>
+	<pre><code>
+		Result = {
+		  "meetingsOwned": [
+		    {
+		      "title": "NewMeeting",
+		      "description": "OurMeetingTodayAtOffice",
+		      "location": "Office",
+		      "createdAt": "2015-06-25T15:12:38.236Z",
+		      "updatedAt": "2015-06-25T15:12:38.279Z",
+		      "id": 7,
+		      "owner": 5
+		    }
+		  ],
+		  "meetingsAttended": [],
+		  "meetingInvites": [],
+		  "email": "jaco@peoplesoft.co.za",
+		  "createdAt": "2015-06-25T14:06:38.444Z",
+		  "updatedAt": "2015-06-25T15:12:38.272Z",
+		  "id": 5
+		}
+	</code></pre>
+</ul>
+<h2>Invite user to meeting</h2>
+<p></p>
+<ul>
+	<li>/meeting/*MEETINGID*/invitees/add/*USERID*</li>
+	<li>/meeting/7/invitees/add/5</li>
+	<pre><code>
+		{
+		  "invitees": [
+		    {
+		      "email": "jaco@peoplesoft.co.za",
+		      "createdAt": "2015-06-25T14:06:38.444Z",
+		      "updatedAt": "2015-06-25T15:12:38.272Z",
+		      "id": 5
+		    }
+		  ],
+		  "owner": 5,
+		  "title": "NewMeeting",
+		  "description": "OurMeetingTodayAtOffice",
+		  "location": "Office",
+		  "createdAt": "2015-06-25T15:12:38.236Z",
+		  "updatedAt": "2015-06-25T15:27:24.284Z",
+		  "id": 7
+		}
+	</code></pre>
+</ul>
+<h2>Remove user from meeting invitees</h2>
+<p></p>
+<ul>
+	<li>/meeting/*MEETINGID*/invitees/remove/*USERID*</li>
+	<li>/meeting/7/invitees/remove/5</li>
+	<pre><code>
+		{
+		  "invitees": [ ],
+		  "owner": 5,
+		  "title": "NewMeeting",
+		  "description": "OurMeetingTodayAtOffice",
+		  "location": "Office",
+		  "createdAt": "2015-06-25T15:12:38.236Z",
+		  "updatedAt": "2015-06-25T15:27:24.284Z",
+		  "id": 7
+		}
+	</code></pre>
+</ul>
