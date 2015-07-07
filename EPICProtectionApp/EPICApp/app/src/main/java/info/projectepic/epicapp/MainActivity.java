@@ -6,14 +6,19 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.os.Build;
 import android.os.Parcelable;
+import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +26,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,7 +158,6 @@ public class MainActivity extends ActionBarActivity {
     private void StoreSnapshot()
     {
         //Store Settings
-        NfcAdapter nfc = NfcAdapter.getDefaultAdapter(this);
         BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
         WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
 
@@ -162,15 +170,6 @@ public class MainActivity extends ActionBarActivity {
             }
         }
 
-        if(nfc!=null)
-        {
-            if(nfc.isEnabled())
-            {
-                restoreSettings.add("nfc");
-
-            }
-        }
-
         if (wifi!=null)
         {
             if(wifi.isWifiEnabled()) {
@@ -179,6 +178,20 @@ public class MainActivity extends ActionBarActivity {
             }
         }
         //Turn mobile off (Is trickey to do)
+        if (isMobileDataEnabledFromLollipop(getApplicationContext()))
+        {
+            try {
+                setMobileNetworkfromLollipop(getApplicationContext(),0);
+                restoreSettings.add("mobi");
+            }
+            catch (Exception e)
+            {}
+        }
+       /* if (isEnable(getApplicationContext()))
+        {
+            restoreSettings.add("mobi");
+           // switchState(getApplicationContext(), false);
+        }*/
     }
 
     private void LoadSnapShot()
@@ -192,9 +205,16 @@ public class MainActivity extends ActionBarActivity {
             {
                 bt.enable();
             }
-            else if(restoreSettings.get(i).equals("nfc"))
+            else if(restoreSettings.get(i).equals("mobi"))
             {
-                //enable nfc
+                try {
+                    setMobileNetworkfromLollipop(getApplicationContext(), 1);
+                }
+                catch (Exception e)
+                {
+                    TextView tv = (TextView)findViewById(R.id.textView);
+                    tv.setText(e.toString());
+                }
             }
             else if(restoreSettings.get(i).equals("wifi"))
             {
@@ -203,31 +223,98 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    /*FORGROUND DISPATCHING*/
-    public void setupForegroundDispatch(final Activity activity, NfcAdapter adapter) {
-        final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+   /*Functions to enable and disable mobile data (3g/4g)*/
+   private static boolean isMobileDataEnabledFromLollipop(Context context) {
+       boolean state = false;
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+           state = Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) == 1;
+       }
+       return state;
+   }
 
-        final PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, 0);
-
-        IntentFilter[] filters = new IntentFilter[1];
-        String[][] techList = new String[][]{};
-
-        // Notice that this is the same filter as in our manifest.
-        filters[0] = new IntentFilter();
-        filters[0].addAction(NfcAdapter.ACTION_NDEF_DISCOVERED);
-        filters[0].addCategory(Intent.CATEGORY_DEFAULT);
+    private static String getTransactionCode(Context context) throws Exception {
         try {
-            filters[0].addDataType("text/plain");
-        } catch (IntentFilter.MalformedMimeTypeException e) {
-            throw new RuntimeException("Check your mime type.");
+            final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            final Class<?> mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
+            final Method mTelephonyMethod = mTelephonyClass.getDeclaredMethod("getITelephony");
+            mTelephonyMethod.setAccessible(true);
+            final Object mTelephonyStub = mTelephonyMethod.invoke(mTelephonyManager);
+            final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
+            final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
+            final Field field = mClass.getDeclaredField("TRANSACTION_setDataEnabled");
+            field.setAccessible(true);
+            return String.valueOf(field.getInt(null));
+        } catch (Exception e) {
+            // The "TRANSACTION_setDataEnabled" field is not available,
+            // or named differently in the current API level, so we throw
+            // an exception and inform users that the method is not available.
+            throw e;
         }
-        handleIntent(intent);
-        adapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
     }
 
-    public static void stopForegroundDispatch(final Activity activity, NfcAdapter adapter) {
-        adapter.disableForegroundDispatch(activity);
+    private static void executeCommandViaSu(Context context, String option, String command) {
+        boolean success = false;
+        String su = "su";
+        for (int i=0; i < 3; i++) {
+            // Default "su" command executed successfully, then quit.
+            if (success) {
+                break;
+            }
+            // Else, execute other "su" commands.
+            if (i == 1) {
+                su = "/system/xbin/su";
+            } else if (i == 2) {
+                su = "/system/bin/su";
+            }
+            try {
+                // Execute command as "su".
+                Runtime.getRuntime().exec(new String[]{su, option, command});
+            } catch (IOException e) {
+                success = false;
+                // Oops! Cannot execute `su` for some reason.
+                // Log error here.
+            } finally {
+                success = true;
+            }
+        }
     }
+
+    public static void setMobileNetworkfromLollipop(Context context,int mobileState) throws Exception {
+        String command = null;
+        int state = mobileState;
+        try {
+            // Get the current state of the mobile network.
+            state = mobileState;
+            // Get the value of the "TRANSACTION_setDataEnabled" field.
+            String transactionCode = getTransactionCode(context);
+            // Android 5.1+ (API 22) and later.
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                //noinspection ResourceType
+                SubscriptionManager mSubscriptionManager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                // Loop through the subscription list i.e. SIM list.
+                for (int i = 0; i < mSubscriptionManager.getActiveSubscriptionInfoCountMax(); i++) {
+                    if (transactionCode != null && transactionCode.length() > 0) {
+                        // Get the active subscription ID for a given SIM card.
+                        int subscriptionId = mSubscriptionManager.getActiveSubscriptionInfoList().get(i).getSubscriptionId();
+                        // Execute the command via `su` to turn off
+                        // mobile network for a subscription service.
+                        command = "service call phone " + transactionCode + " i32 " + subscriptionId + " i32 " + state;
+                        executeCommandViaSu(context, "-c", command);
+                    }
+                }
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+                // Android 5.0 (API 21) only.
+                if (transactionCode != null && transactionCode.length() > 0) {
+                    // Execute the command via `su` to turn off mobile network.
+                    command = "service call phone " + transactionCode + " i32 " + state;
+                    executeCommandViaSu(context, "-c", command);
+                }
+            }
+        } catch(Exception e) {
+            // Oops! Something went wrong, so we throw the exception here.
+            throw e;
+        }
+    }
+
 
 }
