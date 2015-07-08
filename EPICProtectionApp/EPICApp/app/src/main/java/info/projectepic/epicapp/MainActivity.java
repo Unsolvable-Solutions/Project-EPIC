@@ -243,6 +243,10 @@ public class MainActivity extends ActionBarActivity {
                 {
                     restoreSettings.add(split[i]);
                 }
+                //Reset data on file
+                FileOutputStream fos = openFileOutput(FileName, Context.MODE_PRIVATE);
+
+                fos.close();
             }
             catch (Exception e)
             {}
