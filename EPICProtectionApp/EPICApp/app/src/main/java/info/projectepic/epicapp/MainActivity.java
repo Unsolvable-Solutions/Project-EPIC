@@ -26,7 +26,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -40,6 +45,7 @@ public class MainActivity extends ActionBarActivity {
     private PendingIntent pendingIntent;
     private IntentFilter[] intentFiltersArray;
     private NfcAdapter mAdapter;
+    private String FileName="APPDATA";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,16 +193,61 @@ public class MainActivity extends ActionBarActivity {
             catch (Exception e)
             {}
         }
-       /* if (isEnable(getApplicationContext()))
+
+        //Store data locally on the device
+        String theData = "";
+
+        for(int i = 0; i < restoreSettings.size(); i++)
         {
-            restoreSettings.add("mobi");
-           // switchState(getApplicationContext(), false);
-        }*/
+            theData += restoreSettings.get(i);
+            if (i < (restoreSettings.size()-1))
+            {
+                theData += ":";
+            }
+        }
+        try
+        {
+            FileOutputStream fs = openFileOutput(FileName, Context.MODE_PRIVATE);
+            fs.write(theData.getBytes());
+            fs.close();
+
+        }
+        catch (Exception e)
+        {}
+
+    }
+
+    public static String convertStreamToString(InputStream is) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        reader.close();
+        return sb.toString();
     }
 
     private void LoadSnapShot()
     {
-        NfcAdapter nfc = NfcAdapter.getDefaultAdapter(this);
+        //Get data from file if array is empty
+        if (restoreSettings.size() == 0)
+        {
+            try
+            {
+                FileInputStream fs = openFileInput(FileName);
+                String getData = convertStreamToString(fs);
+                String[] split = getData.split(":");
+                fs.close();
+                for (int i = 0; i < split.length;i++)
+                {
+                    restoreSettings.add(split[i]);
+                }
+            }
+            catch (Exception e)
+            {}
+        }
+
         BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
         WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
         for(int i = 0; i < restoreSettings.size(); i++)
