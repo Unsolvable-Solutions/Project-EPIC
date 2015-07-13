@@ -3,5 +3,6 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+    <string name="service_name">CardEmulation Sample</string>
+    <string name="card_title">Employee ID Card</string>
 </resources>
