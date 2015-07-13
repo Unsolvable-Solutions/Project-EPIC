@@ -46,6 +46,8 @@ public class MainActivity extends ActionBarActivity {
     private IntentFilter[] intentFiltersArray;
     private NfcAdapter mAdapter;
     private String FileName="APPDATA";
+    //Storing info
+    private List<String> restoreSettings = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +87,7 @@ public class MainActivity extends ActionBarActivity {
             throw new RuntimeException("fail", e);
         }
         intentFiltersArray = new IntentFilter[] {ndef, };
-        //handleIntent(getIntent());
+
     }
     @Override
     public void onPause() {
@@ -146,24 +148,23 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-    private void handleIntent(Intent intent)
-    {
-        NdefMessage msg;
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-            if (rawMsgs != null) {
-                msg = (NdefMessage)rawMsgs[0];
-                TextView tv = (TextView)findViewById(R.id.textView);
-                tv.setText(new String(msg.getRecords()[0].getPayload()));
-            }
-        }
-    }
-    //Storing info
-    List<String> restoreSettings = new ArrayList<String>();
-    //My Functions
+
+
+
+
+    /**
+     * The functionality provided by the StoreSnapshot function is to store the state of all the
+     * communication networks and there devices to a local device and turn off all the communication
+     * devices that were turned on.
+     *
+     * @param bt - Stores an object that connects and controls the Bluetooth Adapter.
+     * @param wifi - Stores an object that connects and controls the WiFi service.
+     * @param theData - A string of the devices that were on sperated by a ':'.
+     * @param fs - Opens a stream for data to be stored to a private file.
+     */
     private void StoreSnapshot()
     {
-        //Store Settings
+
         BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
         WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
 
