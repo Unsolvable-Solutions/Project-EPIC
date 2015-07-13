@@ -26,7 +26,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -40,6 +45,9 @@ public class MainActivity extends ActionBarActivity {
     private PendingIntent pendingIntent;
     private IntentFilter[] intentFiltersArray;
     private NfcAdapter mAdapter;
+    private String FileName="APPDATA";
+    //Storing info
+    private List<String> restoreSettings = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +87,7 @@ public class MainActivity extends ActionBarActivity {
             throw new RuntimeException("fail", e);
         }
         intentFiltersArray = new IntentFilter[] {ndef, };
-        //handleIntent(getIntent());
+
     }
     @Override
     public void onPause() {
@@ -140,24 +148,23 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-    private void handleIntent(Intent intent)
-    {
-        NdefMessage msg;
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-            if (rawMsgs != null) {
-                msg = (NdefMessage)rawMsgs[0];
-                TextView tv = (TextView)findViewById(R.id.textView);
-                tv.setText(new String(msg.getRecords()[0].getPayload()));
-            }
-        }
-    }
-    //Storing info
-    List<String> restoreSettings = new ArrayList<String>();
-    //My Functions
+
+
+
+
+    /**
+     * The functionality provided by the StoreSnapshot function is to store the state of all the
+     * communication networks and there devices to a local device and turn off all the communication
+     * devices that were turned on.
+     *
+     * @param bt - Stores an object that connects and controls the Bluetooth Adapter.
+     * @param wifi - Stores an object that connects and controls the WiFi service.
+     * @param theData - A string of the devices that were on sperated by a ':'.
+     * @param fs - Opens a stream for data to be stored to a private file.
+     */
     private void StoreSnapshot()
     {
-        //Store Settings
+
         BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
         WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
 
@@ -187,16 +194,65 @@ public class MainActivity extends ActionBarActivity {
             catch (Exception e)
             {}
         }
-       /* if (isEnable(getApplicationContext()))
+
+        //Store data locally on the device
+        String theData = "";
+
+        for(int i = 0; i < restoreSettings.size(); i++)
         {
-            restoreSettings.add("mobi");
-           // switchState(getApplicationContext(), false);
-        }*/
+            theData += restoreSettings.get(i);
+            if (i < (restoreSettings.size()-1))
+            {
+                theData += ":";
+            }
+        }
+        try
+        {
+            FileOutputStream fs = openFileOutput(FileName, Context.MODE_PRIVATE);
+            fs.write(theData.getBytes());
+            fs.close();
+
+        }
+        catch (Exception e)
+        {}
+
+    }
+
+    public static String convertStreamToString(InputStream is) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        reader.close();
+        return sb.toString();
     }
 
     private void LoadSnapShot()
     {
-        NfcAdapter nfc = NfcAdapter.getDefaultAdapter(this);
+        //Get data from file if array is empty
+        if (restoreSettings.size() == 0)
+        {
+            try
+            {
+                FileInputStream fs = openFileInput(FileName);
+                String getData = convertStreamToString(fs);
+                String[] split = getData.split(":");
+                fs.close();
+                for (int i = 0; i < split.length;i++)
+                {
+                    restoreSettings.add(split[i]);
+                }
+                //Reset data on file
+                FileOutputStream fos = openFileOutput(FileName, Context.MODE_PRIVATE);
+
+                fos.close();
+            }
+            catch (Exception e)
+            {}
+        }
+
         BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
         WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
         for(int i = 0; i < restoreSettings.size(); i++)
