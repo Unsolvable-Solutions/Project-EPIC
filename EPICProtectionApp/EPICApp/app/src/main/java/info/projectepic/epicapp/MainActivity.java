@@ -41,14 +41,36 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    //private variables used
+    /**
+     * @param pendingIntent - Stores the application that will proccess a function for this app.
+     * @param intentFiltersArray - A list of pre conditions and triggers that need to be met
+     *                           before the intent is going to be launched.
+     * @param mAdapter - Stores a connection to access the NFC adapter's function.
+     * @param FileName - Stores the name of the file that has the state of the app.
+     * @param restoreSettings - Stores the connections that were turned off via the app.
+     * */
     private PendingIntent pendingIntent;
     private IntentFilter[] intentFiltersArray;
     private NfcAdapter mAdapter;
     private String FileName="APPDATA";
-    //Storing info
     private List<String> restoreSettings = new ArrayList<String>();
 
+    /**
+     * The functionality provided by the onCreate function is to act as the constructor of the
+     * application and initilize the variables. It will also create the listeners that will be
+     * called and attatch them to the appropiate views. It will create and attatch the Intent filter
+     * to the NFC adapter so that the NFC adapter can send data to the application when the data
+     * has met the conditions specified by the intent.
+     *
+     * @param savedInstanceState - The previous state of the application.
+     * @param ListenerEnter - An event is stored that will be attatched to the Enter button.
+     * @param ListenerLeave - Stores an event that will be attatched to the Leave button.
+     * @param butEnter - Stores the Enter button from the view.
+     * @param butLeav - Stores the leave button from the view.
+     * @param ndef - Stores an intent to be used in the intent filter.
+     *
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +97,7 @@ public class MainActivity extends ActionBarActivity {
         butEnter.setOnClickListener(ListenerEnter);
         Button butLeav = (Button)findViewById(R.id.button2);
         butLeav.setOnClickListener(ListenerLeave);
+
         mAdapter = NfcAdapter.getDefaultAdapter(this);
         pendingIntent = PendingIntent.getActivity(
                 this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
@@ -89,17 +112,46 @@ public class MainActivity extends ActionBarActivity {
         intentFiltersArray = new IntentFilter[] {ndef, };
 
     }
+
+    /**
+     * The functionality provided by the onPause function to stop current actions when the
+     * application is paused (if another application is opened). This function will disable
+     * the foregroundDispatch to this application.
+     */
     @Override
     public void onPause() {
 
         mAdapter.disableForegroundDispatch(this);
         super.onPause();
     }
+
+    /**
+     * The functionality provided by the onResume function to continue the applications tasks
+     * when the user resumes using this application (This method is also called when the
+     * application is first opened). This function will enable the foregroundDispatch to this
+     * application.
+     */
     @Override
     public void onResume() {
         super.onResume();
         mAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, null);
     }
+
+    /**
+     * The functionality provided by the onNewIntent is to check whether the NFC adapter intent
+     * was triggered and to parse the message if and NdefMessage was sent.
+     *
+     * @param intent - The intent that was triggered.
+     * @param action - The action of the intent (To see if an NDEF message was discovered).
+     * @param parcelables - Stores all the messages recieved from the NFC adapter including MIME
+     *                    type.
+     * @param inNdefMessage - Stores the data message found in parcelables[0].
+     * @param inNdefRecords - Stores the messages from inNdefMessage as NDEF Records for easier
+     *                      decoding.
+     * @param NdefRecord_0 - The first record found in inNdefRecords is stored here.
+     * @param inMsg - The messsage retrieved from NdefRecord_0 is stored in here.
+     * @param tv - Stores a pointer to access the textview to display the data in.
+     */
     @Override
     public void onNewIntent(Intent intent) {
         String action = intent.getAction();
