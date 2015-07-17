@@ -41,14 +41,36 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    //private variables used
+    /**
+     * @param pendingIntent - Stores the application that will proccess a function for this app.
+     * @param intentFiltersArray - A list of pre conditions and triggers that need to be met
+     *                           before the intent is going to be launched.
+     * @param mAdapter - Stores a connection to access the NFC adapter's function.
+     * @param FileName - Stores the name of the file that has the state of the app.
+     * @param restoreSettings - Stores the connections that were turned off via the app.
+     * */
     private PendingIntent pendingIntent;
     private IntentFilter[] intentFiltersArray;
     private NfcAdapter mAdapter;
     private String FileName="APPDATA";
-    //Storing info
     private List<String> restoreSettings = new ArrayList<String>();
 
+    /**
+     * The functionality provided by the onCreate function is to act as the constructor of the
+     * application and initilize the variables. It will also create the listeners that will be
+     * called and attatch them to the appropiate views. It will create and attatch the Intent filter
+     * to the NFC adapter so that the NFC adapter can send data to the application when the data
+     * has met the conditions specified by the intent.
+     *
+     * @param savedInstanceState - The previous state of the application.
+     * @param ListenerEnter - An event is stored that will be attatched to the Enter button.
+     * @param ListenerLeave - Stores an event that will be attatched to the Leave button.
+     * @param butEnter - Stores the Enter button from the view.
+     * @param butLeav - Stores the leave button from the view.
+     * @param ndef - Stores an intent to be used in the intent filter.
+     *
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +97,7 @@ public class MainActivity extends ActionBarActivity {
         butEnter.setOnClickListener(ListenerEnter);
         Button butLeav = (Button)findViewById(R.id.button2);
         butLeav.setOnClickListener(ListenerLeave);
+
         mAdapter = NfcAdapter.getDefaultAdapter(this);
         pendingIntent = PendingIntent.getActivity(
                 this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
@@ -89,17 +112,46 @@ public class MainActivity extends ActionBarActivity {
         intentFiltersArray = new IntentFilter[] {ndef, };
 
     }
+
+    /**
+     * The functionality provided by the onPause function to stop current actions when the
+     * application is paused (if another application is opened). This function will disable
+     * the foregroundDispatch to this application.
+     */
     @Override
     public void onPause() {
 
         mAdapter.disableForegroundDispatch(this);
         super.onPause();
     }
+
+    /**
+     * The functionality provided by the onResume function to continue the applications tasks
+     * when the user resumes using this application (This method is also called when the
+     * application is first opened). This function will enable the foregroundDispatch to this
+     * application.
+     */
     @Override
     public void onResume() {
         super.onResume();
         mAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, null);
     }
+
+    /**
+     * The functionality provided by the onNewIntent is to check whether the NFC adapter intent
+     * was triggered and to parse the message if and NdefMessage was sent.
+     *
+     * @param intent - The intent that was triggered.
+     * @param action - The action of the intent (To see if an NDEF message was discovered).
+     * @param parcelables - Stores all the messages recieved from the NFC adapter including MIME
+     *                    type.
+     * @param inNdefMessage - Stores the data message found in parcelables[0].
+     * @param inNdefRecords - Stores the messages from inNdefMessage as NDEF Records for easier
+     *                      decoding.
+     * @param NdefRecord_0 - The first record found in inNdefRecords is stored here.
+     * @param inMsg - The messsage retrieved from NdefRecord_0 is stored in here.
+     * @param tv - Stores a pointer to access the textview to display the data in.
+     */
     @Override
     public void onNewIntent(Intent intent) {
         String action = intent.getAction();
@@ -115,6 +167,7 @@ public class MainActivity extends ActionBarActivity {
                 String inMsg = new String(NdefRecord_0.getPayload());
 
                 //Toast.makeText(getApplicationContext(), "Toasty: " + inMsg + action.toString(), Toast.LENGTH_LONG).show();
+                //Proccess the text here
                 TextView tv = (TextView)findViewById(R.id.textView);
                 tv.setText(inMsg);
             }
@@ -125,13 +178,20 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * The functionality provided by the onCreateOptionsMenu function is to add items to the action
+     * bar if it is present. (This function is self generated)
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
+    /**
+     * The functionality provided by the onOptionsItemSelected function is to handle action bar
+     * item clicks. (This function is self generated)
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -146,10 +206,6 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
 
 
     /**
@@ -218,6 +274,17 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    /**
+     * The functionality provided by the convertStreamToString is to convert an input stream of
+     * bytes to string format.
+     *
+     * @param is - The input stream that the bytes are coming from
+     * @param reader - Creates a buffer reader for the input stream
+     * @param sb - Saves a String of all the lines being read from the buffer.
+     * @param line - Is used to temporaryrily store each line read from the buffer reader.
+     *
+     * @return A string representation of the bytes from the input stream.
+     */
     public static String convertStreamToString(InputStream is) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
@@ -229,6 +296,20 @@ public class MainActivity extends ActionBarActivity {
         return sb.toString();
     }
 
+    /**
+     * The functionality provided by the LoadSnapShot is to get the previous state the phone's
+     * connections were in before they were turned off by the storeSnapShot function and turn
+     * them on if they were turned on. If the app was still in memory it simply reads from a list
+     * otherwize it will read from a local file and reset that file.
+     *
+     * @param fs - Stores an input stream to the state file.
+     * @param getData - Stores the String value of the input stream.
+     * @param split - Stores the getData string as an array. Values are seperated by ":".
+     * @param fos - Stores an output stream to the file to reset it.
+     * @param bt - Stores the bluetooth object interface to interact with the adapter.
+     * @param wifi - Stores the wifi service interface to interact with the wifi.
+     * @param tv - Stores a text view object to display data in.
+     */
     private void LoadSnapShot()
     {
         //Get data from file if array is empty
@@ -277,9 +358,24 @@ public class MainActivity extends ActionBarActivity {
                 wifi.setWifiEnabled(true);
             }
         }
+        //Reset list
+        restoreSettings = new ArrayList<String>();
     }
 
-   /*Functions to enable and disable mobile data (3g/4g)*/
+   /*Functions to enable and disable mobile data (3g/4g). Google currently doesn't have
+   * an API interface for mobile data thus a workaround is needed. This meothod currently
+   * needs a rooted device running android Lolipop 5.1*/
+
+    /**
+     * The functionality provided by the isMobileDataEnabledFromLollipop is check what the
+     * current state of the mobile data is and return it as a boolean value.
+     *
+     * @param state - Stores an input stream to the state file.
+     * @param context - The context of the current state of the application. Used to get info
+     *                on another part of this application.
+     *
+     * @return A boolean value according the the mobile data state is returned.
+     */
    private static boolean isMobileDataEnabledFromLollipop(Context context) {
        boolean state = false;
        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -288,6 +384,24 @@ public class MainActivity extends ActionBarActivity {
        return state;
    }
 
+    /**
+     * The functionality provided by the getTransactionCode is to get the value of the
+     * "TRANSACTION_setDataEnabled" field view the use of java reflection. This value is needed
+     * to build a command to excecute via runtime. It also makes the field accessible.
+     *
+     * @param context - The context of the current state of the application. Used to get info
+     *                on another part of this application.
+     * @param mTelephonyManager - Stores service to handle telephony features of the device.
+     * @param mTelephonyClass - A class object representing mTelephonyManager.
+     * @param mTelephonyMethod - A method object is created and stored which represents
+     *                         getITelephony.
+     * @param mTelephonyStub - Stores result of dynamically invoking mTelephonyMethod.
+     * @param mTelephonyStubClass - A class object representing mTelephonyStub.
+     * @param mClass - Stores all classes that are apart of mTelephonyStubClass.
+     * @param field - Stores the TRANSACTION_setDataEnabled of the mClass.
+     *
+     * @return A String value representation of the "TRANSACTION_setDataEnabled" is returned.
+     */
     private static String getTransactionCode(Context context) throws Exception {
         try {
             final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -308,6 +422,18 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * The functionality provided by the executeCommandViaSu is to execute commands that it gets
+     * via su (super user). This executes the command as a runtime call.
+     *
+     * @param context - The context of the current state of the application. Used to get info
+     *                on another part of this application.
+     * @param option - A refrence to extra options that needs to be added to the runtime call.
+     * @param command - A refrence to the command that needs to be executed.
+     * @param success - Stores a boolean value that is used to see if it managed to execute via
+     *                the given path..
+     * @param su - The path to the super user on the device is stored here.
+     */
     private static void executeCommandViaSu(Context context, String option, String command) {
         boolean success = false;
         String su = "su";
@@ -335,6 +461,20 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * The functionality provided by the setMobileNetworkfromLollipop is to toggle the state
+     * of mobile data.
+     *
+     * @param context - The context of the current state of the application. Used to get info
+     *                on another part of this application.
+     * @param mobileState - A refrence to which state the mobile data needs to change to.
+     * @param command - The command that will be executed via su is stored here.
+     * @param state - Stores the next state of the mobile data to switch to.
+     * @param transactionCode - Stores the value returned by the getTransactionCode function.
+     * @param mSubscriptionManager - Stores service to handle telephony subscription features of
+     *                             the device.
+     * @param subscriptionId - The subscription id of the SIM is stored here.
+     */
     public static void setMobileNetworkfromLollipop(Context context,int mobileState) throws Exception {
         String command = null;
         int state = mobileState;
@@ -345,6 +485,7 @@ public class MainActivity extends ActionBarActivity {
             String transactionCode = getTransactionCode(context);
             // Android 5.1+ (API 22) and later.
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                //The next comment line is a command for android studio. Do not remove it.
                 //noinspection ResourceType
                 SubscriptionManager mSubscriptionManager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
                 // Loop through the subscription list i.e. SIM list.
