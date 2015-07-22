@@ -14,6 +14,7 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
@@ -215,6 +216,7 @@ public class MainActivity extends ActionBarActivity {
      * @param NdefRecord_0 - The first record found in inNdefRecords is stored here.
      * @param inMsg - The messsage retrieved from NdefRecord_0 is stored in here.
      * @param tv - Stores a pointer to access the textview to display the data in.
+     * @param tim - Stores a timer to use with the color changing.
      */
     @Override
     public void onNewIntent(Intent intent) {
@@ -235,7 +237,16 @@ public class MainActivity extends ActionBarActivity {
                 {
                     //False - Denied access
                     //Flash screen red or someting similiar
-                    setActivityBackgroundColor(Color.RED);
+                    CountDownTimer tim = new CountDownTimer(3000,1000) {
+                        public void onTick(long millisUntilFinished) {
+                            setActivityBackgroundColor(Color.RED);
+                        }
+
+                        public void onFinish() {
+                            setActivityBackgroundColor(Color.WHITE);
+                        }
+                    };
+                    tim.start();
                 }
                 else if(inMsg.equals("1"))
                 {
@@ -251,10 +262,21 @@ public class MainActivity extends ActionBarActivity {
                         else
                         {StoreSnapshot();}
                         //Flash screen green or something similiar
-                        setActivityBackgroundColor(Color.GREEN);
+                        CountDownTimer tim = new CountDownTimer(3000,1000) {
+                            public void onTick(long millisUntilFinished) {
+                                setActivityBackgroundColor(Color.GREEN);
+                            }
+
+                            public void onFinish() {
+                                setActivityBackgroundColor(Color.WHITE);
+                            }
+                        };
+                        tim.start();
+
                     }
                     catch (Exception e)
                     {}
+
                 }
                 else if(inMsg.equals("2"))
                 {
