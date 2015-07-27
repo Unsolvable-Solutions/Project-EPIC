@@ -1,0 +1,74 @@
+<html>
+	<head>
+		<script type="text/javascript" src="socket.io.js"></script>
+		<script type="text/javascript" src="angular.min.js"></script>
+		<script type="text/javascript">
+			angular.module('meetingApp', [])
+			.controller('MeetingController', function($scope) {
+				var t = this;
+		    	t.meetings = [];
+				
+
+				var socket = io('http://localhost:3000');
+				socket.on('connect', function(){
+					console.log('Connected');
+					socket.emit("get",{model: 'meeting'});
+				});
+				socket.on('meetings', function(data){
+					console.log(data);
+					$scope.$applyAsync(function(){
+			    		t.meetings = data;
+					});
+				});	
+				socket.on('meeting', function(data){
+					console.log(data);
+					$scope.$applyAsync(function(){
+			    		t.meeting = data;
+					});
+				});	
+				socket.on('auth', function(data){
+					console.log(data);
+					$scope.$applyAsync(function(){
+			    		t.result = data;
+					});
+				});
+		    	socket.on('disconnect', function(){
+					console.log('Disconnected');
+		    	});
+
+				t.setMeeting = function(id)
+				{
+					socket.emit("set",{model: 'meeting', id: t.meeting});
+				}
+				t.auth = function()
+				{
+					socket.emit("auth",{email: t.testUser});
+				}
+			});
+		</script>
+	</head>
+	<body ng-app="meetingApp">
+		<div ng-controller="MeetingController as m">
+			<select ng-model="m.meeting" ng-change="m.setMeeting()">
+				<option ng-repeat="meeting in m.meetings" value="{{meeting.id}}">{{meeting.title}}</option>
+			</select>
+			<table>
+				<tr>
+					<td>Name</td>
+					<td>Surname</td>
+					<td>Email</td>
+				</tr>
+				<tr ng-repeat="invitee in m.meeting.invitees">
+					<td>{{invitee.name}}</td>
+					<td>{{invitee.surname}}</td>
+					<td>{{invitee.email}}</td>
+				</tr>
+			</table>
+			<input type="text" value="jaco@peoplesoft.co.za" ng-model="m.testUser" />
+			<button ng-click="m.auth()">Test</button>
+			<code>
+				<pre>{{m.result}}</pre>
+			</code>
+		</div>
+	</body>
+</html>

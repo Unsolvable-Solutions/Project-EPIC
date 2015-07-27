@@ -79,10 +79,10 @@
 				});
 			}
 
-			this.deleteMeeting = function(id)
+			this.deleteMeeting = function(meeting)
 			{
-				console.log(id);
-				io.socket.get('/meeting/destroy/' + id, function(r)
+				console.log(meeting);
+				io.socket.get('/meeting/destroy/' + meeting.id, function(r)
 				{
 					$scope.$applyAsync(function() 
 					{
