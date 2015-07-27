@@ -12,33 +12,33 @@
 #define PIN 3
 
 // ***********************GLOBALS************************** //
-PN532_SPI pn532spi(SPI, 10);
-EmulateTag nfcEmulate(pn532spi);
-uint8_t ndefBuf[120];
-NdefMessage message;
-int messageSize;
-uint8_t uid[3] = { 0x12, 0x34, 0x56 };
-PN532 nfc(pn532spi);
+PN532_SPI         pn532spi(SPI, 10);
+EmulateTag        nfcEmulate(pn532spi);
+uint8_t           ndefBuf[120];
+NdefMessage       message;
+int               messageSize;
+uint8_t           uid[3] = { 0x12, 0x34, 0x56 };
+PN532             nfc(pn532spi);
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(8, PIN, NEO_GRB + NEO_KHZ800);
 
 // ***********************SETUP************************** //
+/* The setup() function initializes some global variables and starts some proses that the program will use later. */
 void setup()
 {    
     Serial.begin(115200);
-    //Serial.println("-------Peer to Peer HCE--------");
-    
     nfc.begin();
-    
     uint32_t versiondata = nfc.getFirmwareVersion();
-    if (! versiondata) {
+    if (! versiondata) 
+    {
       Serial.print("Didn't find PN53x board");
       while (1); // halt
     }
     
-    // Got ok data, print it out!
-    //Serial.print("Found chip PN5"); Serial.println((versiondata>>24) & 0xFF, HEX); 
-    //Serial.print("Firmware ver. "); Serial.print((versiondata>>16) & 0xFF, DEC); 
-    //Serial.print('.'); Serial.println((versiondata>>8) & 0xFF, DEC);
+    // To see more details about the board in the node, uncomment the following code.
+    /*Serial.print("Found chip PN5"); Serial.println((versiondata>>24) & 0xFF, HEX); 
+      Serial.print("Firmware ver. "); Serial.print((versiondata>>16) & 0xFF, DEC); 
+      Serial.print('.'); Serial.println((versiondata>>8) & 0xFF, DEC);
+     */
     
     // Set the max number of retry attempts to read from a card
     // This prevents us from waiting forever for a card, which is
@@ -54,9 +54,12 @@ void setup()
     
     strip.begin();
     strip.show(); // Initialize all pixels to 'off'
+    
+    Serial.println("Node is now online");
 }
 
 // ***********************LOOP************************** //
+/* The loop() function is a recuring block that will continue to check for any phone or tags being scanned. */
 void loop()
 {
   // configure board to read RFID tags
@@ -65,32 +68,32 @@ void loop()
   
   uint8_t responseLength = 32;
   
-  //Serial.println("Waiting for an ISO14443A card");
   waiting();
   
   // set shield to inListPassiveTarget
   success = nfc.inListPassiveTarget();
-
-  if(success) 
+  
+  if (success) 
   {
     Serial.println("Found something!");           
-    uint8_t selectApdu[] = { 0x00, /* CLA */
-                             0xA4, /* INS */
-                             0x04, /* P1  */
-                             0x00, /* P2  */
-                             0x07, /* Length of AID  */
+    uint8_t selectApdu[] = { 
+                             0x00,                                     /* CLA */
+                             0xA4,                                     /* INS */
+                             0x04,                                     /* P1  */
+                             0x00,                                     /* P2  */
+                             0x07,                                     /* Length of AID  */
                              0xF0, 0x39, 0x41, 0x48, 0x14, 0x81, 0x00, /* AID defined on Android App */
-                             0x00  /* Le  */ };
+                             0x00                                      /* Le  */ 
+                           };
                               
     uint8_t response[32];  
      
     success = nfc.inDataExchange(selectApdu, sizeof(selectApdu), response, &responseLength);
     
-    if(success) 
+    if (success) 
     {
-      Serial.print("responseLength: "); Serial.println(responseLength);
-       
-      nfc.PrintHexChar(response, responseLength);
+      //Serial.print("responseLength: "); Serial.println(responseLength);
+      //nfc.PrintHexChar(response, responseLength);
       
       uint8_t apdu[] = "requestUserId";
       uint8_t back[32];
@@ -98,10 +101,15 @@ void loop()
 
       success = nfc.inDataExchange(apdu, sizeof(apdu), back, &length);
       
-      if(success) 
+      if (success) 
       {
-        Serial.print("responseLength: "); Serial.println(length);
-        nfc.PrintHexChar(back, length);
+        //Serial.print("responseLength: "); Serial.println(length);
+        //nfc.PrintHexChar(back, length);
+        char charArr[length];
+        for (int x = 0; x < length; x++)
+          charArr[x] = back[x];
+        
+        Serial.println(charArr);
         sendMessage(isAllowed());
       }
       else 
@@ -120,28 +128,31 @@ void loop()
 }
 
 // ***********************WAITING************************** //
+/* The waiting() function will make the lights run with orange bars. */
 void waiting()
 {
-  for (int q=0; q < 8; q++) {
-    for (int i=0; i < strip.numPixels(); i++) {
+  for (int q=0; q < 8; q++) 
+  {
+    for (int i=0; i < strip.numPixels(); i++)
       strip.setPixelColor(i, strip.Color(255, 165, 0));
-    }
-    for (int i=0; i < 4; i++) {
+    
+    for (int i=0; i < 4; i++)
       strip.setPixelColor((i+q)%8, strip.Color(255, 65, 0));
-    }
+    
     strip.show();
     delay(50);
   }
 }
 
 // ***********************IS ALLOWED************************** //
+/* The isAllowed() function will check the servers' response and return the value. */
 int isAllowed()
 {
-  for(int x=0; x<8; x++) // For each light that must turn blue
+  for (int x=0; x<8; x++) // For each light that must turn blue
   {
     int side = (x%2)?-7:0; // Define which side to start
     int direct = (x%2)?-1:1; // Define direction of travel
-    for(int runner=0; runner<8; runner++) // For each light where the runner will go
+    for (int runner=0; runner<8; runner++) // For each light where the runner will go
     {
       strip.setPixelColor(abs(runner+side), strip.Color(255, 255, 255)); // Move runner to new position
       strip.setPixelColor(abs(runner+side)-direct, 
@@ -151,67 +162,31 @@ int isAllowed()
     }
   }
   
-  int permission = Serial.read(); // Check results from the server
+  int permission = Serial.read(); // Check response from the server
   return permission;
 }
 
-// ***********************PRINT RESPONSE************************** //
-void printResponse(uint8_t *response, uint8_t responseLength)
-{
-  
-   String respBuffer;
-
-    for (int i = 0; i < responseLength; i++) {
-      
-      if (response[i] < 0x10) 
-        respBuffer = respBuffer + "0"; //Adds leading zeros if hex value is smaller than 0x10
-      
-      respBuffer = respBuffer + String(response[i], HEX) + " ";                        
-    }
-
-    Serial.print("response: "); Serial.println(respBuffer);
-}
-
-// ***********************SETUP NFC************************** //
-void setupNFC() {
- 
-  nfc.begin();
-    
-  uint32_t versiondata = nfc.getFirmwareVersion();
-  if (! versiondata) {
-    Serial.print("Didn't find PN53x board");
-    while (1); // halt
-  }
-  
-  // Got ok data, print it out!
-  Serial.print("Found chip PN5"); Serial.println((versiondata>>24) & 0xFF, HEX); 
-  Serial.print("Firmware ver. "); Serial.print((versiondata>>16) & 0xFF, DEC); 
-  Serial.print('.'); Serial.println((versiondata>>8) & 0xFF, DEC);
-  
-  // configure board to read RFID tags
-  //nfc.SAMConfig(); 
-}
-
 // ***********************SET COLOR************************** //
+/* The setColor() function takes the three values that make up the RGB (Red-Green-Blue) value of a color and sets all the lights to that color. */
 void setColor(int red, int green, int blue)
 {
-  for(int x=0; x<8; x++) // For each light
-  {
+  for (int x=0; x<8; x++) // For each light
     strip.setPixelColor(x, strip.Color(red, green, blue));
-  }
+    
   strip.show(); // Apply updates to the lights 
 }
 
 // ***********************SEND MESSSAGE************************** //
+/* The sendMessage() function emulates a NFC Tag with a certain value on it depending on what the value of the response is from the server. */
 void sendMessage(int result)
 {
     message = NdefMessage();
-    message.addTextRecord((result == 116)?"Access Approved":"Access Denied");
+    message.addTextRecord((result == 116)?"1":"0");
     messageSize = message.getEncodedSize();
     if (messageSize > sizeof(ndefBuf)) 
     {
         Serial.println("ndefBuf is too small");
-        while (1) { }
+        while (1);
     }
   
     Serial.print("Ndef encoded message size: ");
@@ -227,24 +202,14 @@ void sendMessage(int result)
   
     nfcEmulate.init();
   
-  
-    // uncomment for overriding ndef in case a write to this tag occured
-    //nfc.setNdefFile(ndefBuf, messageSize); 
-    
-    // start emulation (blocks)
-    //nfcEmulate.emulate();
-    
-    for(int x=0; x<8; x++) // Turn each light either red or green
-    {
-      (result == 116)?strip.setPixelColor(x, strip.Color(0, 255, 0)):strip.setPixelColor(x, strip.Color(255, 0, 0));
-    }
-    strip.show(); // Apply updates to the lights
+    if (result == 116)
+      setColor(0, 255, 0);
+    else
+      setColor(255, 0, 0);
     
     // or start emulation with timeout
-    if(!nfcEmulate.emulate(500))
-    {
+    if (!nfcEmulate.emulate(500))
       Serial.println("timed out");
-    }
     
     delay(2000); // Wait a moment
 }
