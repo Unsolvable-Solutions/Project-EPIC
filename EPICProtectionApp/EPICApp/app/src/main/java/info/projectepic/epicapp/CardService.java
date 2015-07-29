@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
  * Created by Draak Koning on 2015-07-13.
  */
 public class CardService extends HostApduService {
-    @Override
+
     /**
      * This class is used to emulate a NFC tag that will be readable by the arduino NFC reader.*/
 
@@ -26,6 +26,7 @@ public class CardService extends HostApduService {
      *
      * @return Returns a byte array carrying data to the requested reader.
      */
+    @Override
     public byte[] processCommandApdu(byte[] apdu, Bundle extras) {
         String EmpIDFile = "EMPID";
         String getData = "";
