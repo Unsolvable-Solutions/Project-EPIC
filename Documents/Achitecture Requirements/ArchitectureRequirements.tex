@@ -77,23 +77,15 @@ The different components of the system should work together and the system must 
 
 	\end{itemize}
 \newpage	\section{Architectural patterns or styles}
-\begin{itemize}
-\item Thread pooling :to improve scalability. \\It is used by the recording handler of the Malware Application and to create multiple connections to different client phones. The Edison is connected to more than one node to improve scalability( thus physical threads).
-\item Clustering: to improve scalability and reliability\\
-\item Interception: for security and auditability\\ 
-\item Run-time lookup:  for pluggability and flexibility.\\
-\item Queuing: reliability and scalability.\\
-\end{itemize}
+
+
 
 
 \newpage\section{Architectural tactics or strategies}
-\begin{itemize}
-\item Thread pooling :to improve scalability. //It is used by the recording handler of the Malware Application and to create multiple connections to different client phones. The Edison is connected to more than one node to improve scalability( thus physical threads).
-\item Clustering: to improve scalability and reliability.//
-\item Interception: for security and auditability//
-\item Run-time lookup:  for pluggability and flexibility.//
-\item Queuing: reliability and scalability.//
-\end{itemize}
+	\subsection{Thread pooling: }It is used to improve scalability, by the recording handler of the Malware Application and to create multiple connections to different client phones. The Edison is connected in serial to more than one node to improve scalability( thus physical threads). The server can also handle multiple requests simultaneosly to update the database from different web clients.
+	\subsection{Clustering: } All communication and events are stored on the server. This is used to improve scalability and reliability. 
+	\subsection{ Interception: }For any event the username and password must be visible and correct for the event to proceed. This ensures security and auditability. The website uses a Log in System, and the user may not proceed to the website if he has not logged in. The Mobile Application only works with the username and password, it is send to the Node, via NFC, in the access permission request. 
+
 
 \newpage	\section{Use of reference architectures and frameworks}
 
