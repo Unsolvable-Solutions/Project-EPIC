@@ -24,6 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -81,6 +82,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         //Event listeners for the buttons
         View.OnClickListener ListenerEnter=
                 new View.OnClickListener(){
@@ -118,7 +120,7 @@ public class MainActivity extends ActionBarActivity {
             String getData = convertStreamToString(fs);
 
             fs.close();
-            tvEmpID.setText(getData);
+            tvEmpID.setText("Current ID: "+getData);
         }
         catch (Exception e)
         {tvEmpID.setText("No ID Stored");}
@@ -132,14 +134,13 @@ public class MainActivity extends ActionBarActivity {
         empIDText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction()==KeyEvent.ACTION_DOWN)&&(keyCode==KeyEvent.KEYCODE_ENTER))
-                {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(empIDText.getWindowToken(),0);
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(empIDText.getWindowToken(), 0);
                     //Store new ID
                     StoreEmpID(empIDText.getText().toString());
                     //Change Text
-                    tvEmpID.setText(empIDText.getText().toString());
+                    tvEmpID.setText("Current ID: " + empIDText.getText().toString());
                     return true;
                 }
                 return false;
@@ -149,10 +150,20 @@ public class MainActivity extends ActionBarActivity {
         Button butEnter = (Button)findViewById(R.id.button);
         butEnter.setOnClickListener(ListenerEnter);
         Button butLeav = (Button)findViewById(R.id.button2);
+        butEnter.setVisibility(View.GONE);
         butLeav.setOnClickListener(ListenerLeave);
+        butLeav.setVisibility(View.GONE);
+        TextView tv = (TextView)findViewById(R.id.textView);
+        tv.setVisibility(View.GONE);
         empIDText.setOnClickListener(EmpIDSelected);
 
         mAdapter = NfcAdapter.getDefaultAdapter(this);
+        //Check if NFC is enabled and if not open connection manager of the device
+        if (!mAdapter.isEnabled())
+        {
+            Toast.makeText(getApplicationContext(), "Please activate NFC and press Back to return to the application!", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+        }
         pendingIntent = PendingIntent.getActivity(
                 this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
@@ -232,13 +243,14 @@ public class MainActivity extends ActionBarActivity {
                 String inMsg = new String(NdefRecord_0.getPayload());
 
                 //Handle the message that came in:
-                if(inMsg.equals("0"))
+                if((inMsg.equals("0"))||inMsg.equals("en0"))
                 {
                     //False - Denied access
                     //Flash screen red or someting similiar
+                    Toast.makeText(getApplicationContext(), "Access Denied", Toast.LENGTH_LONG).show();
                     CountDownTimer tim = new CountDownTimer(3000,1000) {
                         public void onTick(long millisUntilFinished) {
-                            setActivityBackgroundColor(Color.RED);
+                            setActivityBackgroundColor(Color.rgb(205,92,92));
                         }
 
                         public void onFinish() {
@@ -247,15 +259,20 @@ public class MainActivity extends ActionBarActivity {
                     };
                     tim.start();
                 }
-                else if(inMsg.equals("1"))
+                else if((inMsg.equals("1"))||(inMsg.equals("en1")))
                 {
                     //True - Allowed Access
                     //Check what was the previous state
+                    Toast.makeText(getApplicationContext(), "Access Approved", Toast.LENGTH_LONG).show();
+                    String getData = "";
                     try
                     {
-                        FileInputStream fs = openFileInput(FileName);
-                        String getData = convertStreamToString(fs);
-                        fs.close();
+
+                            FileInputStream fs = openFileInput(FileName);
+                            getData = convertStreamToString(fs);
+                            fs.close();
+
+
                         if (getData.length()>1)
                         {LoadSnapShot();}
                         else
@@ -274,12 +291,37 @@ public class MainActivity extends ActionBarActivity {
 
                     }
                     catch (Exception e)
-                    {}
+                    {
+                        //Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+                        StoreSnapshot();
+                        //Flash screen green or something similiar
+                        CountDownTimer tim = new CountDownTimer(3000,1000) {
+                            public void onTick(long millisUntilFinished) {
+                                setActivityBackgroundColor(Color.GREEN);
+                            }
+
+                            public void onFinish() {
+                                setActivityBackgroundColor(Color.WHITE);
+                            }
+                        };
+                        tim.start();
+                        //Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+                    }
 
                 }
-                else if(inMsg.equals("2"))
+                else if((inMsg.equals("2"))||(inMsg.equals("en2")))
                 {
                     //Error - Something went wrong
+                    CountDownTimer tim = new CountDownTimer(3000,1000) {
+                        public void onTick(long millisUntilFinished) {
+                            setActivityBackgroundColor(Color.rgb(255,65,0));
+                        }
+
+                        public void onFinish() {
+                            setActivityBackgroundColor(Color.WHITE);
+                        }
+                    };
+                    tim.start();
                 }
                 //Toast.makeText(getApplicationContext(), "Toasty: " + inMsg + action.toString(), Toast.LENGTH_LONG).show();
                 //Proccess the text here
