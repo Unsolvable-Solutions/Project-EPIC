@@ -1,4 +1,4 @@
-package info.projectepic.epicapp;
+package info.projectepic.epicappfor442;
 
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
@@ -9,9 +9,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Created by Draak Koning on 2015-07-13.
+ * Created by Diaman on 7/27/2015.
  */
-public class CardService extends HostApduService {
+public class CardEmulation extends HostApduService {
+
+    @Override
+    public void onDeactivated(int reason)
+    {}
 
     /**
      * This class is used to emulate a NFC tag that will be readable by the arduino NFC reader.*/
@@ -27,7 +31,8 @@ public class CardService extends HostApduService {
      * @return Returns a byte array carrying data to the requested reader.
      */
     @Override
-    public byte[] processCommandApdu(byte[] apdu, Bundle extras) {
+    public byte[] processCommandApdu(byte[] commandApdu, Bundle extras)
+    {
         String EmpIDFile = "EMPID";
         String getData = "";
         try
@@ -42,11 +47,6 @@ public class CardService extends HostApduService {
 
 
         return getData.getBytes();
-    }
-
-    @Override
-    public void onDeactivated(int reason) {
-
     }
 
     /**

@@ -1,31 +1,25 @@
-package info.projectepic.epicapp;
+package info.projectepic.epicappfor442;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.telephony.SubscriptionManager;
-import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,12 +30,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,6 +82,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         //Event listeners for the buttons
         View.OnClickListener ListenerEnter=
                 new View.OnClickListener(){
@@ -119,22 +110,22 @@ public class MainActivity extends ActionBarActivity {
 
         final TextView tvEmpID = (TextView)findViewById(R.id.tvEmpId);
         //Load previous ID if it was stored
-        File file = new File(EmpIDFile);
+        //File file = new File(EmpIDFile);
         //if(file.exists())
-       //{
-            //Load the data because the file exists
-            try
-            {
-                FileInputStream fs = openFileInput(EmpIDFile);
-                String getData = convertStreamToString(fs);
+        //{
+        //Load the data because the file exists
+        try
+        {
+            FileInputStream fs = openFileInput(EmpIDFile);
+            String getData = convertStreamToString(fs);
 
-                fs.close();
-                tvEmpID.setText(getData);
-            }
-            catch (Exception e)
-            {tvEmpID.setText("No ID Stored");}
+            fs.close();
+            tvEmpID.setText("Current ID: "+getData);
+        }
+        catch (Exception e)
+        {tvEmpID.setText("No ID Stored");}
         //}
-       // else
+        // else
         //{tvEmpID.setText("file load fail");}
         //=================================================================
         final EditText empIDText = (EditText)findViewById(R.id.etEmpid);
@@ -143,14 +134,13 @@ public class MainActivity extends ActionBarActivity {
         empIDText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction()==KeyEvent.ACTION_DOWN)&&(keyCode==KeyEvent.KEYCODE_ENTER))
-                {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(empIDText.getWindowToken(),0);
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(empIDText.getWindowToken(), 0);
                     //Store new ID
                     StoreEmpID(empIDText.getText().toString());
                     //Change Text
-                    tvEmpID.setText(empIDText.getText().toString());
+                    tvEmpID.setText("Current ID: " + empIDText.getText().toString());
                     return true;
                 }
                 return false;
@@ -160,10 +150,20 @@ public class MainActivity extends ActionBarActivity {
         Button butEnter = (Button)findViewById(R.id.button);
         butEnter.setOnClickListener(ListenerEnter);
         Button butLeav = (Button)findViewById(R.id.button2);
+        butEnter.setVisibility(View.GONE);
         butLeav.setOnClickListener(ListenerLeave);
+        butLeav.setVisibility(View.GONE);
+        TextView tv = (TextView)findViewById(R.id.textView);
+        tv.setVisibility(View.GONE);
         empIDText.setOnClickListener(EmpIDSelected);
 
         mAdapter = NfcAdapter.getDefaultAdapter(this);
+        //Check if NFC is enabled and if not open connection manager of the device
+        if (!mAdapter.isEnabled())
+        {
+            Toast.makeText(getApplicationContext(), "Please activate NFC and press Back to return to the application!", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+        }
         pendingIntent = PendingIntent.getActivity(
                 this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
@@ -175,7 +175,6 @@ public class MainActivity extends ActionBarActivity {
             throw new RuntimeException("fail", e);
         }
         intentFiltersArray = new IntentFilter[] {ndef, };
-
     }
 
     /**
@@ -200,6 +199,17 @@ public class MainActivity extends ActionBarActivity {
     public void onResume() {
         super.onResume();
         mAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, null);
+    }
+
+    /**
+     * The functionality provided by the onCreateOptionsMenu function is to add items to the action
+     * bar if it is present. (This function is self generated)
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     /**
@@ -233,13 +243,14 @@ public class MainActivity extends ActionBarActivity {
                 String inMsg = new String(NdefRecord_0.getPayload());
 
                 //Handle the message that came in:
-                if(inMsg.equals("0"))
+                if((inMsg.equals("0"))||inMsg.equals("en0"))
                 {
                     //False - Denied access
                     //Flash screen red or someting similiar
+                    Toast.makeText(getApplicationContext(), "Access Denied", Toast.LENGTH_LONG).show();
                     CountDownTimer tim = new CountDownTimer(3000,1000) {
                         public void onTick(long millisUntilFinished) {
-                            setActivityBackgroundColor(Color.RED);
+                            setActivityBackgroundColor(Color.rgb(205,92,92));
                         }
 
                         public void onFinish() {
@@ -248,15 +259,20 @@ public class MainActivity extends ActionBarActivity {
                     };
                     tim.start();
                 }
-                else if(inMsg.equals("1"))
+                else if((inMsg.equals("1"))||(inMsg.equals("en1")))
                 {
                     //True - Allowed Access
                     //Check what was the previous state
+                    Toast.makeText(getApplicationContext(), "Access Approved", Toast.LENGTH_LONG).show();
+                    String getData = "";
                     try
                     {
-                        FileInputStream fs = openFileInput(FileName);
-                        String getData = convertStreamToString(fs);
-                        fs.close();
+
+                            FileInputStream fs = openFileInput(FileName);
+                            getData = convertStreamToString(fs);
+                            fs.close();
+
+
                         if (getData.length()>1)
                         {LoadSnapShot();}
                         else
@@ -275,12 +291,37 @@ public class MainActivity extends ActionBarActivity {
 
                     }
                     catch (Exception e)
-                    {}
+                    {
+                        //Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+                        StoreSnapshot();
+                        //Flash screen green or something similiar
+                        CountDownTimer tim = new CountDownTimer(3000,1000) {
+                            public void onTick(long millisUntilFinished) {
+                                setActivityBackgroundColor(Color.GREEN);
+                            }
+
+                            public void onFinish() {
+                                setActivityBackgroundColor(Color.WHITE);
+                            }
+                        };
+                        tim.start();
+                        //Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+                    }
 
                 }
-                else if(inMsg.equals("2"))
+                else if((inMsg.equals("2"))||(inMsg.equals("en2")))
                 {
                     //Error - Something went wrong
+                    CountDownTimer tim = new CountDownTimer(3000,1000) {
+                        public void onTick(long millisUntilFinished) {
+                            setActivityBackgroundColor(Color.rgb(255,65,0));
+                        }
+
+                        public void onFinish() {
+                            setActivityBackgroundColor(Color.WHITE);
+                        }
+                    };
+                    tim.start();
                 }
                 //Toast.makeText(getApplicationContext(), "Toasty: " + inMsg + action.toString(), Toast.LENGTH_LONG).show();
                 //Proccess the text here
@@ -292,16 +333,6 @@ public class MainActivity extends ActionBarActivity {
         {
             //Log.e("NFC", e.getMessage());
         }
-    }
-
-    /**
-     * The functionality provided by the onCreateOptionsMenu function is to add items to the action
-     * bar if it is present. (This function is self generated)
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
     }
 
     /**
@@ -322,7 +353,6 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
     /**
      * The functionality provided by the StoreSnapshot function is to store the state of all the
@@ -357,7 +387,7 @@ public class MainActivity extends ActionBarActivity {
             }
         }
         //Turn mobile off (Is trickey to do)
-        if (isMobileDataEnabledFromLollipop(getApplicationContext()))
+        /*if (isMobileDataEnabledFromLollipop(getApplicationContext()))
         {
             try {
                 setMobileNetworkfromLollipop(getApplicationContext(),0);
@@ -365,7 +395,7 @@ public class MainActivity extends ActionBarActivity {
             }
             catch (Exception e)
             {}
-        }
+        }*/
 
         //Store data locally on the device
         String theData = "";
@@ -461,7 +491,7 @@ public class MainActivity extends ActionBarActivity {
             else if(restoreSettings.get(i).equals("mobi"))
             {
                 try {
-                    setMobileNetworkfromLollipop(getApplicationContext(), 1);
+                    //setMobileNetworkfromLollipop(getApplicationContext(), 1);
                 }
                 catch (Exception e)
                 {
@@ -478,10 +508,6 @@ public class MainActivity extends ActionBarActivity {
         restoreSettings = new ArrayList<String>();
     }
 
-   /*Functions to enable and disable mobile data (3g/4g). Google currently doesn't have
-   * an API interface for mobile data thus a workaround is needed. This meothod currently
-   * needs a rooted device running android Lolipop 5.1*/
-
     /**
      * The functionality provided by the isMobileDataEnabledFromLollipop is check what the
      * current state of the mobile data is and return it as a boolean value.
@@ -492,141 +518,12 @@ public class MainActivity extends ActionBarActivity {
      *
      * @return A boolean value according the the mobile data state is returned.
      */
-   private static boolean isMobileDataEnabledFromLollipop(Context context) {
-       boolean state = false;
-       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-           state = Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) == 1;
-       }
-       return state;
-   }
-
-    /**
-     * The functionality provided by the getTransactionCode is to get the value of the
-     * "TRANSACTION_setDataEnabled" field view the use of java reflection. This value is needed
-     * to build a command to excecute via runtime. It also makes the field accessible.
-     *
-     * @param context - The context of the current state of the application. Used to get info
-     *                on another part of this application.
-     * @param mTelephonyManager - Stores service to handle telephony features of the device.
-     * @param mTelephonyClass - A class object representing mTelephonyManager.
-     * @param mTelephonyMethod - A method object is created and stored which represents
-     *                         getITelephony.
-     * @param mTelephonyStub - Stores result of dynamically invoking mTelephonyMethod.
-     * @param mTelephonyStubClass - A class object representing mTelephonyStub.
-     * @param mClass - Stores all classes that are apart of mTelephonyStubClass.
-     * @param field - Stores the TRANSACTION_setDataEnabled of the mClass.
-     *
-     * @return A String value representation of the "TRANSACTION_setDataEnabled" is returned.
-     */
-    private static String getTransactionCode(Context context) throws Exception {
-        try {
-            final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            final Class<?> mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
-            final Method mTelephonyMethod = mTelephonyClass.getDeclaredMethod("getITelephony");
-            mTelephonyMethod.setAccessible(true);
-            final Object mTelephonyStub = mTelephonyMethod.invoke(mTelephonyManager);
-            final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
-            final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
-            final Field field = mClass.getDeclaredField("TRANSACTION_setDataEnabled");
-            field.setAccessible(true);
-            return String.valueOf(field.getInt(null));
-        } catch (Exception e) {
-            // The "TRANSACTION_setDataEnabled" field is not available,
-            // or named differently in the current API level, so we throw
-            // an exception and inform users that the method is not available.
-            throw e;
+    private static boolean isMobileDataEnabledFromLollipop(Context context) {
+        boolean state = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            state = Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) == 1;
         }
-    }
-
-    /**
-     * The functionality provided by the executeCommandViaSu is to execute commands that it gets
-     * via su (super user). This executes the command as a runtime call.
-     *
-     * @param context - The context of the current state of the application. Used to get info
-     *                on another part of this application.
-     * @param option - A refrence to extra options that needs to be added to the runtime call.
-     * @param command - A refrence to the command that needs to be executed.
-     * @param success - Stores a boolean value that is used to see if it managed to execute via
-     *                the given path..
-     * @param su - The path to the super user on the device is stored here.
-     */
-    private static void executeCommandViaSu(Context context, String option, String command) {
-        boolean success = false;
-        String su = "su";
-        for (int i=0; i < 3; i++) {
-            // Default "su" command executed successfully, then quit.
-            if (success) {
-                break;
-            }
-            // Else, execute other "su" commands.
-            if (i == 1) {
-                su = "/system/xbin/su";
-            } else if (i == 2) {
-                su = "/system/bin/su";
-            }
-            try {
-                // Execute command as "su".
-                Runtime.getRuntime().exec(new String[]{su, option, command});
-            } catch (IOException e) {
-                success = false;
-                // Oops! Cannot execute `su` for some reason.
-                // Log error here.
-            } finally {
-                success = true;
-            }
-        }
-    }
-
-    /**
-     * The functionality provided by the setMobileNetworkfromLollipop is to toggle the state
-     * of mobile data.
-     *
-     * @param context - The context of the current state of the application. Used to get info
-     *                on another part of this application.
-     * @param mobileState - A refrence to which state the mobile data needs to change to.
-     * @param command - The command that will be executed via su is stored here.
-     * @param state - Stores the next state of the mobile data to switch to.
-     * @param transactionCode - Stores the value returned by the getTransactionCode function.
-     * @param mSubscriptionManager - Stores service to handle telephony subscription features of
-     *                             the device.
-     * @param subscriptionId - The subscription id of the SIM is stored here.
-     */
-    public static void setMobileNetworkfromLollipop(Context context,int mobileState) throws Exception {
-        String command = null;
-        int state = mobileState;
-        try {
-            // Get the current state of the mobile network.
-            state = mobileState;
-            // Get the value of the "TRANSACTION_setDataEnabled" field.
-            String transactionCode = getTransactionCode(context);
-            // Android 5.1+ (API 22) and later.
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                //The next comment line is a command for android studio. Do not remove it.
-                //noinspection ResourceType
-                SubscriptionManager mSubscriptionManager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-                // Loop through the subscription list i.e. SIM list.
-                for (int i = 0; i < mSubscriptionManager.getActiveSubscriptionInfoCountMax(); i++) {
-                    if (transactionCode != null && transactionCode.length() > 0) {
-                        // Get the active subscription ID for a given SIM card.
-                        int subscriptionId = mSubscriptionManager.getActiveSubscriptionInfoList().get(i).getSubscriptionId();
-                        // Execute the command via `su` to turn off
-                        // mobile network for a subscription service.
-                        command = "service call phone " + transactionCode + " i32 " + subscriptionId + " i32 " + state;
-                        executeCommandViaSu(context, "-c", command);
-                    }
-                }
-            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
-                // Android 5.0 (API 21) only.
-                if (transactionCode != null && transactionCode.length() > 0) {
-                    // Execute the command via `su` to turn off mobile network.
-                    command = "service call phone " + transactionCode + " i32 " + state;
-                    executeCommandViaSu(context, "-c", command);
-                }
-            }
-        } catch(Exception e) {
-            // Oops! Something went wrong, so we throw the exception here.
-            throw e;
-        }
+        return state;
     }
 
     /**
