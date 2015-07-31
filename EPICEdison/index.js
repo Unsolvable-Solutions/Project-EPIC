@@ -5,7 +5,7 @@ var fs = require('fs');
 
 var SerialPort = require("serialport").SerialPort
 var serialPort = new SerialPort("/dev/tty-usbserial1", {
-  baudrate: 9600
+  baudrate: 115200
 });
 
 http.listen(3000, function(){
@@ -78,7 +78,10 @@ var auth = function(email,cb)
 serialPort.on("open", function () {
   console.log('open');
   serialPort.on('data', function(data) {
-    console.log('data received: ' + data);
+  	console.log('data received: ' + data);	
+  	if (data[0] == '*')
+  	{
+    	console.log('data received: ' + data);
    		auth(data.email, function(result)
 		{
 			serialPort.write(result, function(err, results) {
@@ -86,9 +89,13 @@ serialPort.on("open", function () {
 			    console.log('results ' + results);
 		  	});
 		});
+  	}
   });
 
 });
+
+Serial.print('*')
+Serial.println(back)
 
 // getAllMeetings(function(meetings){
 // 	console.log(meetings);
