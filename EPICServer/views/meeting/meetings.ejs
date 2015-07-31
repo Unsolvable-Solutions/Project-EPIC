@@ -102,7 +102,7 @@
 </script>
 <div class="container-fluid" style="padding: 20px" ng-app="meetingApp">
 	<div class="row">
-		<h1 style="text-align:center">Project EPIC Admin Dashboard</h1>
+		<!-- <h1 style="text-align:center">Project EPIC Admin Dashboard</h1> -->
 	</div>
 	<div class="row" ng-controller="MeetingController as meetings">
 		<div class="col-md-7">
@@ -153,7 +153,7 @@
 			</code>
 		</div>
 		<div ng-show="meetings.currentMeeting" class="col-md-5">
-			<h3>Meeting Invitees</h3>
+			<h3>{{meetings.currentMeeting.title}} Invitees</h3>
 			<table class="table">
 				<tr class="info">
 					<td>Name</td>
