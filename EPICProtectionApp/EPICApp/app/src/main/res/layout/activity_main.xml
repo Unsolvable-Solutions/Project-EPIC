@@ -10,9 +10,8 @@
         android:layout_height="wrap_content"
         android:text="Enter Room"
         android:id="@+id/button"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="166dp" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -28,7 +27,26 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Display NFC text here"
         android:id="@+id/textView"
-        android:layout_marginTop="43dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/tvEmpId"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="37dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etEmpid"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text="New Employee ID"
+        android:selectAllOnFocus="false"
+        android:singleLine="true" />
 </RelativeLayout>

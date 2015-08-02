@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">EPICApp For 4.4.2</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="service_name">HCE service</string>
+    <string name="aiddescription">For HCE Detection</string>
+</resources>

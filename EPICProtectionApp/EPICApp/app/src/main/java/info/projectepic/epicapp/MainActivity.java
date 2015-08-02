@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.nfc.NdefMessage;
@@ -13,20 +14,26 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -47,12 +54,14 @@ public class MainActivity extends ActionBarActivity {
      *                           before the intent is going to be launched.
      * @param mAdapter - Stores a connection to access the NFC adapter's function.
      * @param FileName - Stores the name of the file that has the state of the app.
+     * @param EmpIDFile - Stores the name of the file that has the employee ID registered.
      * @param restoreSettings - Stores the connections that were turned off via the app.
      * */
     private PendingIntent pendingIntent;
     private IntentFilter[] intentFiltersArray;
     private NfcAdapter mAdapter;
     private String FileName="APPDATA";
+    private String EmpIDFile = "EMPID";
     private List<String> restoreSettings = new ArrayList<String>();
 
     /**
@@ -60,7 +69,8 @@ public class MainActivity extends ActionBarActivity {
      * application and initilize the variables. It will also create the listeners that will be
      * called and attatch them to the appropiate views. It will create and attatch the Intent filter
      * to the NFC adapter so that the NFC adapter can send data to the application when the data
-     * has met the conditions specified by the intent.
+     * has met the conditions specified by the intent. Events such as the enter button on the
+     * virtual keyboard are also created and attach to the view that uses it.
      *
      * @param savedInstanceState - The previous state of the application.
      * @param ListenerEnter - An event is stored that will be attatched to the Enter button.
@@ -68,8 +78,14 @@ public class MainActivity extends ActionBarActivity {
      * @param butEnter - Stores the Enter button from the view.
      * @param butLeav - Stores the leave button from the view.
      * @param ndef - Stores an intent to be used in the intent filter.
-     *
-     *
+     * @param EmpIDSelected - Stores the event that happens when a edit text view is clicked.
+     * @param empIDText - Stores the edit text view for the employee ID to attatch events to.
+     * @param tvEmpID - Stores the  text view to display employee's id.
+     * @param file - Used to check if files exists by trying to load them.
+     * @param fs - Opens a stream for data to be stored to a private file.
+     * @param theData - Stores a string representation of the data read from a file.
+     * @param  imm - Stores the input method manager class to access input services like th
+     *             virtual keyboard.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +108,60 @@ public class MainActivity extends ActionBarActivity {
                         LoadSnapShot();
                     }
                 };
+        View.OnClickListener EmpIDSelected=
+                new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+                        //Implement event handling
+                        ((EditText)view).setText("");
+                    }
+                };
+
+        final TextView tvEmpID = (TextView)findViewById(R.id.tvEmpId);
+        //Load previous ID if it was stored
+        File file = new File(EmpIDFile);
+        //if(file.exists())
+       //{
+            //Load the data because the file exists
+            try
+            {
+                FileInputStream fs = openFileInput(EmpIDFile);
+                String getData = convertStreamToString(fs);
+
+                fs.close();
+                tvEmpID.setText(getData);
+            }
+            catch (Exception e)
+            {tvEmpID.setText("No ID Stored");}
+        //}
+       // else
+        //{tvEmpID.setText("file load fail");}
+        //=================================================================
+        final EditText empIDText = (EditText)findViewById(R.id.etEmpid);
+
+        //Event for enter press on keyboard in empIDText view
+        empIDText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction()==KeyEvent.ACTION_DOWN)&&(keyCode==KeyEvent.KEYCODE_ENTER))
+                {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(empIDText.getWindowToken(),0);
+                    //Store new ID
+                    StoreEmpID(empIDText.getText().toString());
+                    //Change Text
+                    tvEmpID.setText(empIDText.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
 
         Button butEnter = (Button)findViewById(R.id.button);
         butEnter.setOnClickListener(ListenerEnter);
         Button butLeav = (Button)findViewById(R.id.button2);
         butLeav.setOnClickListener(ListenerLeave);
+        empIDText.setOnClickListener(EmpIDSelected);
 
         mAdapter = NfcAdapter.getDefaultAdapter(this);
         pendingIntent = PendingIntent.getActivity(
@@ -151,6 +216,7 @@ public class MainActivity extends ActionBarActivity {
      * @param NdefRecord_0 - The first record found in inNdefRecords is stored here.
      * @param inMsg - The messsage retrieved from NdefRecord_0 is stored in here.
      * @param tv - Stores a pointer to access the textview to display the data in.
+     * @param tim - Stores a timer to use with the color changing.
      */
     @Override
     public void onNewIntent(Intent intent) {
@@ -166,6 +232,56 @@ public class MainActivity extends ActionBarActivity {
                 NdefRecord NdefRecord_0 = inNdefRecords[0];
                 String inMsg = new String(NdefRecord_0.getPayload());
 
+                //Handle the message that came in:
+                if(inMsg.equals("0"))
+                {
+                    //False - Denied access
+                    //Flash screen red or someting similiar
+                    CountDownTimer tim = new CountDownTimer(3000,1000) {
+                        public void onTick(long millisUntilFinished) {
+                            setActivityBackgroundColor(Color.RED);
+                        }
+
+                        public void onFinish() {
+                            setActivityBackgroundColor(Color.WHITE);
+                        }
+                    };
+                    tim.start();
+                }
+                else if(inMsg.equals("1"))
+                {
+                    //True - Allowed Access
+                    //Check what was the previous state
+                    try
+                    {
+                        FileInputStream fs = openFileInput(FileName);
+                        String getData = convertStreamToString(fs);
+                        fs.close();
+                        if (getData.length()>1)
+                        {LoadSnapShot();}
+                        else
+                        {StoreSnapshot();}
+                        //Flash screen green or something similiar
+                        CountDownTimer tim = new CountDownTimer(3000,1000) {
+                            public void onTick(long millisUntilFinished) {
+                                setActivityBackgroundColor(Color.GREEN);
+                            }
+
+                            public void onFinish() {
+                                setActivityBackgroundColor(Color.WHITE);
+                            }
+                        };
+                        tim.start();
+
+                    }
+                    catch (Exception e)
+                    {}
+
+                }
+                else if(inMsg.equals("2"))
+                {
+                    //Error - Something went wrong
+                }
                 //Toast.makeText(getApplicationContext(), "Toasty: " + inMsg + action.toString(), Toast.LENGTH_LONG).show();
                 //Proccess the text here
                 TextView tv = (TextView)findViewById(R.id.textView);
@@ -513,5 +629,35 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * The functionality provided by the StoreEmpID is to store/change a given Employee ID on
+     * the device that will be used with the NFC messages to see if the person is allowed into
+     * a room
+     *
+     * @param EmployeeID - String representation of an ID inputed by the user.
+     * @param context - The context of the current state of the application. Used to get info
+     */
+    private void StoreEmpID(String EmployeeID)
+    {
+        try
+        {
+            FileOutputStream fs = openFileOutput(EmpIDFile, Context.MODE_PRIVATE);
+            fs.write(EmployeeID.getBytes());
+            fs.close();
 
+        }
+        catch (Exception e)
+        {TextView tvEmpID = (TextView)findViewById(R.id.textView);tvEmpID.setText("Store fail");}
+    }
+
+    /**The functionality provided by the StoreEmpID is to simply changes the background color
+     * specified by an int value. This is to alert the user whether he was successful or not.
+     *
+     * @param color - The int value of the color to be set
+     * @param view - Stores the whole activity view seen by the user.
+     * */
+    public void setActivityBackgroundColor(int color) {
+        View view = this.getWindow().getDecorView();
+        view.setBackgroundColor(color);
+    }
 }
