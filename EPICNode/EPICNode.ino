@@ -30,7 +30,7 @@ void setup()
     uint32_t versiondata = nfc.getFirmwareVersion();
     if (! versiondata) 
     {
-      Serial.print("Didn't find PN53x board");
+      //Serial.print("Didn't find PN53x board");
       while (1); // halt
     }
     
@@ -55,7 +55,7 @@ void setup()
     strip.begin();
     strip.show(); // Initialize all pixels to 'off'
     
-    Serial.println("Node is now online");
+    //Serial.println("Node is now online");
 }
 
 // ***********************LOOP************************** //
@@ -65,9 +65,6 @@ void loop()
   // configure board to read RFID tags
   nfc.SAMConfig();
   bool success;
-  
-  uint8_t responseLength = 32;
-  
   waiting();
   
   // set shield to inListPassiveTarget
@@ -75,7 +72,8 @@ void loop()
   
   if (success) 
   {
-    Serial.println("Found something!");           
+    //Serial.println("Found something!");
+    
     uint8_t selectApdu[] = { 
                              0x00,                                     /* CLA */
                              0xA4,                                     /* INS */
@@ -85,20 +83,18 @@ void loop()
                              0xF0, 0x39, 0x41, 0x48, 0x14, 0x81, 0x00, /* AID defined on Android App */
                              0x00                                      /* Le  */ 
                            };
-                              
+    uint8_t responseLength = 32;
     uint8_t response[32];  
-     
+    uint8_t apdu[] = "requestUserId";
+    uint8_t back[32];
+    uint8_t length = 32;
+
     success = nfc.inDataExchange(selectApdu, sizeof(selectApdu), response, &responseLength);
     
     if (success) 
     {
       //Serial.print("responseLength: "); Serial.println(responseLength);
       //nfc.PrintHexChar(response, responseLength);
-      
-      uint8_t apdu[] = "requestUserId";
-      uint8_t back[32];
-      uint8_t length = 32; 
-
       success = nfc.inDataExchange(apdu, sizeof(apdu), back, &length);
       
       if (success) 
@@ -106,23 +102,31 @@ void loop()
         //Serial.print("responseLength: "); Serial.println(length);
         //nfc.PrintHexChar(back, length);
         char charArr[length];
-        for (int x = 0; x < length; x++)
+        //Serial.print('*');
+        while (Serial.available()) Serial.read();
+        for (int x = 0; x < length-1; x++)
+        {
           charArr[x] = back[x];
+          Serial.print(charArr[x]);
+        }
+        while (Serial.available()) Serial.read();
         
-        Serial.println(charArr);
+        //Serial.println("");
+        //String backStr = charArr;
+        //Serial.println(backStr);
         sendMessage(isAllowed());
       }
       else 
       {
         setColor(255, 0, 0);  // red
-        Serial.println("Broken connection?"); 
+        //Serial.println("Broken connection?"); 
       }
     }
     else 
     {
       delay(1000);
       setColor(255, 0, 0);  // red
-      Serial.println("Failed sending SELECT AID"); 
+      //Serial.println("Failed sending SELECT AID"); 
     }
   }
 }
@@ -181,16 +185,23 @@ void setColor(int red, int green, int blue)
 void sendMessage(int result)
 {
     message = NdefMessage();
-    message.addTextRecord((result == 116)?"1":"0");
+    String msg;
+    if(result == 116)
+      msg = "1";
+    else if(result == 117)
+      msg = "2";
+    else
+      msg = "0";
+    message.addMimeMediaRecord("text/plain", msg);
     messageSize = message.getEncodedSize();
     if (messageSize > sizeof(ndefBuf)) 
     {
-        Serial.println("ndefBuf is too small");
+        //Serial.println("ndefBuf is too small");
         while (1);
     }
   
-    Serial.print("Ndef encoded message size: ");
-    Serial.println(messageSize);
+    //Serial.print("Ndef encoded message size: ");
+    //Serial.println(messageSize);
 
     message.encode(ndefBuf);
   
@@ -204,12 +215,14 @@ void sendMessage(int result)
   
     if (result == 116)
       setColor(0, 255, 0);
+    else if(result == 117)
+      setColor(255, 65, 0);
     else
       setColor(255, 0, 0);
     
     // or start emulation with timeout
     if (!nfcEmulate.emulate(500))
-      Serial.println("timed out");
+      //Serial.println("timed out");
     
     delay(2000); // Wait a moment
 }
