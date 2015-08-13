@@ -29,9 +29,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/etEmpid"
         android:text="New Employee ID"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:layout_marginTop="63dp"
+        android:layout_below="@+id/tvEmpId"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -49,4 +50,23 @@
         android:id="@+id/button2"
         android:layout_alignTop="@+id/button"
         android:layout_toEndOf="@+id/tvEmpId" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/etPwd"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:password="true"
+        android:hint="Password" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/btnSave"
+        android:layout_below="@+id/etPwd"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

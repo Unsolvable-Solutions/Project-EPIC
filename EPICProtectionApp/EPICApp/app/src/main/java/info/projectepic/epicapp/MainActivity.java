@@ -118,6 +118,8 @@ public class MainActivity extends ActionBarActivity {
                 };
 
         final TextView tvEmpID = (TextView)findViewById(R.id.tvEmpId);
+        TextView devId = (TextView)findViewById(R.id.textView);
+        devId.setText(getDeviceId());
         //Load previous ID if it was stored
         File file = new File(EmpIDFile);
         //if(file.exists())
@@ -659,5 +661,20 @@ public class MainActivity extends ActionBarActivity {
     public void setActivityBackgroundColor(int color) {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(color);
+    }
+
+    /**The functionality provided by the getDeviceId is to get the unique id of the android device
+     * and return it. This is an extra security autentication method.
+     *
+     * @param tm - Stores a service that can retrieve the device's id.
+     * @param id - the device id is stored here
+     *
+     * @return A string representation of the id is returned.
+     * */
+    private String getDeviceId()
+    {
+        final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String id = tm.getDeviceId();
+        return id;
     }
 }

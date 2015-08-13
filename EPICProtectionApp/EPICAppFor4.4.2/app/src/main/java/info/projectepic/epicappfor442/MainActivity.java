@@ -16,6 +16,7 @@ import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,15 +66,21 @@ public class MainActivity extends ActionBarActivity {
      * @param savedInstanceState - The previous state of the application.
      * @param ListenerEnter - An event is stored that will be attatched to the Enter button.
      * @param ListenerLeave - Stores an event that will be attatched to the Leave button.
+     * @param saveClicked - Stores an event that will be attatched to the save button.
      * @param butEnter - Stores the Enter button from the view.
      * @param butLeav - Stores the leave button from the view.
+     * @param btnSave - Stores the save button from the view.
      * @param ndef - Stores an intent to be used in the intent filter.
      * @param EmpIDSelected - Stores the event that happens when a edit text view is clicked.
      * @param empIDText - Stores the edit text view for the employee ID to attatch events to.
+     * @param uname - Stores the edit text view for the employee ID.
+     * @param upass - Stores the edit text view for the employee password.
      * @param tvEmpID - Stores the  text view to display employee's id.
      * @param file - Used to check if files exists by trying to load them.
      * @param fs - Opens a stream for data to be stored to a private file.
+     * @param stext - Used to build a string to store to the file.
      * @param theData - Stores a string representation of the data read from a file.
+     * @param strSplt - Stores an array of the data in theData.
      * @param  imm - Stores the input method manager class to access input services like th
      *             virtual keyboard.
      */
@@ -107,8 +114,24 @@ public class MainActivity extends ActionBarActivity {
                         ((EditText)view).setText("");
                     }
                 };
-
         final TextView tvEmpID = (TextView)findViewById(R.id.tvEmpId);
+        View.OnClickListener saveClicked=
+                new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+                        //Implement event handling
+                        //Save data to file
+                        TextView uname = (TextView)findViewById(R.id.tvEmpId);
+                        TextView upass = (TextView)findViewById(R.id.etPwd);
+                        String stext =uname.getText().toString()+":"+upass.getText().toString();
+                        StoreEmpID(stext);
+                        tvEmpID.setText("Current ID: "+uname.getText());
+                    }
+                };
+
+        Button btnSave = (Button)findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(saveClicked);
+
         //Load previous ID if it was stored
         //File file = new File(EmpIDFile);
         //if(file.exists())
@@ -118,9 +141,9 @@ public class MainActivity extends ActionBarActivity {
         {
             FileInputStream fs = openFileInput(EmpIDFile);
             String getData = convertStreamToString(fs);
-
+            String[] strSplt = getData.split(":");
             fs.close();
-            tvEmpID.setText("Current ID: "+getData);
+            tvEmpID.setText("Current ID: "+strSplt[0]);
         }
         catch (Exception e)
         {tvEmpID.setText("No ID Stored");}
@@ -131,7 +154,7 @@ public class MainActivity extends ActionBarActivity {
         final EditText empIDText = (EditText)findViewById(R.id.etEmpid);
 
         //Event for enter press on keyboard in empIDText view
-        empIDText.setOnKeyListener(new View.OnKeyListener() {
+        /*empIDText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
@@ -145,7 +168,7 @@ public class MainActivity extends ActionBarActivity {
                 }
                 return false;
             }
-        });
+        });*/
 
         Button butEnter = (Button)findViewById(R.id.button);
         butEnter.setOnClickListener(ListenerEnter);
@@ -154,7 +177,8 @@ public class MainActivity extends ActionBarActivity {
         butLeav.setOnClickListener(ListenerLeave);
         butLeav.setVisibility(View.GONE);
         TextView tv = (TextView)findViewById(R.id.textView);
-        tv.setVisibility(View.GONE);
+        tv.setText(getDeviceId());
+        //tv.setVisibility(View.GONE);
         empIDText.setOnClickListener(EmpIDSelected);
 
         mAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -556,5 +580,20 @@ public class MainActivity extends ActionBarActivity {
     public void setActivityBackgroundColor(int color) {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(color);
+    }
+
+    /**The functionality provided by the getDeviceId is to get the unique id of the android device
+     * and return it. This is an extra security autentication method.
+     *
+     * @param tm - Stores a service that can retrieve the device's id.
+     * @param id - the device id is stored here
+     *
+     * @return A string representation of the id is returned.
+     * */
+    private String getDeviceId()
+    {
+        final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String id = tm.getDeviceId();
+        return id;
     }
 }

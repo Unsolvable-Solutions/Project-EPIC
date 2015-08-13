@@ -1,7 +1,9 @@
 package info.projectepic.epicappfor442;
 
+import android.content.Context;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -57,10 +59,13 @@ public class CardEmulation extends HostApduService {
      * @param reader - Creates a buffer reader for the input stream
      * @param sb - Saves a String of all the lines being read from the buffer.
      * @param line - Is used to temporaryrily store each line read from the buffer reader.
+     * @param sendStr - Stores the complete string to be transfered.
      *
      * @return A string representation of the bytes from the input stream.
      */
-    public static String convertStreamToString(InputStream is) throws Exception {
+
+    //If problem exists this method was static
+    public String convertStreamToString(InputStream is) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
         String line = null;
@@ -68,6 +73,22 @@ public class CardEmulation extends HostApduService {
             sb.append(line).append("\n");
         }
         reader.close();
-        return sb.toString();
+        String sendStr = ""+getDeviceId()+":"+sb.toString();
+        return sendStr;
+    }
+
+    /**The functionality provided by the getDeviceId is to get the unique id of the android device
+     * and return it. This is an extra security autentication method.
+     *
+     * @param tm - Stores a service that can retrieve the device's id.
+     * @param id - the device id is stored here
+     *
+     * @return A string representation of the id is returned.
+     * */
+    private String getDeviceId()
+    {
+        final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String id = tm.getDeviceId();
+        return id;
     }
 }
