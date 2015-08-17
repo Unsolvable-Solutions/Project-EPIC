@@ -9,6 +9,12 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.SecureRandom;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Created by Diaman on 7/27/2015.
@@ -47,8 +53,25 @@ public class CardEmulation extends HostApduService {
         catch (Exception E)
         {}
 
+        byte[] dataToEncrypt = getData.getBytes();
+        byte[] keyStrt = "wZ148gNdk4Eytt6".getBytes();
 
-        return getData.getBytes();
+        try {
+            KeyGenerator kgen = KeyGenerator.getInstance("AES");
+            SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+
+            sr.setSeed(keyStrt);
+            kgen.init(128, sr); // 192 and 256 bits may not be available
+            SecretKey skey = kgen.generateKey();
+            byte[] key = skey.getEncoded();
+            try {
+                byte[] encryptedData = encrypt(key, keyStrt);
+                return encryptedData;
+            } catch (Exception e) {
+            }
+        }
+        catch (Exception ee){}
+        return "0".getBytes();
     }
 
     /**
@@ -89,6 +112,25 @@ public class CardEmulation extends HostApduService {
     {
         final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
         String id = tm.getDeviceId();
-        return id;
+
+            return id;
+    }
+
+    /*The encrypt converts raw byte data to "garbage" to be transfered for protection.*/
+    private static byte[] encrypt(byte[] raw, byte[] clear) throws Exception {
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+        byte[] encrypted = cipher.doFinal(clear);
+        return encrypted;
+    }
+
+    /*if we need to decrypt the data*/
+    private static byte[] decrypt(byte[] raw, byte[] encrypted) throws Exception {
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+        byte[] decrypted = cipher.doFinal(encrypted);
+        return decrypted;
     }
 }
