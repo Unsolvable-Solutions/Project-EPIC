@@ -1,6 +1,7 @@
 package info.projectepic.epicappfor442;
 
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,6 +53,7 @@ public class MainActivity extends ActionBarActivity {
     private IntentFilter[] intentFiltersArray;
     private NfcAdapter mAdapter;
     private String FileName="APPDATA";
+    private String UnitFileName="UnitTests";
     private String EmpIDFile = "EMPID";
     private List<String> restoreSettings = new ArrayList<String>();
 
@@ -65,15 +68,21 @@ public class MainActivity extends ActionBarActivity {
      * @param savedInstanceState - The previous state of the application.
      * @param ListenerEnter - An event is stored that will be attatched to the Enter button.
      * @param ListenerLeave - Stores an event that will be attatched to the Leave button.
+     * @param saveClicked - Stores an event that will be attatched to the save button.
      * @param butEnter - Stores the Enter button from the view.
      * @param butLeav - Stores the leave button from the view.
+     * @param btnSave - Stores the save button from the view.
      * @param ndef - Stores an intent to be used in the intent filter.
      * @param EmpIDSelected - Stores the event that happens when a edit text view is clicked.
      * @param empIDText - Stores the edit text view for the employee ID to attatch events to.
+     * @param uname - Stores the edit text view for the employee ID.
+     * @param upass - Stores the edit text view for the employee password.
      * @param tvEmpID - Stores the  text view to display employee's id.
      * @param file - Used to check if files exists by trying to load them.
      * @param fs - Opens a stream for data to be stored to a private file.
+     * @param stext - Used to build a string to store to the file.
      * @param theData - Stores a string representation of the data read from a file.
+     * @param strSplt - Stores an array of the data in theData.
      * @param  imm - Stores the input method manager class to access input services like th
      *             virtual keyboard.
      */
@@ -107,8 +116,24 @@ public class MainActivity extends ActionBarActivity {
                         ((EditText)view).setText("");
                     }
                 };
-
         final TextView tvEmpID = (TextView)findViewById(R.id.tvEmpId);
+        View.OnClickListener saveClicked=
+                new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+                        //Implement event handling
+                        //Save data to file
+                        TextView uname = (TextView)findViewById(R.id.tvEmpId);
+                        TextView upass = (TextView)findViewById(R.id.etPwd);
+                        String stext =uname.getText().toString()+":"+upass.getText().toString();
+                        StoreEmpID(stext);
+                        tvEmpID.setText("Current ID: "+uname.getText());
+                    }
+                };
+
+        Button btnSave = (Button)findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(saveClicked);
+
         //Load previous ID if it was stored
         //File file = new File(EmpIDFile);
         //if(file.exists())
@@ -118,9 +143,9 @@ public class MainActivity extends ActionBarActivity {
         {
             FileInputStream fs = openFileInput(EmpIDFile);
             String getData = convertStreamToString(fs);
-
+            String[] strSplt = getData.split(":");
             fs.close();
-            tvEmpID.setText("Current ID: "+getData);
+            tvEmpID.setText("Current ID: "+strSplt[0]);
         }
         catch (Exception e)
         {tvEmpID.setText("No ID Stored");}
@@ -131,7 +156,7 @@ public class MainActivity extends ActionBarActivity {
         final EditText empIDText = (EditText)findViewById(R.id.etEmpid);
 
         //Event for enter press on keyboard in empIDText view
-        empIDText.setOnKeyListener(new View.OnKeyListener() {
+        /*empIDText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
@@ -145,7 +170,7 @@ public class MainActivity extends ActionBarActivity {
                 }
                 return false;
             }
-        });
+        });*/
 
         Button butEnter = (Button)findViewById(R.id.button);
         butEnter.setOnClickListener(ListenerEnter);
@@ -154,7 +179,8 @@ public class MainActivity extends ActionBarActivity {
         butLeav.setOnClickListener(ListenerLeave);
         butLeav.setVisibility(View.GONE);
         TextView tv = (TextView)findViewById(R.id.textView);
-        tv.setVisibility(View.GONE);
+        tv.setText(getDeviceId());
+        //tv.setVisibility(View.GONE);
         empIDText.setOnClickListener(EmpIDSelected);
 
         mAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -556,5 +582,165 @@ public class MainActivity extends ActionBarActivity {
     public void setActivityBackgroundColor(int color) {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(color);
+    }
+
+    /**The functionality provided by the getDeviceId is to get the unique id of the android device
+     * and return it. This is an extra security autentication method.
+     *
+     * @param tm - Stores a service that can retrieve the device's id.
+     * @param id - the device id is stored here
+     *
+     * @return A string representation of the id is returned.
+     * */
+    private String getDeviceId()
+    {
+        final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String id = tm.getDeviceId();
+        return id;
+    }
+
+    public void unitTests(View v)
+    {
+        /*ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setMessage("Loading. Please wait...");
+        dialog.setIndeterminate(true);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();*/
+        String testOne="";
+        String testTwo="";
+        String testThree="";
+        String testFour="";
+        String theData = "";
+
+        BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
+        WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+        /*Store and load snapshot needed to be tested together as they work together.*/
+
+        //Store and load snapshot snapshot
+        //Test bt and wifi on
+        bt.enable();
+        wifi.setWifiEnabled(true);
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        StoreSnapshot();
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+        {testOne="Wifi and bluetooth on. Called 'StoreSnapshot'. Test Passed.";}
+        else
+        {testOne="Wifi and bluetooth on. Called 'StoreSnapshot'. Test Failed.";}
+        LoadSnapShot();
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        if ((bt.isEnabled())&&(wifi.isWifiEnabled()))
+
+        {testOne+="\r\nWifi and bluetooth were on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
+        else
+        {testOne+="\r\nWifi and bluetooth on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
+
+        //Test bt on wifi off
+        bt.enable();
+        wifi.setWifiEnabled(false);
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        StoreSnapshot();
+
+        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+        {testTwo="Wifi off and bluetooth on. Called 'StoreSnapshot'. Test Passed.";}
+        else
+        {testTwo="Wifi off and bluetooth on. Called 'StoreSnapshot'. Test Failed.";}
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        LoadSnapShot();
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        if ((bt.isEnabled())&&(!wifi.isWifiEnabled()))
+        {testTwo+="\r\nWifi off and bluetooth were on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
+        else
+        {testTwo+="\r\nWifi off and bluetooth on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
+
+        //Test wifi on bt off
+        bt.disable();
+        wifi.setWifiEnabled(true);
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        StoreSnapshot();
+
+        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+        {testThree="Wifi on and bluetooth off. Called 'StoreSnapshot'. Test Passed.";}
+        else
+        {testThree="Wifi on and bluetooth off. Called 'StoreSnapshot'. Test Failed.";}
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        LoadSnapShot();
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        if ((!bt.isEnabled())&&(wifi.isWifiEnabled()))
+        {testThree+="\r\nWifi on and bluetooth were off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
+        else
+        {testThree+="\r\nWifi on and bluetooth off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
+
+        //Test both off
+        bt.disable();
+        wifi.setWifiEnabled(false);
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        StoreSnapshot();
+
+        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+        {testThree="Wifi off and bluetooth off. Called 'StoreSnapshot'. Test Passed.";}
+        else
+        {testThree="Wifi off and bluetooth off. Called 'StoreSnapshot'. Test Failed.";}
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        LoadSnapShot();
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+        {testThree+="\r\nWifi off and bluetooth were off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
+        else
+        {testThree+="\r\nWifi off and bluetooth off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
+
+
+
+        /*Write test results to file*/
+        theData += testOne+"\r\n\r\n"+testTwo+"\r\n\r\n"+testThree+"\r\n\r\n"+testFour;
+        try
+        {
+            FileOutputStream fs = openFileOutput(UnitFileName, Context.MODE_PRIVATE);
+            fs.write(theData.getBytes());
+            fs.close();
+        }
+        catch (Exception e)
+        {}
+       // dialog.dismiss();
+        Toast.makeText(getApplicationContext(), "Unit Tests Done.", Toast.LENGTH_LONG).show();
+        Intent i = new Intent(getApplicationContext(), UnitTest.class);
+        startActivity(i);
     }
 }
