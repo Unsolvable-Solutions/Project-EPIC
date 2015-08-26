@@ -144,7 +144,7 @@ void waiting()
       strip.setPixelColor((i+q)%16, strip.Color(255, 65, 0));
     
     strip.show();
-    delay(50);
+    delay(30);
   }
 }
 
@@ -152,14 +152,14 @@ void waiting()
 /* The isAllowed() function will check the servers' response and return the value. */
 int isAllowed()
 {
-  for (int x=0; x<16; x++) // For each light that must turn blue
+  for (int x=0; x<21; x+=3) // For each light that must turn blue
   {
     for (int runner=0; runner<17; runner++) // For each light where the runner will go
     {
       strip.setPixelColor(runner, strip.Color(255, 255, 255)); // Move runner to new position
       strip.setPixelColor((runner-1)%16, (runner > x)?0:strip.Color(0, 0, 255)); // Remove runner from previous position
       strip.show(); // Apply updates to the lights
-      delay(25); // Wait a moment
+      delay(20); // Wait a moment
     }
   }
   
