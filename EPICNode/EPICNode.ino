@@ -19,7 +19,7 @@ NdefMessage       message;
 int               messageSize;
 uint8_t           uid[3] = { 0x12, 0x34, 0x56 };
 PN532             nfc(pn532spi);
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(8, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(16, PIN, NEO_GRB + NEO_KHZ800);
 
 // ***********************SETUP************************** //
 /* The setup() function initializes some global variables and starts some proses that the program will use later. */
@@ -135,13 +135,13 @@ void loop()
 /* The waiting() function will make the lights run with orange bars. */
 void waiting()
 {
-  for (int q=0; q < 8; q++) 
+  for (int q=0; q < 16; q++) 
   {
     for (int i=0; i < strip.numPixels(); i++)
       strip.setPixelColor(i, strip.Color(255, 165, 0));
     
     for (int i=0; i < 4; i++)
-      strip.setPixelColor((i+q)%8, strip.Color(255, 65, 0));
+      strip.setPixelColor((i+q)%16, strip.Color(255, 65, 0));
     
     strip.show();
     delay(50);
@@ -152,17 +152,14 @@ void waiting()
 /* The isAllowed() function will check the servers' response and return the value. */
 int isAllowed()
 {
-  for (int x=0; x<8; x++) // For each light that must turn blue
+  for (int x=0; x<16; x++) // For each light that must turn blue
   {
-    int side = (x%2)?-7:0; // Define which side to start
-    int direct = (x%2)?-1:1; // Define direction of travel
-    for (int runner=0; runner<8; runner++) // For each light where the runner will go
+    for (int runner=0; runner<17; runner++) // For each light where the runner will go
     {
-      strip.setPixelColor(abs(runner+side), strip.Color(255, 255, 255)); // Move runner to new position
-      strip.setPixelColor(abs(runner+side)-direct, 
-                         (abs(runner+side)-direct > x)?0:strip.Color(0, 0, 255)); // Remove runner from previous position
+      strip.setPixelColor(runner, strip.Color(255, 255, 255)); // Move runner to new position
+      strip.setPixelColor((runner-1)%16, (runner > x)?0:strip.Color(0, 0, 255)); // Remove runner from previous position
       strip.show(); // Apply updates to the lights
-      delay(50); // Wait a moment
+      delay(25); // Wait a moment
     }
   }
   
@@ -174,7 +171,7 @@ int isAllowed()
 /* The setColor() function takes the three values that make up the RGB (Red-Green-Blue) value of a color and sets all the lights to that color. */
 void setColor(int red, int green, int blue)
 {
-  for (int x=0; x<8; x++) // For each light
+  for (int x=0; x<16; x++) // For each light
     strip.setPixelColor(x, strip.Color(red, green, blue));
     
   strip.show(); // Apply updates to the lights 
