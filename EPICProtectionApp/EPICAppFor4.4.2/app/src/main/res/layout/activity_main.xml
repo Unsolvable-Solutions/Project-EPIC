@@ -69,4 +69,13 @@
         android:id="@+id/btnSave"
         android:layout_below="@+id/etPwd"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Run Unit Tests"
+        android:id="@+id/button3"
+        android:onClick="unitTests"
+        android:layout_below="@+id/button2"
+        android:layout_alignStart="@+id/etPwd" />
 </RelativeLayout>

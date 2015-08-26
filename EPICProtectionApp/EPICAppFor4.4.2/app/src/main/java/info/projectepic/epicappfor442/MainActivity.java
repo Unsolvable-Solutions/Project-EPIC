@@ -1,6 +1,7 @@
 package info.projectepic.epicappfor442;
 
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
@@ -52,6 +53,7 @@ public class MainActivity extends ActionBarActivity {
     private IntentFilter[] intentFiltersArray;
     private NfcAdapter mAdapter;
     private String FileName="APPDATA";
+    private String UnitFileName="UnitTests";
     private String EmpIDFile = "EMPID";
     private List<String> restoreSettings = new ArrayList<String>();
 
@@ -595,5 +597,150 @@ public class MainActivity extends ActionBarActivity {
         final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
         String id = tm.getDeviceId();
         return id;
+    }
+
+    public void unitTests(View v)
+    {
+        /*ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setMessage("Loading. Please wait...");
+        dialog.setIndeterminate(true);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();*/
+        String testOne="";
+        String testTwo="";
+        String testThree="";
+        String testFour="";
+        String theData = "";
+
+        BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
+        WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+        /*Store and load snapshot needed to be tested together as they work together.*/
+
+        //Store and load snapshot snapshot
+        //Test bt and wifi on
+        bt.enable();
+        wifi.setWifiEnabled(true);
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        StoreSnapshot();
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+        {testOne="Wifi and bluetooth on. Called 'StoreSnapshot'. Test Passed.";}
+        else
+        {testOne="Wifi and bluetooth on. Called 'StoreSnapshot'. Test Failed.";}
+        LoadSnapShot();
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        if ((bt.isEnabled())&&(wifi.isWifiEnabled()))
+
+        {testOne+="\r\nWifi and bluetooth were on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
+        else
+        {testOne+="\r\nWifi and bluetooth on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
+
+        //Test bt on wifi off
+        bt.enable();
+        wifi.setWifiEnabled(false);
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        StoreSnapshot();
+
+        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+        {testTwo="Wifi off and bluetooth on. Called 'StoreSnapshot'. Test Passed.";}
+        else
+        {testTwo="Wifi off and bluetooth on. Called 'StoreSnapshot'. Test Failed.";}
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        LoadSnapShot();
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        if ((bt.isEnabled())&&(!wifi.isWifiEnabled()))
+        {testTwo+="\r\nWifi off and bluetooth were on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
+        else
+        {testTwo+="\r\nWifi off and bluetooth on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
+
+        //Test wifi on bt off
+        bt.disable();
+        wifi.setWifiEnabled(true);
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        StoreSnapshot();
+
+        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+        {testThree="Wifi on and bluetooth off. Called 'StoreSnapshot'. Test Passed.";}
+        else
+        {testThree="Wifi on and bluetooth off. Called 'StoreSnapshot'. Test Failed.";}
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        LoadSnapShot();
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        if ((!bt.isEnabled())&&(wifi.isWifiEnabled()))
+        {testThree+="\r\nWifi on and bluetooth were off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
+        else
+        {testThree+="\r\nWifi on and bluetooth off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
+
+        //Test both off
+        bt.disable();
+        wifi.setWifiEnabled(false);
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        StoreSnapshot();
+
+        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+        {testThree="Wifi off and bluetooth off. Called 'StoreSnapshot'. Test Passed.";}
+        else
+        {testThree="Wifi off and bluetooth off. Called 'StoreSnapshot'. Test Failed.";}
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        LoadSnapShot();
+        try
+        {Thread.sleep(5000);}
+        catch (Exception e)
+        {}
+        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+        {testThree+="\r\nWifi off and bluetooth were off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
+        else
+        {testThree+="\r\nWifi off and bluetooth off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
+
+
+
+        /*Write test results to file*/
+        theData += testOne+"\r\n\r\n"+testTwo+"\r\n\r\n"+testThree+"\r\n\r\n"+testFour;
+        try
+        {
+            FileOutputStream fs = openFileOutput(UnitFileName, Context.MODE_PRIVATE);
+            fs.write(theData.getBytes());
+            fs.close();
+        }
+        catch (Exception e)
+        {}
+       // dialog.dismiss();
+        Toast.makeText(getApplicationContext(), "Unit Tests Done.", Toast.LENGTH_LONG).show();
+        Intent i = new Intent(getApplicationContext(), UnitTest.class);
+        startActivity(i);
     }
 }

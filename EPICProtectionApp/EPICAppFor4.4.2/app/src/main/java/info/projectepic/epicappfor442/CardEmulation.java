@@ -53,7 +53,7 @@ public class CardEmulation extends HostApduService {
         catch (Exception E)
         {}
 
-        byte[] dataToEncrypt = getData.getBytes();
+        /*byte[] dataToEncrypt = getData.getBytes();
         byte[] keyStrt = "wZ148gNdk4Eytt6".getBytes();
 
         try {
@@ -70,8 +70,8 @@ public class CardEmulation extends HostApduService {
             } catch (Exception e) {
             }
         }
-        catch (Exception ee){}
-        return "0".getBytes();
+        catch (Exception ee){}*/
+        return getData.getBytes();
     }
 
     /**
