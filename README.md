@@ -1,17 +1,20 @@
 # Project-EPIC
 `Eavesdropping Protection In Conclave`
 
-Demo 1 goals
+Demo 3 goals
 ------------
 
 ### Malware
- * Record sound manually with the press of a button
+ * Write a GUI for the Malware Server
 
 ### Protection app
- * Acknowledge the NFC Node when it is scanned
+ * Encrypt the e-mail and password before sending it
 
 ### Server
- * Receive basic logs from NFC Node and store the data
+ * Connect the front-end interface with the back-end functions
 
 ### NFC Node
- * Send a basic log to the server when a tag or phone is scanned
+ * Integrate with the Gateway (Intel Edison)
+
+### Gateway
+ * Relay the data between the Node and the Server
