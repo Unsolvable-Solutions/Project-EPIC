@@ -38,6 +38,9 @@ module.exports.routes = {
   '/admin': {
     view: 'admin'
   },
+  '/meetings': {
+    view: 'meeting/meetings'
+  },
 
   'get /login': 'AuthController.login',
   'get /logout': 'AuthController.logout',

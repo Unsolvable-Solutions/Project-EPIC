@@ -1,0 +1,100 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+		<script type="text/javascript" src="bootstrap.min.js"></script>
+		<script type="text/javascript" src="socket.io.js"></script>
+		<script type="text/javascript" src="angular.min.js"></script>
+		<script type="text/javascript">
+			angular.module('meetingApp', [])
+			.controller('MeetingController', function($scope) {
+				var t = this;
+		    	t.meetings = [];
+				
+
+				var socket = io('http://localhost:3000');
+				socket.on('connect', function(){
+					console.log('Connected');
+					socket.emit("get",{model: 'meeting'});
+				});
+				socket.on('meetings', function(data){
+					console.log(data);
+					$scope.$applyAsync(function(){
+			    		t.meetings = data;
+					});
+				});	
+				socket.on('meeting', function(data){
+					console.log(data);
+					$scope.$applyAsync(function(){
+			    		t.meeting = data;
+					});
+				});	
+				socket.on('auth', function(data){
+					console.log(data);
+					$scope.$applyAsync(function(){
+			    		t.result = data;
+					});
+				});
+		    	socket.on('disconnect', function(){
+					console.log('Disconnected');
+		    	});
+
+				t.setMeeting = function(id)
+				{
+					socket.emit("set",{model: 'meeting', id: t.meeting});
+				}
+				t.auth = function()
+				{
+					socket.emit("auth",{email: t.testUser});
+				}
+			});
+		</script>
+	</head>
+	<body ng-app="meetingApp">
+		<div class="container" ng-controller="MeetingController as m">
+			<div class="row">
+				<h1 style="text-align: center">Gateway Setup</h1>
+				<h3>Meetings</h3>
+				<select class="form-control" ng-model="m.meeting" ng-change="m.setMeeting()">
+					<option ng-repeat="meeting in m.meetings" value="{{meeting.id}}">{{meeting.title}}</option>
+				</select>
+			</div>
+			<hr/>
+			<div ng-show="m.meeting.invitees" class="row">
+				<h4>Meeting Info</h4>
+				<p><strong>Title:</strong> {{m.meeting.title}}</p>
+				<p><strong>Description:</strong> {{m.meeting.description}}</p>
+				<p><strong>Location:</strong> {{m.meeting.location}}</p>
+				<p><strong>Date/Time:</strong> {{m.meeting.dateTime}}</p>
+				<code>
+					<pre>{{m.meeting}}</pre>
+				</code>
+			</div>
+			<hr ng-show="m.meeting.invitees" />
+			<div ng-show="m.meeting.invitees" class="row">
+				<h4>Invitees</h4>
+				<table class="table">
+					<tr class="info">
+						<td>Name</td>
+						<td>Surname</td>
+						<td>Email</td>
+					</tr>
+					<tr ng-repeat="invitee in m.meeting.invitees">
+						<td>{{invitee.name}}</td>
+						<td>{{invitee.surname}}</td>
+						<td>{{invitee.email}}</td>
+					</tr>
+				</table>
+			</div>
+			<hr ng-show="m.meeting.invitees" />
+			<div ng-show="m.meeting.invitees" class="row">
+				<h4>Test Auth</h4>
+				<input class="form-control" type="text" placeholder="jaco@peoplesoft.co.za" ng-model="m.testUser" />
+				<button class="btn btn-primary form-control" ng-click="m.auth()">Test</button>
+				<h4>Test Auth Result</h4>
+				<code>
+					<pre>{{m.result}}</pre>
+				</code>
+			</div>
+		</div>
+	</body>
+</html>

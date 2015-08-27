@@ -14,3 +14,9 @@ We tested the functions manually on a Sony Xperia Z1 and Samsung S3. Here are th
    4 passed.
    
 5) Testing the NFC intent, we held an NFC tag with data against the phone. The app opened and the displayed the tags data. Test 5 passed.
+
+Manual UnitTesting (Mobile data currently cannot be switched on and off) for Demo 2:
+We tested the functions manually on a Sony Xperia Z1. This proccess cannot be automated as changes to the functions need to be made inorder
+to facilitate it.
+
+1)

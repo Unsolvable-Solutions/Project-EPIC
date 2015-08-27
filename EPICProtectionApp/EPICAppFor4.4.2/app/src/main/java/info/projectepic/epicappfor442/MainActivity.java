@@ -56,6 +56,8 @@ public class MainActivity extends ActionBarActivity {
     private String UnitFileName="UnitTests";
     private String EmpIDFile = "EMPID";
     private List<String> restoreSettings = new ArrayList<String>();
+    protected boolean isInSafeMode = false;
+    private int compramized = 0;
 
     /**
      * The functionality provided by the onCreate function is to act as the constructor of the
@@ -443,7 +445,28 @@ public class MainActivity extends ActionBarActivity {
         }
         catch (Exception e)
         {}
+        isInSafeMode = true;
+        /*Start thread to see if data is compramized*/
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
+                    WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+                    while(isInSafeMode) {
 
+                        /*Check whether anything is turned on*/
+                        if ((wifi.isWifiEnabled())||(bt.isEnabled()))
+                        {compramized++;}
+                        sleep(2000);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();
     }
 
     /**
@@ -484,6 +507,16 @@ public class MainActivity extends ActionBarActivity {
      */
     private void LoadSnapShot()
     {
+        isInSafeMode = false;
+        try
+        {
+            Thread.sleep(2000);
+        }
+        catch (Exception e)
+        {}
+        if (compramized>0)
+        {//Warn that phone has been comramized
+         }
         //Get data from file if array is empty
         if (restoreSettings.size() == 0)
         {
