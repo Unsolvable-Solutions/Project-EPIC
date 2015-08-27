@@ -28,11 +28,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/etEmpid"
-        android:text="New Employee ID"
         android:singleLine="true"
         android:layout_marginTop="63dp"
         android:layout_below="@+id/tvEmpId"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:hint="New employee ID" />
 
     <Button
         android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Button"
+        android:text="Save"
         android:id="@+id/btnSave"
         android:layout_below="@+id/etPwd"
         android:layout_centerHorizontal="true" />

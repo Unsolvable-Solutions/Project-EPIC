@@ -4,6 +4,7 @@ import android.content.Context;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -42,12 +43,12 @@ public class CardEmulation extends HostApduService {
     public byte[] processCommandApdu(byte[] commandApdu, Bundle extras)
     {
         String EmpIDFile = "EMPID";
-        String getData = "";
+        String getData = "No";
         try
         {
             FileInputStream fs = openFileInput(EmpIDFile);
             getData = convertStreamToString(fs);
-
+            Toast.makeText(getApplicationContext(), getData, Toast.LENGTH_LONG).show();
             fs.close();
         }
         catch (Exception E)
@@ -96,8 +97,8 @@ public class CardEmulation extends HostApduService {
             sb.append(line).append("\n");
         }
         reader.close();
-        String sendStr = ""+getDeviceId()+":"+sb.toString();
-        return sendStr;
+        //String sendStr = ""+getDeviceId()+":"+sb.toString();
+        return sb.toString();
     }
 
     /**The functionality provided by the getDeviceId is to get the unique id of the android device
