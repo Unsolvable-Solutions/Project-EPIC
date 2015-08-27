@@ -3,10 +3,12 @@ var http = require('http').createServer(handler)
 var io = require('socket.io')(http);
 var fs = require('fs');
 
-var SerialPort = require("serialport").SerialPort
-var serialPort = new SerialPort("/dev/tty-usbserial1", {
+var SerialPort = require("serialport").SerialPort;
+var serialPort = new SerialPort("/dev/tty.usbmodemfa141", {
   baudrate: 115200
 });
+
+
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
@@ -48,7 +50,7 @@ var auth = function(email,cb)
 	if (invitees.indexOf(email) >= 0) 
 	{
 		console.log(email,'found in local cache.');
-		cb(true);
+		cb('t');
 	}
 	else
 	{
@@ -64,12 +66,12 @@ var auth = function(email,cb)
 			if (invitees.indexOf(email) >= 0) 
 			{
 				console.log(email,'found in new local cache.');
-				cb(true); 
+				cb('t'); 
 			}
 			else 
 			{
 				console.log(email,'not found in new local cache.');
-				cb(false);
+				cb('f');
 			}
 		});
 	}
@@ -78,24 +80,24 @@ var auth = function(email,cb)
 serialPort.on("open", function () {
   console.log('open');
   serialPort.on('data', function(data) {
-  	console.log('data received: ' + data);	
-  	if (data[0] == '*')
-  	{
+	
+	  	
     	console.log('data received: ' + data);
-   		auth(data.email, function(result)
+    	console.log('Input: ' + data.toString('utf8'));
+   		auth(data.toString('utf8'), function(result)
 		{
-			serialPort.write(result, function(err, results) {
+			console.log('SENDING TO SERIAL', result);
+			serialPort.write(new Buffer(result), function(err, results) {
 				console.log('err ' + err);
 			    console.log('results ' + results);
 		  	});
 		});
-  	}
+	  	
+	 
+
   });
 
 });
-
-Serial.print('*')
-Serial.println(back)
 
 // getAllMeetings(function(meetings){
 // 	console.log(meetings);
@@ -143,7 +145,11 @@ io.on('connection', function(socket){
 			auth(data.email, function(result)
 			{
 				socket.emit('auth',result);
-			
+				serialPort.write(new Buffer(result), function(err, results) 
+				{
+					console.log('err ' + err);
+			    	console.log('results ' + results);
+		  		});
 			});
 
 	});
