@@ -1,10 +1,9 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.20)  31 JUL 2015 11:53
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.25)  27 AUG 2015 22:54
 entering extended mode
-**C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Achitecture*Requir
-ements/ArchitectureRequirements.tex
+**ArchitectureRequirements.tex
 
-("C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Achitecture Requir
-ements/ArchitectureRequirements.tex"
+("C:\Users\Draak Koning\Documents\GitHub\Project-EPIC\EPICDocuments\Achitecture
+ Requirements\ArchitectureRequirements.tex"
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
@@ -282,8 +281,8 @@ Now handling font encoding U ...
    defining Unicode char U+2122 (decimal 8482)
    defining Unicode char U+2423 (decimal 9251)
 ))
-("C:\Users\Maret\Documents\GitHub\Project-EPIC\EPICDocuments\Achitecture Requir
-ements\ArchitectureRequirements.aux")
+("C:\Users\Draak Koning\Documents\GitHub\Project-EPIC\EPICDocuments\Achitecture
+ Requirements\ArchitectureRequirements.aux")
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
 LaTeX Font Info:    ... okay on input line 11.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 11.
@@ -311,8 +310,8 @@ LaTeX Font Info:    ... okay on input line 11.
 \makeMPintoPDFobject=\count93
 \everyMPtoPDFconversion=\toks18
 )
-("C:\Users\Maret\Documents\GitHub\Project-EPIC\EPICDocuments\Achitecture Requir
-ements\titlepage.tex" <US_logo.png, id=1, 578.16pt x 581.17125pt>
+("C:\Users\Draak Koning\Documents\GitHub\Project-EPIC\EPICDocuments\Achitecture
+ Requirements\titlepage.tex" <US_logo.png, id=1, 578.16pt x 581.17125pt>
 File: US_logo.png Graphic file (type png)
 
 <use US_logo.png>
@@ -320,10 +319,11 @@ Package pdftex.def Info: US_logo.png used on input line 5.
 (pdftex.def)             Requested size: 117.00119pt x 117.60672pt.
  [1
 
-{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map} <C:/Users/Maret/Documents/
-GitHub/Project-EPIC/EPICDocuments/Achitecture Requirements/US_logo.png>])
-("C:\Users\Maret\Documents\GitHub\Project-EPIC\EPICDocuments\Achitecture Requir
-ements\ArchitectureRequirements.toc"
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map} <C:/Users/Draak Koning/Doc
+uments/GitHub/Project-EPIC/EPICDocuments/Achitecture Requirements/US_logo.png>]
+)
+("C:\Users\Draak Koning\Documents\GitHub\Project-EPIC\EPICDocuments\Achitecture
+ Requirements\ArchitectureRequirements.toc"
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <12> on input line 2.
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -346,23 +346,23 @@ Underfull \hbox (badness 10000) in paragraph at lines 68--69
  []
 
 [4] [5] [6] [7] [8] [9] [10]
-("C:\Users\Maret\Documents\GitHub\Project-EPIC\EPICDocuments\Achitecture Requir
-ements\ArchitectureRequirements.aux") ) 
+("C:\Users\Draak Koning\Documents\GitHub\Project-EPIC\EPICDocuments\Achitecture
+ Requirements\ArchitectureRequirements.aux") ) 
 Here is how much of TeX's memory you used:
  1367 strings out of 493921
- 18221 string characters out of 3144876
+ 18298 string characters out of 3144855
  71487 words of memory out of 3000000
  4677 multiletter control sequences out of 15000+200000
  9750 words of font info for 34 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 27i,6n,19p,618b,250s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files (x86)/MiKTeX 2.9/fonts
-/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/t
-ype1/public/amsfonts/cm/cmcsc10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/ty
-pe1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1
-/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/p
-ublic/amsfonts/cm/cmti12.pfb>
-Output written on ArchitectureRequirements.pdf (11 pages, 193477 bytes).
+ 27i,6n,19p,534b,250s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files (x86)/MiKTeX 2.
+9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files (x86)/MiKTeX 2.9/
+fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Program Files (x86)/MiKTeX 2.9/f
+onts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/MiKTeX 2.9/font
+s/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
+type1/public/amsfonts/cm/cmti12.pfb>
+Output written on ArchitectureRequirements.pdf (11 pages, 193613 bytes).
 PDF statistics:
  59 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
