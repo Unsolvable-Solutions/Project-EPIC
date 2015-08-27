@@ -23,7 +23,8 @@
 \contentsline {section}{\numberline {3}Architectural tactics or strategies}{8}
 \contentsline {subsection}{\numberline {3.1}Thread pooling: }{8}
 \contentsline {subsection}{\numberline {3.2}Clustering: }{8}
-\contentsline {subsection}{\numberline {3.3} Interception: }{8}
+\contentsline {subsection}{\numberline {3.3}Interception: }{8}
+\contentsline {subsection}{\numberline {3.4}Authentication}{8}
 \contentsline {section}{\numberline {4}Access and integration channels}{9}
 \contentsline {subsection}{\numberline {4.1}EPIC}{9}
 \contentsline {subsection}{\numberline {4.2}Malware}{9}
