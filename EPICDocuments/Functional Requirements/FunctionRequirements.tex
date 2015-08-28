@@ -1,6 +1,8 @@
-\documentclass[a4paper,12pt,titlepage]{article}
+\documentclass{article}
+\usepackage[utf8]{inputenc}
 \usepackage{graphicx}
-
+\usepackage{hyperref}
+\usepackage{float}
 
 
 \DeclareGraphicsExtensions{.jpg}
@@ -32,9 +34,9 @@ The eavesdropping malware use a server and an application on the android device.
 	
 		\subsection{Server}
 		\textbf{Scope: } 	The server is used with the gateway, it sends and receives data to and from the gateway. On the server an administrative user must also be able to add, remove, edit and view the users, administrative users included. Any user must be able to log in and log out of the system on the server. When logged in the user may create, update, delete and request summary from a meeting. The user may also view and edit his own profile.
-		\begin{figure}[h!]
+		\begin{figure}[H]
  			 \centering
-			  \includegraphics[width=0.8\textwidth]{ServerClass}
+			  \includegraphics[width=12cm]{ServerClass}
 		 	 \caption{A Class Diagram of the Server}
 		\end{figure}
 		\subsubsection{Server}
@@ -43,9 +45,9 @@ The eavesdropping malware use a server and an application on the android device.
 				\newline\textbf{ Priority } - Critical
 				\newline The user log into the system using a registered identifier and password, or the user may also log in via facebook.
 	
-		\begin{figure}[h!]	
+		\begin{figure}[H]	
  			 \centering
-			  \includegraphics[width=0.8\textwidth]{LoginUseCase}
+			  \includegraphics[width=12cm]{LoginUseCase}
 		 	 \caption{A Use Case Diagram of the Login services}
 		\end{figure}
 	
@@ -99,16 +101,16 @@ The eavesdropping malware use a server and an application on the android device.
 		\subsection{Application}
 			\textbf{Scope: }The Application is used when entering a meeting. The user will hold the android device over a gateway node. The application will send the identifier to the server via the Node and Gateway. The application will then, after confirmation from the Node, take a snapshot and enable the protection. After the meeting have occurred, the user will then hold the device over the Node again, the protection will be disabled and the phone will be stored to its previous state. 
 		
-		\begin{figure}[h!]
+		\begin{figure}[H]
  			 \centering
-			  \includegraphics[width=0.8\textwidth]{ApplicationClass}
+			  \includegraphics[width=12cm]{ApplicationClass}
 		 	 \caption{A Class Diagram of the protection Application, Meeting, Node and Gateway}
 		\end{figure}
 
 		\subsubsection{protectionApp}
-		\begin{figure}[h!]
+		\begin{figure}[H]
  			 \centering
-			  \includegraphics[width=0.8\textwidth]{ApplicationUseCase}
+			  \includegraphics[width=12cm]{ApplicationUseCase}
 		 	 \caption{A Use Case Diagram protection Application}
 		\end{figure}
 		\begin{itemize}
@@ -158,9 +160,9 @@ The eavesdropping malware use a server and an application on the android device.
 			\item \textbf{checkID}
 				\newline\textbf{ Priority } - Critical
 				\newline This service verify if the identifier may access the meeting on the Gateway. 
-				\begin{figure}[h!]
+				\begin{figure}[H]
  					 \centering
-					  \includegraphics[width=0.8\textwidth]{CheckIDUseCase}
+					  \includegraphics[width=12cm]{CheckIDUseCase}
 		 			 \caption{A Use Case Diagram of the CheckID service}
 				\end{figure}
 			\item \textbf{setup}
@@ -190,16 +192,16 @@ The eavesdropping malware use a server and an application on the android device.
 		
 		\subsection{Malware}
 		\textbf{Scope: } The malware consist of a webserver that connects with the mobile device via a web socket. A request is send from the server to the application on the mobile device to start recording. As the device records, the result is streamed directly to the server.
-		\begin{figure}[h!]
+		\begin{figure}[H]
  			 \centering
-			  \includegraphics[width=0.8\textwidth]{MalwareClass}
+			  \includegraphics[width=12cm]{MalwareClass}
 		 	 \caption{A Class Diagram of the Malware}
 		\end{figure}
 	\subsubsection{Malware Server}
 	With the server the user will be able to target a specific android device to start recording and streaming the data back to the server.
-		\begin{figure}[h!]
+		\begin{figure}[H]
  			 \centering
-			  \includegraphics[width=16cm,height=8cm]{MalwareServerUseCase}
+			  \includegraphics[width=12cm]{MalwareServerUseCase}
 		 	 \caption{A Use Case Diagram of the Malware Server}
 		\end{figure}
 		\begin{itemize}
@@ -236,9 +238,9 @@ The eavesdropping malware use a server and an application on the android device.
 		
 \subsubsection{Malware Application}
 	This application is hidden behind another application, but for the purpose of the project, the malware will be a visible application.
-		\begin{figure}[h!]
+		\begin{figure}[H]
  			 \centering
-			  \includegraphics[width=0.8\textwidth]{MalwareApplicationUseCase}
+			  \includegraphics[width=12cm]{MalwareApplicationUseCase}
 		 	 \caption{A Use Case Diagram of the Malware Application}
 		\end{figure}
 		\begin{itemize}

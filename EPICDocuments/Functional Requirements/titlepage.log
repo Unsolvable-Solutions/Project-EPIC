@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.20)  29 MAY 2015 02:38
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.20)  28 AUG 2015 19:49
 entering extended mode
-**C:/Users/Maret/Documents/GitHub/Project-EPIC/Documents/Functional*Requirement
-s/titlepage.tex
+**C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Functional*Require
+ments/titlepage.tex
 
-("C:/Users/Maret/Documents/GitHub/Project-EPIC/Documents/Functional Requirement
-s/titlepage.tex"
+("C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Functional Require
+ments/titlepage.tex"
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
@@ -17,30 +17,31 @@ ian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, swissgerm
 an, tamil, telugu, turkish, turkmen, ukenglish, ukrainian, uppersorbian, usengl
 ishmax, welsh, loaded.
 
-! LaTeX Error: \usepackage before \documentclass.
+! LaTeX Error: Environment titlepage undefined.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.2 \usepackage{
-                hyperref}
+l.2 \begin{titlepage}
+                     
 ? 
 ! Emergency stop.
  ...                                              
                                                   
-l.2 \usepackage{
-                hyperref}
-\usepackage may only appear in the document preamble, i.e.,
-between \documentclass and \begin{document}.
+l.2 \begin{titlepage}
+                     
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
 
  
 Here is how much of TeX's memory you used:
- 8 strings out of 493921
- 476 string characters out of 3144876
+ 10 strings out of 493921
+ 500 string characters out of 3144876
  49031 words of memory out of 3000000
- 3400 multiletter control sequences out of 15000+200000
+ 3402 multiletter control sequences out of 15000+200000
  3640 words of font info for 14 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 5i,0n,5p,117b,14s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 7i,0n,6p,150b,16s stack positions out of 5000i,500n,10000p,200000b,50000s
 !  ==> Fatal error occurred, no output PDF file produced!
