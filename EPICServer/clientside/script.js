@@ -14,9 +14,16 @@ function logOut()
 	el.style.color = "white";
 }
 
-function logIn(email,passw)
+function logIn()
 {
+	resetAllMenuitems();
 	
+	var el = document.getElementById("logIn");
+	el.style.backgroundColor = "indianred";
+	el.style.color = "white";
+	document.getElementById("contentpage").innerHTML='<object type="text/html" data="http://projectepic.info/login/" height="600px" width="700px" style="margin-left:150px"></object>';
+
+
 }
 function setCurrUser(id,na, sn,  em)
 {
@@ -37,7 +44,7 @@ function createMeeting()
 	var el = document.getElementById("createMeeting");
 	el.style.backgroundColor = "indianred";
 	el.style.color = "white";
-	document.getElementById("contentpage").innerHTML='<object type="text/html" data="http://projectepic.info/meetings/" height="400px" width="100%"></object>';
+	document.getElementById("contentpage").innerHTML='<object type="text/html" data="http://projectepic.info/meetings/" height="600px" width="700px" style="margin-left:150px"></object>';
 	
 	//document.getElementById("contentpage").style.height="95%";
 }
@@ -66,7 +73,8 @@ function viewProfile()
 	var el = document.getElementById("viewProfile");
 	el.style.backgroundColor = "indianred";
 	el.style.color = "white";
-	document.getElementById("contentpage").innerHTML='<object type="text/html" data="viewMyProfile.html" height="400px" width="100%"></object>';
+//	viewmyprofile();
+	document.getElementById("contentpage").innerHTML='<object type="text/html" data="viewMyProfile.html" height="600px" width="700px" style="margin-left:150px"></object>';
 }
 
 function register()
@@ -76,7 +84,7 @@ function register()
 	var el = document.getElementById("register");
 	el.style.backgroundColor = "indianred";
 	el.style.color = "white";
-	document.getElementById("contentpage").innerHTML='<object type="text/html" data="http://projectepic.info/register"  height="500px" width="100%"></object>';
+	document.getElementById("contentpage").innerHTML='<object type="text/html" data="http://projectepic.info/register"  height="600px" width="700px" style="margin-left:150px"></object>';
 	
 }
 function viewMyMeetings()
@@ -86,7 +94,7 @@ function viewMyMeetings()
 	var el = document.getElementById("viewMyMeetings");
 	el.style.backgroundColor = "indianred";
 	el.style.color = "white";
-	document.getElementById("contentpage").innerHTML='<object type="text/html" data="http://projectepic.info/meetings/" height="400px" width="100%"></object>';
+	document.getElementById("contentpage").innerHTML='<object type="text/html" data="http://projectepic.info/meetings/" height="600px" width="700px" style="margin-left:150px"></object>';
 	
 }
 
@@ -136,49 +144,14 @@ function deleteProfile()
 	var el = document.getElementById("deleteProfile");
 	el.style.backgroundColor = "indianred";
 	el.style.color = "white";
-	alert("Are you sure you want this?");
+	if(loggedin)
+	{
+		if(alert("Are you sure you want this?"))
+			loggedin="false";
+	}	
+	else
+	{
+		alert("You are not logged in so, why would you try??");
+	}
 	
-}
-
-
-function showWhoAreWe()
-{
-	resetAllfootitems();
-	var el = document.getElementById("prefooter");
-	el.innerHTML="We are Unsolvable Solutions";
-	var k = document.getElementById("whoarewe");
-	k.style.backgroundColor="indianred";
-	}
-function showWhy()
-{
-	resetAllfootitems();
-	var el = document.getElementById("prefooter");
-	el.innerHTML="Wel it started as an assignment";
-	var k = document.getElementById("whywouldwedothis");
-	k.style.backgroundColor="indianred";
-	}
-
-function showWhatDoWeDo()
-{
-	resetAllfootitems();
-	var el = document.getElementById("prefooter");
-	el.innerHTML="We solve software problems creatively.";
-	var k = document.getElementById("whatdowedo");
-	k.style.backgroundColor="indianred";
-	}
-function showWhatIsThis()
-{ 
-	resetAllfootitems();
-	var el = document.getElementById("prefooter");
-	el.innerHTML="For more information view thegithub page. This is a project that works on many platforms";
-	var k = document.getElementById("whatisthis");
-	k.style.backgroundColor="indianred";
-}
-function showContactUs()
-{
-	resetAllfootitems();
-	var el = document.getElementById("prefooter");
-	el.innerHTML="<b>Unsolvable Solutions</b><br>Owner: The University of Pretoria 012 346 0012<br><br> <b>Project Leader:</b> Edwin Fullard - 0827569228";
-		var k = document.getElementById("contactus");
-	k.style.backgroundColor="indianred";
 }
