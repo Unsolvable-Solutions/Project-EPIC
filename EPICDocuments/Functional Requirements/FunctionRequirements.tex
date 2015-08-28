@@ -174,14 +174,26 @@ The eavesdropping malware use a server and an application on the android device.
 
 		\end{itemize}
 
-		\subsubsection{Gateway} The gateway receives the identifier from the node and verify the meeting access with the server. It also updates the meeting via the server.
+		\subsubsection{Gateway} The gateway receives the identifier from the node and verifies the persons access to the meeting. It syncronises the meeting details so that it has a local copy to minimise delay and complexity. Italso updates the meeting on the server.
 		\begin{itemize}
-			\item \textbf{getMeeting}
+			\item \textbf{gatAllMeetings}
 				\newline\textbf{ Priority } - Critical
-				\newline Return the current meeting on loaded on the gateway device.
-			\item \textbf{getAllowed}
+				\newline Gets a detailed list of all the meetings on the server.
+			\item \textbf{handler}
 				\newline\textbf{ Priority } - Critical
-				\newline Return if the specified user is allowed in the meeting.
+				\newline Serves the information to select what meeting the gateway is used for currently.
+			\item \textbf{sync}
+				\newline\textbf{ Priority } - Critical
+				\newline Updates the current meetings details and invitees.
+			\item \textbf{auth}
+				\newline\textbf{ Priority } - Critical
+				\newline Checks wether or not the person is allowed in the meeting.
+			\item \textbf{On serialPort Open}
+				\newline\textbf{ Priority } - Critical
+				\newline Receives the identifier from the Node via Serial Bus.
+			\item \textbf{Web Socket Functions}
+				\newline\textbf{ Priority } - Important
+				\newline Sub-functions of handler that helps with the serving of the Meeting choice interface.
 			
 
 		\end{itemize}
