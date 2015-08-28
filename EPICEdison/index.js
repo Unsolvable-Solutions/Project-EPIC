@@ -1,8 +1,31 @@
 var unirest = require('unirest');
-var http = require('http').Server();
+var http = require('http').createServer(handler)
 var io = require('socket.io')(http);
+var fs = require('fs');
+
+var SerialPort = require("serialport").SerialPort;
+var serialPort = new SerialPort("/dev/tty.usbmodemfa141", {
+  baudrate: 115200
+});
 
 
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});
+
+function handler (req, res) {
+  fs.readFile(__dirname + '/index.html',
+  function (err, data) {
+    if (err) {
+      res.writeHead(500);
+      return res.end('Error loading index.html');
+    }
+
+    res.writeHead(200);
+    res.end(data);
+  });
+}
 
 var meeting = {};
 var invitees = [];
@@ -27,7 +50,7 @@ var auth = function(email,cb)
 	if (invitees.indexOf(email) >= 0) 
 	{
 		console.log(email,'found in local cache.');
-		cb(true);
+		cb('t');
 	}
 	else
 	{
@@ -43,16 +66,38 @@ var auth = function(email,cb)
 			if (invitees.indexOf(email) >= 0) 
 			{
 				console.log(email,'found in new local cache.');
-				cb(true); 
+				cb('t'); 
 			}
 			else 
 			{
 				console.log(email,'not found in new local cache.');
-				cb(false);
+				cb('f');
 			}
 		});
 	}
 }
+
+serialPort.on("open", function () {
+  console.log('open');
+  serialPort.on('data', function(data) {
+	
+	  	
+    	console.log('data received: ' + data);
+    	console.log('Input: ' + data.toString('utf8'));
+   		auth(data.toString('utf8'), function(result)
+		{
+			console.log('SENDING TO SERIAL', result);
+			serialPort.write(new Buffer(result), function(err, results) {
+				console.log('err ' + err);
+			    console.log('results ' + results);
+		  	});
+		});
+	  	
+	 
+
+  });
+
+});
 
 // getAllMeetings(function(meetings){
 // 	console.log(meetings);
@@ -100,11 +145,13 @@ io.on('connection', function(socket){
 			auth(data.email, function(result)
 			{
 				socket.emit('auth',result);
+				serialPort.write(new Buffer(result), function(err, results) 
+				{
+					console.log('err ' + err);
+			    	console.log('results ' + results);
+		  		});
 			});
-		
+
 	});
 });
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
-});

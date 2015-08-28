@@ -46,8 +46,14 @@ module.exports.routes = {
   'get /logout': 'AuthController.logout',
   'get /register': 'AuthController.register',
 
-  'post /auth/local': 'AuthController.callback',
-  'post /auth/local/:action': 'AuthController.callback',
+  'post /auth/local': {
+    view: 'meeting/meetings'
+  },
+  // 'post /auth/local': 'AuthController.callback',
+  // 'post /auth/local/:action': 'AuthController.callback',
+
+
+
 
   'get /auth/:provider': 'AuthController.provider',
   'get /auth/:provider/callback': 'AuthController.callback',

@@ -112,32 +112,35 @@ The eavesdropping malware use a server and an application on the android device.
 		 	 \caption{A Use Case Diagram protection Application}
 		\end{figure}
 		\begin{itemize}
-			\item \textbf{login}
+			\item \textbf{onNewIntent}
 				\newline\textbf{ Priority } - Critical
-				\newline The user login using his unique identifier and password. This service ensures that if the user use another device, his previous data is still intact.
-			\item \textbf{logout}
+				\newline This function is called when an Android system intent is triggered. It checks whether the intent was caused by NFC and then parses the NFC message that will check whether the user is allowed to enter the room. If the user is allowed, the store- and loadSnapshot functions are called respectively on whether the user is entering or leaving.
+			\item \textbf{StoreSnapshot}
 				\newline\textbf{ Priority } - Critical
-				\newline The user log out of the device.
-			\item \textbf{SendID}
+				\newline This function stores the state of all communication mechanisms and then turns them off to enter \textit{safe mode}.
+			\item \textbf{LoadSnapShot}
 				\newline\textbf{ Priority } - Critical
-				\newline Send identifier to the Node via NFC.
-			\item \textbf{isValid}
+				\newline This function restores the previous state of the phones connections that were saved with the \textit{StoreSnapshot} function.
+				\item \textbf{processCommandApdu}
 				\newline\textbf{ Priority } - Critical
-				\newline This service waits for respond from the Node for permission to  continue or halt. If the Node’s respond is to continue, storesnapshot is called and the protection is enabled.
-			\item \textbf{enableProtection}
+				\newline This function is an overwritten function. It is used to create the user authentication data and return it when the phone is being read from via NFC.
+			\item \textbf{StoreEmpID}
 				\newline\textbf{ Priority } - Critical
-				\newline The devices WiFi and GSM communication are turned off and the device go into silent mode.
-			\item \textbf{storeSnapshot}
+				\newline This function stores a combination of fields entered by the user into a file that is used to with other functions to either retrieve the data if the application is closed and reopen, or send it via NFC to get use as authentication.
+			\item \textbf{getDeviceId}
+				\newline\textbf{ Priority } - Important
+				\newline Used to added an extra security layer to authentication by getting the unique device id.
+			\item \textbf{unitTests}
 				\newline\textbf{ Priority } - Critical
-				\newline A snapshot of the devices current networking state is stored.
+				\newline This function uses dummy scenario's to test whether all of the functions work as they should.
 
-			\item \textbf{loadSnapshot}
-				\newline\textbf{ Priority } - Critical
-				\newline The device is restored to the stored state.
+			\item \textbf{setActivityBackgroundColor}
+				\newline\textbf{ Priority } - Nice to have
+				\newline This function changes the background colour of the application to visually notify the user if he has been granted access to the meeting room.
 
-			\item \textbf{getNFCvalue}
-				\newline\textbf{ Priority } - Critical
-				\newline When the NFC device is scanned it gets a value.
+			\item \textbf{convertStreamToString}
+				\newline\textbf{ Priority } - Nice to have
+				\newline This function helps to convert an input stream of bytes into a \textit{String type} that is used for file reading.
 
 
 		\end{itemize}

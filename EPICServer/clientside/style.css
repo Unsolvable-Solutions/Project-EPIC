@@ -22,7 +22,29 @@ input {
 
   float: left;
 }
+.adminmenu
+{
+	position:absolute;
+}
 
+.admin-menu-item
+{
+margin-top:20px;
+float:left;
+text-align:center;
+cursor: pointer;
+width:100px;
+height:50px;
+border-radius:10%;
+margin-right:2%;
+margin-left:2%;
+border-color:red;
+background-color:#D0D0D0;
+display: flex;
+justify-content: center; 
+align-items: center;
+z-index:0;
+}
 .menuitem{
 margin-top:20px;
 float:left;
@@ -41,9 +63,10 @@ justify-content: center;
 align-items: center;
 z-index:0;
 }
+
 #footer{
 
-width:95%;
+width:1000px;
 clear:both;
 background-color:black;
 position:absolute;
