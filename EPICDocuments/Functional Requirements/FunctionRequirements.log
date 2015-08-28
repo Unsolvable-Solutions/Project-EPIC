@@ -1,9 +1,10 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.25)  27 AUG 2015 22:48
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.20)  28 AUG 2015 19:26
 entering extended mode
-**FunctionRequirements.tex
+**C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Functional*Require
+ments/FunctionRequirements.tex
 
-("C:\Users\Draak Koning\Documents\GitHub\Project-EPIC\EPICDocuments\Functional 
-Requirements\FunctionRequirements.tex"
+("C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Functional Require
+ments/FunctionRequirements.tex"
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
@@ -64,8 +65,8 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 \Gin@req@height=\dimen103
 \Gin@req@width=\dimen104
 )
-("C:\Users\Draak Koning\Documents\GitHub\Project-EPIC\EPICDocuments\Functional 
-Requirements\FunctionRequirements.aux")
+("C:\Users\Maret\Documents\GitHub\Project-EPIC\EPICDocuments\Functional Require
+ments\FunctionRequirements.aux")
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 9.
@@ -93,8 +94,8 @@ LaTeX Font Info:    ... okay on input line 9.
 \makeMPintoPDFobject=\count93
 \everyMPtoPDFconversion=\toks16
 )
-("C:\Users\Draak Koning\Documents\GitHub\Project-EPIC\EPICDocuments\Functional 
-Requirements\titlepage.tex" <US_logo.png, id=1, 578.16pt x 581.17125pt>
+("C:\Users\Maret\Documents\GitHub\Project-EPIC\EPICDocuments\Functional Require
+ments\titlepage.tex" <US_logo.png, id=1, 578.16pt x 581.17125pt>
 File: US_logo.png Graphic file (type png)
 
 <use US_logo.png>
@@ -102,11 +103,10 @@ Package pdftex.def Info: US_logo.png used on input line 5.
 (pdftex.def)             Requested size: 117.00119pt x 117.60672pt.
  [1
 
-{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map} <C:/Users/Draak Koning/Doc
-uments/GitHub/Project-EPIC/EPICDocuments/Functional Requirements/US_logo.png>])
-
-("C:\Users\Draak Koning\Documents\GitHub\Project-EPIC\EPICDocuments\Functional 
-Requirements\FunctionRequirements.toc"
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map} <C:/Users/Maret/Documents/
+GitHub/Project-EPIC/EPICDocuments/Functional Requirements/US_logo.png>])
+("C:\Users\Maret\Documents\GitHub\Project-EPIC\EPICDocuments\Functional Require
+ments\FunctionRequirements.toc"
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <12> on input line 2.
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -145,10 +145,10 @@ Package pdftex.def Info: ./Images/LoginUseCase.jpg used on input line 48.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[3 <C:/Users/Draak Koning/Documents/GitHub/Project-EPIC/EPICDocuments/Functiona
-l Requirements/Images/ServerClass.jpg>] [4 <C:/Users/Draak Koning/Documents/Git
-Hub/Project-EPIC/EPICDocuments/Functional Requirements/Images/LoginUseCase.jpg>
-] [5] <./Images/ApplicationClass.jpg, id=28, 640.3925pt x 373.395pt>
+[3 <C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Functional Requi
+rements/Images/ServerClass.jpg>] [4 <C:/Users/Maret/Documents/GitHub/Project-EP
+IC/EPICDocuments/Functional Requirements/Images/LoginUseCase.jpg>] [5]
+<./Images/ApplicationClass.jpg, id=28, 640.3925pt x 373.395pt>
 File: ./Images/ApplicationClass.jpg Graphic file (type jpg)
 
 <use ./Images/ApplicationClass.jpg>
@@ -166,64 +166,70 @@ Package pdftex.def Info: ./Images/ApplicationUseCase.jpg used on input line 111
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[6 <C:/Users/Draak Koning/Documents/GitHub/Project-EPIC/EPICDocuments/Functiona
-l Requirements/Images/ApplicationClass.jpg>] [7 <C:/Users/Draak Koning/Document
-s/GitHub/Project-EPIC/EPICDocuments/Functional Requirements/Images/ApplicationU
-seCase.jpg>] [8]
-<./Images/CheckIDUseCase.jpg, id=40, 394.47375pt x 296.10625pt>
+[6 <C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Functional Requi
+rements/Images/ApplicationClass.jpg>] [7 <C:/Users/Maret/Documents/GitHub/Proje
+ct-EPIC/EPICDocuments/Functional Requirements/Images/ApplicationUseCase.jpg>]
+[8] <./Images/CheckIDUseCase.jpg, id=40, 394.47375pt x 296.10625pt>
 File: ./Images/CheckIDUseCase.jpg Graphic file (type jpg)
 
 <use ./Images/CheckIDUseCase.jpg>
 Package pdftex.def Info: ./Images/CheckIDUseCase.jpg used on input line 163.
 (pdftex.def)             Requested size: 312.00119pt x 234.20149pt.
- [9 <C:/Users/Draak Koning/Documents/GitHub/Project-EPIC/EPICDocuments/Function
-al Requirements/Images/CheckIDUseCase.jpg>]
-[10] <./Images/MalwareClass.jpg, id=47, 506.89375pt x 232.87pt>
+ [9 <C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Functional Requ
+irements/Images/CheckIDUseCase.jpg>] [10]
+<./Images/MalwareClass.jpg, id=47, 558.085pt x 622.325pt>
 File: ./Images/MalwareClass.jpg Graphic file (type jpg)
 
 <use ./Images/MalwareClass.jpg>
 Package pdftex.def Info: ./Images/MalwareClass.jpg used on input line 195.
-(pdftex.def)             Requested size: 312.00119pt x 143.33678pt.
+(pdftex.def)             Requested size: 312.00119pt x 347.92036pt.
 
-<./Images/MalwareServerUseCase.jpg, id=48, 303.1325pt x 217.81375pt>
+<./Images/MalwareServerUseCase.jpg, id=48, 1166.3575pt x 408.52625pt>
 File: ./Images/MalwareServerUseCase.jpg Graphic file (type jpg)
 
 <use ./Images/MalwareServerUseCase.jpg>
 Package pdftex.def Info: ./Images/MalwareServerUseCase.jpg used on input line 2
 02.
-(pdftex.def)             Requested size: 234.00238pt x 168.1425pt.
- [11 <C:/Users/Draak Koning/Documents/GitHub/Project-EPIC/EPICDocuments/Functio
-nal Requirements/Images/MalwareClass.jpg> <C:/Users/Draak Koning/Documents/GitH
-ub/Project-EPIC/EPICDocuments/Functional Requirements/Images/MalwareServerUseCa
-se.jpg>]
-<./Images/MalwareApplicationUseCase.jpg, id=52, 478.78876pt x 260.975pt>
+(pdftex.def)             Requested size: 455.23354pt x 227.62616pt.
+
+Overfull \hbox (65.23354pt too wide) in paragraph at lines 202--203
+ [][] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[11 <C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Functional Requ
+irements/Images/MalwareClass.jpg>] [12 <C:/Users/Maret/Documents/GitHub/Project
+-EPIC/EPICDocuments/Functional Requirements/Images/MalwareServerUseCase.jpg>]
+<./Images/MalwareApplicationUseCase.jpg, id=56, 478.78876pt x 260.975pt>
 File: ./Images/MalwareApplicationUseCase.jpg Graphic file (type jpg)
 
 <use ./Images/MalwareApplicationUseCase.jpg>
 Package pdftex.def Info: ./Images/MalwareApplicationUseCase.jpg used on input l
-ine 224.
+ine 241.
 (pdftex.def)             Requested size: 312.00119pt x 170.06181pt.
- [12 <C:/Users/Draak Koning/Documents/GitHub/Project-EPIC/EPICDocuments/Functio
-nal Requirements/Images/MalwareApplicationUseCase.jpg>] [13]
-("C:\Users\Draak Koning\Documents\GitHub\Project-EPIC\EPICDocuments\Functional 
-Requirements\FunctionRequirements.aux") ) 
+ [13 <C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Functional Req
+uirements/Images/MalwareApplicationUseCase.jpg>] [14]
+("C:\Users\Maret\Documents\GitHub\Project-EPIC\EPICDocuments\Functional Require
+ments\FunctionRequirements.aux") ) 
 Here is how much of TeX's memory you used:
  1206 strings out of 493921
- 17617 string characters out of 3144855
+ 17540 string characters out of 3144876
  65897 words of memory out of 3000000
  4521 multiletter control sequences out of 15000+200000
  10097 words of font info for 35 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 27i,6n,19p,618b,297s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files (x86)/MiKTeX 2.9/fon
-ts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
-/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
-type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
-e1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1
-/public/amsfonts/cm/cmti12.pfb>
-Output written on FunctionRequirements.pdf (14 pages, 678167 bytes).
+ 27i,6n,19p,701b,297s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files (x86)/MiKTeX 2.9/fonts/type
+1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/
+public/amsfonts/cm/cmcsc10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/p
+ublic/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publ
+ic/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public
+/amsfonts/cm/cmti12.pfb>
+Output written on FunctionRequirements.pdf (15 pages, 846699 bytes).
 PDF statistics:
- 77 PDF objects out of 1000 (max. 8388607)
+ 80 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
