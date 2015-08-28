@@ -92,11 +92,7 @@ serialPort.on("open", function () {
 			    console.log('results ' + results);
 		  	});
 		});
-	  	
-	 
-
   });
-
 });
 
 // getAllMeetings(function(meetings){
@@ -151,7 +147,5 @@ io.on('connection', function(socket){
 			    	console.log('results ' + results);
 		  		});
 			});
-
 	});
 });
-
