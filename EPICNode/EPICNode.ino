@@ -90,7 +90,7 @@ void loop()
     uint8_t length = 32;
 
     success = nfc.inDataExchange(selectApdu, sizeof(selectApdu), response, &responseLength);
-    
+
     if (success) 
     {
       //Serial.print("responseLength: "); Serial.println(responseLength);
@@ -104,7 +104,7 @@ void loop()
         char charArr[length];
         //Serial.print('*');
         while (Serial.available()) Serial.read();
-        for (int x = 0; x < length-1; x++)
+        for (int x = 0; x < length; x++)
         {
           charArr[x] = back[x];
           Serial.print(charArr[x]);
@@ -119,13 +119,14 @@ void loop()
       else 
       {
         setColor(255, 0, 0);  // red
+        delay(1000);
         //Serial.println("Broken connection?"); 
       }
     }
     else 
     {
-      delay(1000);
       setColor(255, 0, 0);  // red
+      delay(1000);
       //Serial.println("Failed sending SELECT AID"); 
     }
   }
@@ -185,7 +186,7 @@ void sendMessage(int result)
     String msg;
     if(result == 116)
       msg = "1";
-    else if(result == 117)
+    else if(result == 101)
       msg = "2";
     else
       msg = "0";
@@ -212,7 +213,7 @@ void sendMessage(int result)
   
     if (result == 116)
       setColor(0, 255, 0);
-    else if(result == 117)
+    else if(result == 101)
       setColor(255, 65, 0);
     else
       setColor(255, 0, 0);
