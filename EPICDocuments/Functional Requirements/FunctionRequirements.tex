@@ -154,12 +154,12 @@ The eavesdropping malware use a server and an application on the android device.
 		\subsubsection{Node}
 
 		\begin{itemize}
-			\item \textbf{receiveID}
+			\item \textbf{isAllowed}
 				\newline\textbf{ Priority } - Critical
-				\newline Receive the identifier from the Android devices via NFC .
-			\item \textbf{checkID}
+				\newline Receives the results from the Gateway on wether or not to allow the user in..
+			\item \textbf{sendMessage}
 				\newline\textbf{ Priority } - Critical
-				\newline This service verify if the identifier may access the meeting on the Gateway. 
+				\newline This function addapts the results to the correct format that the Protection App is expecting, and then broadcasts it via NFC to the Android phone.
 				\begin{figure}[H]
  					 \centering
 					  \includegraphics[width=12cm]{CheckIDUseCase}
@@ -170,7 +170,7 @@ The eavesdropping malware use a server and an application on the android device.
 				\newline Initialize everything
 			\item \textbf{loop}
 				\newline\textbf{ Priority } - Critical
-				\newline run in a loop and call the receiveID service until an identifier is returned, it then call the checkID function.
+				\newline Gets automatically called over and over like an infinite loop. Everytime it checks for input from the NFC board And when a valid identifier is received, it makes sure that the correct funtions and procedures follows.
 
 		\end{itemize}
 
