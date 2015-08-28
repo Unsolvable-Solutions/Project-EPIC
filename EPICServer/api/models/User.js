@@ -38,7 +38,7 @@ var User = {
   beforeCreate: function (values, cb) {
     console.log("BeforeCreate",values);
 
-      values.password = generatePassword(options, 32);
+      values.password = generatePassword(options, 8);
 
     cb();    
   },
