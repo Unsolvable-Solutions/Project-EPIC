@@ -199,7 +199,7 @@ The eavesdropping malware use a server and an application on the android device.
 	With the server the user will be able to target a specific android device to start recording and streaming the data back to the server.
 		\begin{figure}[h!]
  			 \centering
-			  \includegraphics[width=0.6\textwidth]{MalwareServerUseCase}
+			  \includegraphics[width=16cm,height=8cm]{MalwareServerUseCase}
 		 	 \caption{A Use Case Diagram of the Malware Server}
 		\end{figure}
 		\begin{itemize}
@@ -214,7 +214,24 @@ The eavesdropping malware use a server and an application on the android device.
 				\newline The recorded stream is played back to the user over the speakers.
 			\item \textbf{setup}
 				\newline\textbf{ Priority } - Critical
-				\newline Initialize everything
+				\newline Initialize the audio recording modules.
+			\item \textbf{selectPhone}
+				\newline\textbf{ Priority } - Critical
+				\newline Creates a list for selection of a device to stream and record from.
+			\item \textbf{createConnection}
+				\newline\textbf{ Priority } - Critical
+				\newline Creates the connection to the device.
+			\item \textbf{rawToWav}
+				\newline\textbf{ Priority } - High
+				\newline Converts the binary array to a WAVE file. 		 	 
+			\item \textbf{copyWaveFile}
+				\newline\textbf{ Priority } - High
+				\newline Takes the WAVE file and adds the required header to the file to enable correct playback.
+			\item \textbf{MainMenu}
+				\newline\textbf{ Priority } - Low
+				\newline Creates a user friendly interface for using the server.
+							   	
+				
 		\end{itemize}	
 		
 \subsubsection{Malware Application}
