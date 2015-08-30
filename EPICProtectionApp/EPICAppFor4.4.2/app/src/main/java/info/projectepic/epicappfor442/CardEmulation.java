@@ -47,8 +47,8 @@ public class CardEmulation extends HostApduService {
         try
         {
             FileInputStream fs = openFileInput(EmpIDFile);
-            getData = convertStreamToString(fs);
-            Toast.makeText(getApplicationContext(), getData, Toast.LENGTH_LONG).show();
+            getData = "*" + convertStreamToString(fs).trim()+"#";
+            //Toast.makeText(getApplicationContext(), getData, Toast.LENGTH_LONG).show();
             fs.close();
         }
         catch (Exception E)

@@ -395,11 +395,15 @@ public class MainActivity extends ActionBarActivity {
      * @param theData - A string of the devices that were on sperated by a ':'.
      * @param fs - Opens a stream for data to be stored to a private file.
      */
+    protected boolean compramized = false;
+    protected int numCompr = 0;
     private void StoreSnapshot()
     {
+        compramized = true;
+        numCompr = 0;
 
         BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
-        WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+        final WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
 
         if(bt!=null)
         {
@@ -449,6 +453,33 @@ public class MainActivity extends ActionBarActivity {
         catch (Exception e)
         {}
 
+        /*Start checking if compramized*/
+        /*try {
+            Thread.sleep(2000);
+        }
+        catch (Exception e){}*/
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
+                    final WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+                    while(compramized) {
+                        if (bt.isEnabled()|| wifi.isWifiEnabled())
+                        {
+                            numCompr++;
+                        }
+                        sleep(2000);
+                        //handler.post(this);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();
     }
 
     /**
@@ -489,6 +520,9 @@ public class MainActivity extends ActionBarActivity {
      */
     private void LoadSnapShot()
     {
+        /*Check if phone is compramized*/
+        synchronized (this){
+        compramized = false;}
         //Get data from file if array is empty
         if (restoreSettings.size() == 0)
         {
@@ -537,6 +571,21 @@ public class MainActivity extends ActionBarActivity {
         }
         //Reset list
         restoreSettings = new ArrayList<String>();
+        if(numCompr>0)
+        {
+            int i = 10;
+            while(i>0)
+            {
+                i--;
+                setActivityBackgroundColor(Color.BLUE);
+                try {
+                    Thread.sleep(1000);
+                    setActivityBackgroundColor(Color.RED);
+                    Thread.sleep(1000);
+                }
+                catch (Exception e){}
+            }
+        }
     }
 
     /**
