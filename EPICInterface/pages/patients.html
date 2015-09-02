@@ -1,0 +1,70 @@
+<div id="wrapper" ng-controller="patientsController as p">
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="col-lg-6">
+                        <h1 class="page-header">Patients</h1>
+                    </div>
+                    <div class="col-lg-6">
+                        <a class="btn btn-lg btn-primary pull-right" style="margin-top:25px;" href="#/patient/new">New Patient</a>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group input-group">
+                                <span class="input-group-addon">Search</span>
+                                <input type="text" class="form-control" ng-model="p.searchText" ng-change="p.refresh()">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button"><i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        
+                            <table class="table table-striped">
+                                <tr class="info">
+                                    <td><strong>Patient #</strong></td>
+                                    <td><strong>Name</strong></td>
+                                    <td><strong>Surname</strong></td>
+                                    <td><strong>ID</strong></td>
+                                    <td><strong>Last consultation date</strong></td>
+                                    <td><strong>Actions</strong></td>
+                                </tr>
+                                <tr ng-repeat="patient in p.patients | filter:p.searchText | limitTo:25" style="cursor: pointer" ng-click="p.patient = patient">
+                                    <td>{{patient.patientId}}</td>
+                                    <td>{{patient.name}}</td>
+                                    <td>{{patient.surname}}</td>
+                                    <td>{{patient.idNum}}</td>
+                                    <td>{{patient.lastConsutation}}</td>
+                                    <td>
+                                        <input type="button" class="btn btn-primary" href="#/patient/{{patient.id}}" value="View File"> 
+                                        <a type="button" class="btn btn-warning" href="#/patient/edit/{{patient.id}}">Edit File</a> 
+                                        <input type="button" class="btn btn-success" href="#/book/new/{{patient.id}}" value="Make Booking">
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="thumbnail" ng-show="p.patient.name">
+                              <img ng-hide="p.patient.img" src="../images/placeholder.png" alt="...">
+                              <img ng-show="p.patient.img" src="http://localhost:1337{{p.patient.img}}" alt="...">
+                              <div class="caption">
+                                <h3>{{p.patient.name}} {{p.patient.surname}}</h3>
+                                <p>{{p.patient.patientId}} || {{p.patient.idNum}}</p>
+                                <p><a href="#" class="btn btn-primary" role="button">File</a> <a href="#" class="btn btn-default" role="button">Contact Info</a></p>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+</div>
+
+
+

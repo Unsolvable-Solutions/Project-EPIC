@@ -1,0 +1,286 @@
+<div id="wrapper" ng-controller="newPatientController as p">
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="col-lg-8">
+                        <h1 class="page-header">New Patient: <small> {{p.patient.title}} {{p.patient.name}} ({{p.patient.initials}}) {{p.patient.surname}}</small></h1>
+                    </div> 
+                    <div class="col-lg-4">
+                        <button class="btn btn-lg btn-success pull-right" style="margin-top:25px;" ng-click="p.save()">Save</button>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <i class="fa fa-calendar-o fa-fw"></i> Basic Information
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-4" style="padding-left:5px; padding-right:5px;">
+                                            <label>Patient #</label>
+                                            <input type="text" style="text-transform:uppercase" placeholder="" ng-model="p.patient.patientId" class="form-control">
+                                        </div>
+                                        <div class="col-md-4" style="padding-left:5px; padding-right:5px;" >
+                                            <label>ID Number</label>
+                                            <input type="text" placeholder="" ng-model="p.patient.idNum" ng-change="p.getDataFromId()" class="form-control">
+                                        </div>
+                                        <div class="col-md-4" style="padding-left:5px; padding-right:5px;">
+                                            <label>Image</label>
+
+                                            <div ng-show="p.patient.img" class="form-group input-group">
+                                                <input ng-model="p.patient.img" class="form-control" type="text" disabled>
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" ng-click="p.patient.img = ''"><i class="fa fa-remove"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+
+                                            <input ng-hide="p.patient.img" class="form-control" type="file" file-model="myFile" ng-blur="uploadFile()" single/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2" style="padding-left:5px; padding-right:5px;" >
+                                            <label>Title</label>
+                                            <select class="form-control" ng-model="p.patient.title">
+                                                <option value="Dr">Dr</option>
+                                                <option value="Ds">Ds</option>
+                                                <option value="Ms">Ms</option>
+                                                <option value="Mrs">Mrs</option>
+                                                <option value="Mr">Mr</option>
+                                            </select>                                        
+                                        </div>
+                                        <div class="col-md-2" style="padding-left:5px; padding-right:5px;" >
+                                            <label>Initials</label>
+                                            <input type="text" style="text-transform:uppercase" placeholder="" ng-model="p.patient.initials" class="form-control">
+                                        </div>
+                                        <div class="col-md-3" style="padding-left:5px; padding-right:5px;" >
+                                            <label>First Name</label>
+                                            <input type="text" style="text-transform:capitalize" placeholder="" ng-model="p.patient.name" class="form-control">
+                                        </div>
+                                        <div class="col-md-5" style="padding-left:5px; padding-right:5px;" >
+                                            <label>Surname</label>
+                                            <input type="text" style="text-transform:capitalize" placeholder="" ng-model="p.patient.surname" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6" style="padding-left:5px; padding-right:5px;" >
+                                            <label></label>
+                                            <code><pre><strong>Birth Date:</strong> {{p.patient.idNumData.year}}/{{p.patient.idNumData.month}}/{{p.patient.idNumData.day}}</pre></code>            
+                                        </div>
+                                        <div class="col-md-6" style="padding-left:5px; padding-right:5px;" >
+                                            <label></label>
+                                            <code><pre><strong>Gender:</strong> {{p.patient.idNumData.gender}}</pre></code>            
+                                        </div>
+                                        <div class="col-md-6" style="padding-left:5px; padding-right:5px;" >
+                                            <label>Email Address</label>
+                                            <input type="text" style="text-transform:lowercase" placeholder="" ng-model="p.patient.email" class="form-control">
+                                        </div>
+                                        <div class="col-md-3" style="padding-left:5px; padding-right:5px;" >
+                                            <label>Tel:</label>
+                                            <input type="text" placeholder="" ng-model="p.patient.tel" class="form-control">
+                                        </div>
+                                        <div class="col-md-3" style="padding-left:5px; padding-right:5px;" >
+                                            <label>Cell:</label>
+                                            <input type="text" placeholder="" ng-model="p.patient.cell" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5" style="padding-left:5px; padding-right:5px;" >
+                                            <label>General Practitioner</label>
+                                            <input type="text" style="text-transform:capitalize" placeholder="" ng-model="p.patient.practitioner" class="form-control">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label></label>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" ng-model="p.chbSame" ng-click="p.check()"> Same
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5" style="padding-left:5px; padding-right:5px;" >
+                                            <label>Refering Doctor</label>
+                                            <input class="form-control" style="text-transform:capitalize" ng-model="p.patient.refering" type="text" placeholder="" >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <i class="fa fa-calendar-o fa-fw"></i> Further Information
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-6" style="padding-left:5px; padding-right:5px;" >
+                                            <label>Debtor</label>
+                                            <div ng-show="p.patient.debtorObject.debtorCode" class="form-group input-group" style="margin-bottom: 0px;">
+                                                <input value="{{p.patient.debtorObject.name}} {{p.patient.debtorObject.surname}}" class="form-control" type="text" disabled>
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" ng-click="p.patient.debtorObject = {}"><i class="fa fa-remove"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                            <input ng-hide="p.patient.debtorObject.debtorCode" type="text" placeholder="" ng-model="p.patient.debtor.debtor" ng-change="p.getDebtor()" class="form-control">
+                                        </div>
+                                        <div class="col-md-3" style="padding-left:5px; padding-right:5px;" >
+                                            <label>Relationship</label>
+                                            <select ng-model="p.patient.debtor.relationship" class="form-control">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3" style="padding-left:5px; padding-right:5px;" >
+                                            <label>Marital Status</label>
+                                            
+                                            <select ng-model="p.patient.maritalStatus" class="form-control">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6" style="padding-left:5px; padding-right:5px;" >
+                                            <label>Occupation</label>
+                                            <input type="text" style="text-transform:capitalize" placeholder="" ng-model="p.patient.occupation" class="form-control">
+                                        </div>
+                                        <div class="col-md-3" style="padding-left:5px; padding-right:5px;" >
+                                            <label>Employer</label>
+                                            <input type="text" style="text-transform:capitalize" placeholder="" ng-model="p.patient.employer" class="form-control">
+                                        </div>
+                                        <div class="col-md-3" style="padding-left:5px; padding-right:5px;" >
+                                            <label>Nationality</label>
+                                            <input type="text" style="text-transform:capitalize" placeholder="" ng-model="p.patient.debtor.nationality" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <i class="fa fa-calendar-o fa-fw"></i> Habits
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <strong>Smoke</strong>
+                                    <div style="margin-top:0px" class="checkbox">
+                                        <label style="margin-left:4px"> <input ng-model="p.patient.smoke.none" type="checkbox"> None </label> 
+                                        <label style="margin-left:4px"> <input ng-model="p.patient.smoke.cigars" type="checkbox"> Cigars </label> 
+                                        <label style="margin-left:4px"> <input ng-model="p.patient.smoke.marijuana" type="checkbox"> Marijuana </label> 
+                                        <label style="margin-left:4px"> <input ng-model="p.patient.smoke.cigarettes" type="checkbox"> Cigarettes </label> 
+                                        <label style="margin-left:4px"> <input ng-model="p.patient.smoke.pipe" type="checkbox"> Pipe </label> 
+                                        <label style="margin-left:4px"> <input class="form-control" ng-model="p.patient.smoke.amount" type="text" style="text-transform:capitalize" placeholder="amount"></label>
+                                    </div>
+                                    <strong>Alcohol</strong>
+                                    <div style="margin-top:0px" class="checkbox">
+                                        <label style="margin-left:4px"> <input ng-model="p.patient.drink.none" type="checkbox"> None </label> 
+                                        <label style="margin-left:4px"> <input ng-model="p.patient.drink.wine" type="checkbox"> Wine </label> 
+                                        <label style="margin-left:4px"> <input ng-model="p.patient.drink.beer" type="checkbox"> Beer </label> 
+                                        <label style="margin-left:4px"> <input ng-model="p.patient.drink.spirit" type="checkbox"> Spirits </label> 
+                                        <label style="margin-left:4px"> <input class="form-control" ng-model="p.patient.drink.amount" type="text" style="text-transform:capitalize" placeholder="amount"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <i class="fa fa-calendar-o fa-fw"></i> Allergy
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <table class="table"> 
+                                        <tr ng-repeat="a in p.patient.allergy"><td>{{a}}</td></tr>
+                                    </table>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" ng-model="p.newAllergy" style="text-transform:capitalize" placeholder="Add Allergy...">
+                                        <span class="input-group-btn">
+                                        <button class="btn btn-success" type="button" ng-click="p.addAllergy(p.newAllergy);">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <i class="fa fa-calendar-o fa-fw"></i> Medical History
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <table class="table"> 
+                                        <tr ng-repeat="h in p.patient.medHistory"><td>{{h}}</td></tr>
+                                    </table>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" ng-model="p.newHistory" style="text-transform:capitalize" placeholder="Add History...">
+                                        <span class="input-group-btn">
+                                        <button class="btn btn-success" type="button" ng-click="p.addHistory(p.newHistory);">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <i class="fa fa-calendar-o fa-fw"></i> Medical Treatment
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <table class="table"> 
+                                        <tr ng-repeat="t in p.patient.medTreatment"><td>{{t}}</td></tr>
+                                    </table>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" ng-model="p.newTreatment" style="text-transform:capitalize" placeholder="Add Treatment...">
+                                        <span class="input-group-btn">
+                                        <button class="btn btn-success" type="button" ng-click="p.addTreatment(p.newTreatment);">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <i class="fa fa-calendar-o fa-fw"></i> Previous Operations
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <table class="table"> 
+                                        <tr ng-repeat="o in p.patient.prevOperations"><td>{{o}}</td></tr>
+                                    </table>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" ng-model="p.newOperation" style="text-transform:capitalize" placeholder="Add Operation...">
+                                        <span class="input-group-btn">
+                                        <button class="btn btn-success" type="button" ng-click="p.addOperation(p.newOperation);">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="row">
+                        <code><pre>{{p.patient}}</pre></code>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+
+</div>
