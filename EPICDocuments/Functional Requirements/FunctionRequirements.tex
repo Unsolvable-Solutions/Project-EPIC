@@ -50,7 +50,9 @@ The eavesdropping malware use a server and an application on the android device.
 			  \includegraphics[width=12cm]{LoginUseCase}
 		 	 \caption{A Use Case Diagram of the Login services}
 		\end{figure}
-	
+		\item\textbf{forgotPassword}
+				\newline\textbf{ Priority } - Nice-To-Have
+				\newline This service allows the user to change his password with password, using his Android device with a QR-code for authentication.
 		\item \textbf{Logout}
 				\newline\textbf{ Priority } - Critical
 				\newline This service allows the user to log out if he is currently logged in.
@@ -81,7 +83,10 @@ The eavesdropping malware use a server and an application on the android device.
 		\begin{itemize}
 			\item \textbf{createMeeting}
 				\newline\textbf{ Priority } - Critical
-				\newline This service create a meeting. On creation the list of users attending the meeting must be added as well as the time and place of the meeting.
+				\newline This service create a meeting. On creation the user must enter the information of the users that he would like to invite. Each invitee will then receive an email with an invite that asks the invitee to can a QR code to rsvp to a meeting.
+			\item \textbf{rsvp}
+				\newline\textbf{ Priority } - Important
+				\newline This service allow a user to move from the invitee list to the rsvp list, by scanning the QR-code. The user will only be able to enter the meeting if he has rsvp'd;
 			\item \textbf{viewMeeting}
 				\newline\textbf{ Priority } - Important
 				\newline This service allows a user to view all the participants and the time and place of a meeting. An administrative user may view any meeting, but a common user may only view a meeting that they are attending.
@@ -149,7 +154,12 @@ The eavesdropping malware use a server and an application on the android device.
 
 \newpage		
 		\subsection{Gateway and Node}
-\textbf{Scope: }The Gateway consist of a Gateway and Nodes, connected in serial. The gateway node use NFC to communicate with the Android device. After the Android device is scanned the Node sends the identifier to the Gateway to see if the user may have access to the meeting and to update the meeting log. 
+\textbf{Scope: }The Gateway consist of a Gateway and Nodes, connected in serial. The Node use NFC to communicate with the Android device. After the Android device is scanned the Node sends the identifier to the Gateway to see if the user may have access to the meeting and to update the meeting log. 
+\begin{figure}[H]
+ 			 \centering
+			  \includegraphics[width=12cm]{GatewayAndNodeClass}
+		 	 \caption{A Class Diagram of the Gateway and Node}
+		\end{figure}
 
 		\subsubsection{Node}
 
@@ -160,11 +170,9 @@ The eavesdropping malware use a server and an application on the android device.
 			\item \textbf{sendMessage}
 				\newline\textbf{ Priority } - Critical
 				\newline This function addapts the results to the correct format that the Protection App is expecting, and then broadcasts it via NFC to the Android phone.
-				\begin{figure}[H]
- 					 \centering
-					  \includegraphics[width=12cm]{CheckIDUseCase}
-		 			 \caption{A Use Case Diagram of the CheckID service}
-				\end{figure}
+
+
+
 			\item \textbf{setup}
 				\newline\textbf{ Priority } - Critical
 				\newline Initialize everything
@@ -176,7 +184,7 @@ The eavesdropping malware use a server and an application on the android device.
 
 		\subsubsection{Gateway} The gateway receives the identifier from the node and verifies the persons access to the meeting. It syncronises the meeting details so that it has a local copy to minimise delay and complexity. Italso updates the meeting on the server.
 		\begin{itemize}
-			\item \textbf{gatAllMeetings}
+			\item \textbf{getAllMeetings}
 				\newline\textbf{ Priority } - Critical
 				\newline Gets a detailed list of all the meetings on the server.
 			\item \textbf{handler}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.20)  28 AUG 2015 20:08
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.20)  28 AUG 2015 22:19
 entering extended mode
 **C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Functional*Require
 ments/FunctionRequirements.tex
@@ -507,28 +507,29 @@ Package pdftex.def Info: ./Images/LoginUseCase.jpg used on input line 50.
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.53 
-      <C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Functional Re
-quirements/Images/ServerClass.jpg>] [4pdfTeX warning (ext4): destination with t
-he same identifier (name{figure.2}) has been already used, duplicate ignored
+l.53 		\item\textbf
+                   {forgotPassword} <C:/Users/Maret/Documents/GitHub/Project-EP
+IC/EPICDocuments/Functional Requirements/Images/ServerClass.jpg>] [4pdfTeX warn
+ing (ext4): destination with the same identifier (name{figure.2}) has been alre
+ady used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.85 			\item \textbf
-                     {viewMeeting} <C:/Users/Maret/Documents/GitHub/Project-EPI
-C/EPICDocuments/Functional Requirements/Images/LoginUseCase.jpg>] [5]
-<./Images/ApplicationClass.jpg, id=127, 640.3925pt x 380.42125pt>
+l.80 		\end{itemize}
+                     <C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocument
+s/Functional Requirements/Images/LoginUseCase.jpg>] [5]
+<./Images/ApplicationClass.jpg, id=127, 640.3925pt x 382.42876pt>
 File: ./Images/ApplicationClass.jpg Graphic file (type jpg)
 
 <use ./Images/ApplicationClass.jpg>
-Package pdftex.def Info: ./Images/ApplicationClass.jpg used on input line 106.
-(pdftex.def)             Requested size: 341.43306pt x 202.82968pt.
+Package pdftex.def Info: ./Images/ApplicationClass.jpg used on input line 111.
+(pdftex.def)             Requested size: 341.43306pt x 203.90002pt.
 
 <./Images/ApplicationUseCase.jpg, id=128, 512.91624pt x 296.10625pt>
 File: ./Images/ApplicationUseCase.jpg Graphic file (type jpg)
 
 <use ./Images/ApplicationUseCase.jpg>
-Package pdftex.def Info: ./Images/ApplicationUseCase.jpg used on input line 113
+Package pdftex.def Info: ./Images/ApplicationUseCase.jpg used on input line 118
 .
 (pdftex.def)             Requested size: 341.43306pt x 197.1115pt.
  [6pdfTeX warning (ext4): destination with the same identifier (name{figure.3})
@@ -536,7 +537,7 @@ Package pdftex.def Info: ./Images/ApplicationUseCase.jpg used on input line 113
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.117 			\item \textbf{onNewIntent}
+l.122 			\item \textbf{onNewIntent}
                                     <C:/Users/Maret/Documents/GitHub/Project-EP
 IC/EPICDocuments/Functional Requirements/Images/ApplicationClass.jpg>] [7pdfTeX
  warning (ext4): destination with the same identifier (name{figure.4}) has been
@@ -544,28 +545,29 @@ IC/EPICDocuments/Functional Requirements/Images/ApplicationClass.jpg>] [7pdfTeX
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.132 			\item \textbf
+l.137 			\item \textbf
                       {getDeviceId} <C:/Users/Maret/Documents/GitHub/Project-EP
 IC/EPICDocuments/Functional Requirements/Images/ApplicationUseCase.jpg>]
-[8] <./Images/CheckIDUseCase.jpg, id=145, 394.47375pt x 296.10625pt>
-File: ./Images/CheckIDUseCase.jpg Graphic file (type jpg)
+[8] <./Images/GatewayAndNodeClass.jpg, id=145, 443.6575pt x 277.035pt>
+File: ./Images/GatewayAndNodeClass.jpg Graphic file (type jpg)
 
-<use ./Images/CheckIDUseCase.jpg>
-Package pdftex.def Info: ./Images/CheckIDUseCase.jpg used on input line 165.
-(pdftex.def)             Requested size: 341.43306pt x 256.29103pt.
+<use ./Images/GatewayAndNodeClass.jpg>
+Package pdftex.def Info: ./Images/GatewayAndNodeClass.jpg used on input line 16
+0.
+(pdftex.def)             Requested size: 341.43306pt x 213.19923pt.
  [9pdfTeX warning (ext4): destination with the same identifier (name{figure.5})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.174 
-       <C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocuments/Functional R
-equirements/Images/CheckIDUseCase.jpg>] [10]
+l.183 		\end{itemize}
+                      <C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocumen
+ts/Functional Requirements/Images/GatewayAndNodeClass.jpg>] [10]
 <./Images/MalwareClass.jpg, id=155, 558.085pt x 622.325pt>
 File: ./Images/MalwareClass.jpg Graphic file (type jpg)
 
 <use ./Images/MalwareClass.jpg>
-Package pdftex.def Info: ./Images/MalwareClass.jpg used on input line 197.
+Package pdftex.def Info: ./Images/MalwareClass.jpg used on input line 217.
 (pdftex.def)             Requested size: 341.43306pt x 380.7477pt.
 
 <./Images/MalwareServerUseCase.jpg, id=156, 1166.3575pt x 408.52625pt>
@@ -573,14 +575,14 @@ File: ./Images/MalwareServerUseCase.jpg Graphic file (type jpg)
 
 <use ./Images/MalwareServerUseCase.jpg>
 Package pdftex.def Info: ./Images/MalwareServerUseCase.jpg used on input line 2
-04.
+24.
 (pdftex.def)             Requested size: 341.43306pt x 119.58539pt.
  [11pdfTeX warning (ext4): destination with the same identifier (name{figure.6}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.208 			\item \textbf
+l.228 			\item \textbf
                       {sendStartRequest} <C:/Users/Maret/Documents/GitHub/Proje
 ct-EPIC/EPICDocuments/Functional Requirements/Images/MalwareClass.jpg>]
 [12pdfTeX warning (ext4): destination with the same identifier (name{figure.7})
@@ -588,7 +590,7 @@ ct-EPIC/EPICDocuments/Functional Requirements/Images/MalwareClass.jpg>]
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.232 			\item \textbf
+l.252 			\item \textbf
                       {MainMenu} <C:/Users/Maret/Documents/GitHub/Project-EPIC/
 EPICDocuments/Functional Requirements/Images/MalwareServerUseCase.jpg>]
 <./Images/MalwareApplicationUseCase.jpg, id=168, 478.78876pt x 260.975pt>
@@ -596,31 +598,31 @@ File: ./Images/MalwareApplicationUseCase.jpg Graphic file (type jpg)
 
 <use ./Images/MalwareApplicationUseCase.jpg>
 Package pdftex.def Info: ./Images/MalwareApplicationUseCase.jpg used on input l
-ine 243.
+ine 263.
 (pdftex.def)             Requested size: 341.43306pt x 186.1059pt.
  [13pdfTeX warning (ext4): destination with the same identifier (name{figure.8}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.262 		\end{itemize}
+l.282 		\end{itemize}
                       <C:/Users/Maret/Documents/GitHub/Project-EPIC/EPICDocumen
 ts/Functional Requirements/Images/MalwareApplicationUseCase.jpg>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 264.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 284.
  [14]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 264.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 284.
 
 ("C:\Users\Maret\Documents\GitHub\Project-EPIC\EPICDocuments\Functional Require
 ments\FunctionRequirements.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 264.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 264.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 284.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 284.
 Package rerunfilecheck Info: File `FunctionRequirements.out' has not changed.
 (rerunfilecheck)             Checksum: D9D5FAA4A7553D48C815E3C2E6BCC58D;1104.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 264.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 284.
  ) 
 Here is how much of TeX's memory you used:
  5323 strings out of 493921
- 79620 string characters out of 3144876
+ 79645 string characters out of 3144876
  155647 words of memory out of 3000000
  8536 multiletter control sequences out of 15000+200000
  7528 words of font info for 27 fonts, out of 3000000 for 9000
@@ -635,7 +637,7 @@ am Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program
  Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program F
 iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Program Fil
 es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on FunctionRequirements.pdf (15 pages, 916014 bytes).
+Output written on FunctionRequirements.pdf (15 pages, 959302 bytes).
 PDF statistics:
  219 PDF objects out of 1000 (max. 8388607)
  41 named destinations out of 1000 (max. 500000)

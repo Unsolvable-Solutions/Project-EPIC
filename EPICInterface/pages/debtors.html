@@ -1,0 +1,74 @@
+<div id="wrapper" ng-controller="debtorsController as d">
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="col-lg-6">
+                        <h1 class="page-header">Debtors</h1>
+                    </div>
+                    <div class="col-lg-6">
+                        <a class="btn btn-lg btn-primary pull-right" style="margin-top:25px;" href="#/debtor/new">New Debtor</a>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group input-group">
+                                <span class="input-group-addon">Search</span>
+                                <input type="text" class="form-control" ng-model="d.searchText">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button"><i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        
+                            <table class="table table-striped">
+                                <tr class="info">
+                                    <td><strong>Debtor Code</strong></td>
+                                    <td><strong>Name</strong></td>
+                                    <td><strong>Surname</strong></td>
+                                    <td><strong>ID</strong></td>
+                                    <td><strong>Last consultation date</strong></td>
+                                    <td><strong>Actions</strong></td>
+                                </tr>
+                                <tr ng-repeat="debtor in d.debtors | filter:d.searchText | limitTo:25" style="cursor: pointer" ng-click="d.debtor = debtor">
+                                    <td>{{debtor.debtorCode}}</td>
+                                    <td>{{debtor.name}}</td>
+                                    <td>{{debtor.surname}}</td>
+                                    <td>{{debtor.idNum}}</td>
+                                    <td>{{debtor.lastConsutation}}</td>
+                                    <td><input type="button" class="btn btn-primary" value="View File"> <input type="button" class="btn btn-warning" value="Edit File"> <input type="button" class="btn btn-success" value="Make Booking"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-4" ng-show="d.debtor.name">
+
+                            <h1 style="text-align: center">{{d.debtor.name}} {{d.debtor.surname}}</h1>
+                            <p style="text-align: center">{{d.debtor.debtorCode}} || {{d.debtor.idNum}}</p>
+                            <hr>
+                            <h4 ng-show="d.debtor.patients" style="text-align: center">Patients</h4>
+                            
+                            <div class="media" ng-repeat="patient in d.debtor.patients">
+                              <div class="media-left media-middle">
+                                <a href="#/patient/{{patient.id}}">
+                                  <img class="media-object" src="http://localhost:1337{{patient.img}}" style="width:50px" alt="...">
+                                </a>
+                              </div>
+                              <div class="media-body">
+                                <h4 class="media-heading">{{patient.name}} {{patient.surname}}</h4>
+                                ...
+                              </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+
+</div>
+<!-- /#wrapper -->
