@@ -1,20 +1,20 @@
 # Project-EPIC
 `Eavesdropping Protection In Conclave`
 
-Demo 3 goals
+Demo 4 goals
 ------------
 
 ### Malware
- * Write a GUI for the Malware Server
+ * Try not to eavesdrop on the lecturers
 
 ### Protection app
- * Encrypt the e-mail and password before sending it
+ * See if QR code scanning is a possibility
 
 ### Server
- * Connect the front-end interface with the back-end functions
+ * Check out QR code generation
 
 ### NFC Node
- * Integrate with the Gateway (Intel Edison)
+ * Change light colours (again)
 
 ### Gateway
- * Relay the data between the Node and the Server
+ * Autorun when plugged in
