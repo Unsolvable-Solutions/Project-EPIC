@@ -2,9 +2,10 @@ var unirest = require('unirest');
 var http = require('http').createServer(handler)
 var io = require('socket.io')(http);
 var fs = require('fs');
+var inputData = "";
 
 var SerialPort = require("serialport").SerialPort;
-var serialPort = new SerialPort("/dev/tty.usbmodemfa141", {
+var serialPort = new SerialPort("/dev/ttyACM0", {
   baudrate: 115200
 });
 
@@ -44,34 +45,42 @@ var sync = function(id, cb)
 	});	
 }
 
-var auth = function(email,cb)
+var auth = function(data, cb)
 {
-	console.log('Looking for',email,'in local cache.');
-	if (invitees.indexOf(email) >= 0) 
+	data = data.substring(1, data.length - 1);
+	console.log('Looking for',data,'in local cache.');
+	if (invitees.indexOf(data) >= 0) 
 	{
-		console.log(email,'found in local cache.');
+		console.log(data,'found in local cache.');
 		cb('t');
 	}
 	else
 	{
 		console.log('User not found in local cache. Asking server...');
 		sync(meeting.id,function(m){
-			console.log('Sync complete. looking for',email);
+			console.log('Sync complete. looking for',data);
 			meeting = m;
 			invitees = [];
-			for (var i = 0; i < meeting.invitees.length; i++) {
-				invitees.push(meeting.invitees[i].email);
-			};
-			console.log(invitees);
-			if (invitees.indexOf(email) >= 0) 
+			if (meeting.invitees)
 			{
-				console.log(email,'found in new local cache.');
-				cb('t'); 
+				for (var i = 0; i < meeting.invitees.length; i++) {
+					invitees.push(meeting.invitees[i].data);
+				};
+				console.log(invitees);
+				if (invitees.indexOf(data) >= 0) 
+				{
+					console.log(data,'found in new local cache.');
+					cb('t'); 
+				}
+				else 
+				{
+					console.log(data,'not found in new local cache.');
+					cb('f');
+				}
 			}
-			else 
+			else
 			{
-				console.log(email,'not found in new local cache.');
-				cb('f');
+				cb('e');
 			}
 		});
 	}
@@ -80,9 +89,21 @@ var auth = function(email,cb)
 serialPort.on("open", function () {
   console.log('open');
   serialPort.on('data', function(data) {
-	
-	  	
     	console.log('data received: ' + data);
+    	
+    	if (data.slice(-1) != '#')
+        {
+                inputData += data;
+                return;
+        }
+
+        if (data.slice(0, 1) != '*')
+        {
+                var temp = data;
+                data = inputData + temp;
+                inputData = "";
+        }
+
     	console.log('Input: ' + data.toString('utf8'));
    		auth(data.toString('utf8'), function(result)
 		{
@@ -138,14 +159,14 @@ io.on('connection', function(socket){
 	socket.on('auth',function(data)
 	{
 			console.log(data);
-			auth(data.email, function(result)
-			{
-				socket.emit('auth',result);
-				serialPort.write(new Buffer(result), function(err, results) 
-				{
-					console.log('err ' + err);
-			    	console.log('results ' + results);
-		  		});
-			});
+            auth(data, function(result)
+            {
+                    socket.emit('auth',result);
+                    serialPort.write(new Buffer(result), function(e$
+                    {
+                            console.log('err ' + err);
+                    console.log('results ' + results);
+                    });
+            });
 	});
 });
