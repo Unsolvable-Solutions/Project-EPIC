@@ -47,7 +47,6 @@ var sync = function(id, cb)
 
 var auth = function(data, cb)
 {
-	cb('r');
 	data = data.substring(1, data.length - 1);
 	console.log('Looking for',data,'in local cache.');
 	if (invitees.indexOf(data) >= 0) 
