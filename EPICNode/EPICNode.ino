@@ -138,14 +138,14 @@ void waiting()
 {
   for (int q=0; q < 16; q++) 
   {
-    for (int i=0; i < strip.numPixels(); i++)
-      strip.setPixelColor(i, strip.Color(255, 165, 0));
+    //for (int i=0; i < strip.numPixels(); i++)
+      //strip.setPixelColor(i, strip.Color(0, 0, 20));
     
-    for (int i=0; i < 4; i++)
-      strip.setPixelColor((i+q)%16, strip.Color(255, 65, 0));
+    for (int i=0; i < 13; i++)
+      strip.setPixelColor((i+q)%16, strip.Color(0, 0, i*7));
     
     strip.show();
-    delay(30);
+    delay(50);
   }
 }
 
@@ -158,7 +158,7 @@ int isAllowed()
     for (int runner=0; runner<17; runner++) // For each light where the runner will go
     {
       strip.setPixelColor(runner, strip.Color(255, 255, 255)); // Move runner to new position
-      strip.setPixelColor((runner-1)%16, (runner > x)?0:strip.Color(0, 0, 255)); // Remove runner from previous position
+      strip.setPixelColor((runner-1)%16, (runner > x)?0:strip.Color(255, 65, 0)); // Remove runner from previous position
       strip.show(); // Apply updates to the lights
       delay(20); // Wait a moment
     }
