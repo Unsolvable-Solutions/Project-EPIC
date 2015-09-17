@@ -6,26 +6,26 @@ var inputData = "";
 
 var SerialPort = require("serialport").SerialPort;
 var serialPort = new SerialPort("/dev/ttyACM0", {
-  baudrate: 115200
+	baudrate: 115200
 });
 
 
 
 http.listen(3000, function(){
-  console.log('listening on *:3000');
+	console.log('listening on *:3000');
 });
 
 function handler (req, res) {
-  fs.readFile(__dirname + '/index.html',
-  function (err, data) {
-    if (err) {
-      res.writeHead(500);
-      return res.end('Error loading index.html');
-    }
+	fs.readFile(__dirname + '/index.html',
+	function (err, data) {
+		if (err) {
+			res.writeHead(500);
+			return res.end('Error loading index.html');
+		}
 
-    res.writeHead(200);
-    res.end(data);
-  });
+		res.writeHead(200);
+		res.end(data);
+	});
 }
 
 var meeting = {};
@@ -42,7 +42,7 @@ var sync = function(id, cb)
 {
 	unirest.get('http://projectepic.info/meeting?id=' + id).end(function (response) {
 		cb(response.body);
-	});	
+	});
 }
 
 var auth = function(data, cb)
@@ -86,53 +86,42 @@ var auth = function(data, cb)
 	}
 }
 
-serialPort.on("open", function () {
-  console.log('open');
-  serialPort.on('data', function(data) {
-    	console.log('data received: ' + data);
-    	
-    	if (data.slice(-1) != '#')
-        {
-                inputData += data;
-                return;
-        }
+serialPort.on("open", function ()
+{
+	console.log('open');
+	cb('r');
+	serialPort.on('data', function(data)
+	{
+		console.log('data received: ' + data);
 
-        if (data.slice(0, 1) != '*')
-        {
-                var temp = data;
-                data = inputData + temp;
-                inputData = "";
-        }
+		if (data.slice(-1) != '#')
+		{
+			inputData += data;
+			return;
+		}
 
-    	console.log('Input: ' + data.toString('utf8'));
-   		auth(data.toString('utf8'), function(result)
+		if (data.slice(0, 1) != '*')
+		{
+			var temp = data;
+			data = inputData + temp;
+			inputData = "";
+		}
+
+		console.log('Input: ' + data.toString('utf8'));
+		auth(data.toString('utf8'), function(result)
 		{
 			console.log('SENDING TO SERIAL', result);
-			serialPort.write(new Buffer(result), function(err, results) {
+			serialPort.write(new Buffer(result), function(err, results)
+			{
 				console.log('err ' + err);
-			    console.log('results ' + results);
-		  	});
+				console.log('results ' + results);
+			});
 		});
-  });
+	});
 });
 
-// getAllMeetings(function(meetings){
-// 	console.log(meetings);
-// 	meeting = meetings[0];
-// 	for (var i = 0; i < meeting.invitees.length; i++) {
-// 		invitees.push(meeting.invitees[i].email);
-// 	};
-// 	console.log(invitees);
-// 	auth('jaco@peoplesoft.co.za',function(res){
-// 		console.log('AUTH',res);
-// 	});
-// 	auth('jaco@peoplesosft.co.za',function(res){
-// 		console.log('AUTH',res);
-// 	});
-// });
-
 io.on('connection', function(socket){
-  	console.log('a user connected');
+	console.log('a user connected');
 	socket.on('get',function(data)
 	{
 		if (data.model == 'meeting')
@@ -144,6 +133,7 @@ io.on('connection', function(socket){
 			});
 		}
 	});
+
 	socket.on('set',function(data)
 	{
 		if (data.model == 'meeting')
@@ -155,7 +145,8 @@ io.on('connection', function(socket){
 				socket.emit('meeting',meeting);
 			});
 		}
-	});	
+	});
+
 	socket.on('auth',function(data)
 	{
 		console.log(data);

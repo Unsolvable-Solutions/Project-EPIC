@@ -55,6 +55,8 @@ void setup()
     strip.begin();
     strip.show(); // Initialize all pixels to 'off'
     
+    while (Serial.read()!=114)
+    {}
     //Serial.println("Node is now online");
 }
 
