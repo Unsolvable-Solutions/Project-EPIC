@@ -158,15 +158,15 @@ io.on('connection', function(socket){
 	});	
 	socket.on('auth',function(data)
 	{
-			console.log(data);
-            auth(data, function(result)
-            {
-                    socket.emit('auth',result);
-                    serialPort.write(new Buffer(result), function(e$
-                    {
-                            console.log('err ' + err);
-                    console.log('results ' + results);
-                    });
-            });
+		console.log(data);
+		auth(data, function(result)
+		{
+			socket.emit('auth',result);
+			serialPort.write(new Buffer(result), function(err)
+			{
+				console.log('err ' + err);
+				console.log('results ' + results);
+			});
+		});
 	});
 });
