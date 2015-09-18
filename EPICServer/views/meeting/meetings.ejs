@@ -3,7 +3,90 @@
 <script type="text/javascript">
 	
 	angular.module('meetingApp', [])
-		.controller('MeetingController', function($scope,$http) {
+		.controller('LoginController', function($scope, $rootScope, $http) {
+			$scope.errors = [];
+			$http.post("/me",{})
+			.then(function(response){
+				if (response.data.email)
+					$rootScope.me = response.data;
+
+				if ($rootScope.me) 
+				{
+					$rootScope.loginFlag = false;
+					$rootScope.registerFlag = false;
+				}
+				else
+				{
+					$rootScope.loginFlag = true;
+				}
+
+			},function(response){
+
+			});
+
+			$scope.gotoRegister = function()
+			{
+				$rootScope.loginFlag = false;
+				$rootScope.registerFlag = true;
+			}
+			$scope.gotoLogin = function()
+			{
+				$rootScope.loginFlag = true;
+				$rootScope.registerFlag = false;
+			}
+
+			$scope.login = function(user)
+			{
+				$http.post("/login",user)
+				.then(function(response){
+					if (response.data.success)
+					{
+						$rootScope.me = response.data.me;
+						$scope.errors = [];
+						$rootScope.loginFlag = false;
+						$rootScope.registerFlag = false;
+					}
+					else
+					{
+						$scope.errors.push(response.data.err);
+						$scope.user = {};
+						setTimeout(function(){
+							$scope.$applyAsync(function(){	
+								$scope.errors = [];
+							})
+						},2000);
+					}
+				},function(response){
+					$rootScope.me = {};
+				});
+			}
+			$scope.register = function(user)
+			{
+				$http.post("/register",user)
+				.then(function(response){
+					if (response.data.success)
+					{
+						$rootScope.me = response.data.me;
+						$scope.errors = [];
+						$rootScope.loginFlag = false;
+						$rootScope.registerFlag = false;
+					}
+					else
+					{
+						$scope.errors.push(response.data.err);
+						$scope.newUser = {};
+						setTimeout(function(){
+							$scope.$applyAsync(function(){	
+								$scope.errors = [];
+							})
+						},2000);
+					}
+				},function(response){
+					$rootScope.me = {};
+				});
+			}
+		})
+		.controller('MeetingController', function($scope, $rootScope, $http) {
 			var t = this;
 			$http.get('/meeting')
 			.then(function(r){
@@ -147,11 +230,60 @@
 
 </script>
 <div class="container-fluid" style="padding: 20px" ng-app="meetingApp">
-	<div class="row">
-		<!-- <h1 style="text-align:center">Project EPIC Admin Dashboard</h1> -->
-	</div>
 
-	<div class="row" ng-controller="MeetingController as meetings">
+	<div class="row" ng-controller="LoginController as l" ng-show="loginFlag">
+		<br/>
+	    <br/>
+	    <br/>
+		<div class="col-md-offset-4 col-md-4 well">
+		<h1 class="text-center">Login</h1>
+		<p class="alert alert-danger" ng-repeat="error in errors" >{{error}}</p>
+
+		  <div class="row">
+		    <form role="form" class="form col-md-offset-2 col-md-8">
+		      <h3>Email:</h3><input class="form-control" type="text" ng-model="user.email" placeholder="Email">
+		      <h3>Password:</h3><input class="form-control" type="password" ng-model="user.password" placeholder="Password">
+		      <br/>
+		      <div class="pull-right">
+		        <a ng-click="gotoRegister()" class="btn btn-primary" type="button">Register</a>
+		        <button class="btn btn-success" type="button" ng-click="login(user)">Sign in</button>
+		      </div>
+		    </form>
+		  </div>
+		</div>
+	</div>
+	<div class="row" ng-controller="LoginController as l" ng-show="registerFlag">
+	    <br/>
+	    <br/>
+	    <br/>
+		<div class="col-md-offset-4 col-md-4 well">
+		<h1 class="text-center">Register</h1>
+		<p class="alert alert-danger" ng-repeat="error in errors" >{{error}}</p>
+
+			<div class="row">
+				<form role="form" class="col-md-offset-2 col-md-8">
+					<h3>Name</h3><input class="form-control" type="text" ng-model="newUser.name" placeholder="John">
+					<h3>Surname</h3><input class="form-control" type="text" ng-model="newUser.surname" placeholder="Dough">
+					<h3>Email</h3><input class="form-control" type="text" ng-model="newUser.email" placeholder="Email">
+					<h3>Password</h3><input class="form-control" type="password" ng-model="newUser.password" placeholder="Password">
+					<br/>
+				<div class="pull-right">
+					<a ng-click="gotoLogin()" class="btn btn-primary" type="button">< Login</a>
+					<button class="btn btn-success" type="button" ng-click="register(newUser)">Sign up</button>
+				</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="row" ng-controller="MeetingController as meetings" ng-show="me.email">
+	<div class="col-md-8 col-md-offset-2">
+		<h1 style="text-align:center">Project EPIC Admin Dashboard</h1>
+	</div>
+	<div class="col-md-2">
+		<a style="text-align:center" href="/logout" >Logout {{me.email}}</a>
+	</div>
+	</div>
+	<div class="row" ng-controller="MeetingController as meetings" ng-show="me.email">
 		<div class="col-md-7">
 			<h3>Meetings</h3>
 			<table class="table">

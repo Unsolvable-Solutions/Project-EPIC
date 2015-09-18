@@ -33,31 +33,22 @@ module.exports.routes = {
   ***************************************************************************/
 
   '/': {
-    view: 'homepage'
+    view: 'meeting/meetings'
   },
+  
   '/admin': {
     view: 'admin'
   },
+
   '/meetings': {
     view: 'meeting/meetings'
   },
 
-  'get /login': 'AuthController.login',
+  'post /me': 'AuthController.me',
+  'post /login': 'AuthController.login',
   'get /logout': 'AuthController.logout',
-  'get /register': 'AuthController.register',
+  'post /register': 'AuthController.register'
 
-  'post /auth/local': {
-    view: 'meeting/meetings'
-  },
-  // 'post /auth/local': 'AuthController.callback',
-  // 'post /auth/local/:action': 'AuthController.callback',
-
-
-
-
-  'get /auth/:provider': 'AuthController.provider',
-  'get /auth/:provider/callback': 'AuthController.callback',
-  'get /auth/:provider/:action': 'AuthController.callback',
 
   /***************************************************************************
   *                                                                          *
