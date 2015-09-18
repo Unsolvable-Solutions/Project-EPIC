@@ -89,7 +89,7 @@ var auth = function(data, cb)
 serialPort.on("open", function ()
 {
 	console.log('open');
-	cb('r');
+
 	serialPort.on('data', function(data)
 	{
 		console.log('data received: ' + data);
