@@ -17,6 +17,7 @@ import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -32,8 +33,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -577,13 +581,13 @@ public class MainActivity extends ActionBarActivity {
      *
      * @return A boolean value according the the mobile data state is returned.
      */
-    private static boolean isMobileDataEnabledFromLollipop(Context context) {
+   /* private static boolean isMobileDataEnabledFromLollipop(Context context) {
         boolean state = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             state = Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) == 1;
         }
         return state;
-    }
+    }*/
 
     /**
      * The functionality provided by the StoreEmpID is to store/change a given Employee ID on
@@ -630,6 +634,164 @@ public class MainActivity extends ActionBarActivity {
         final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
         String id = tm.getDeviceId();
         return id;
+    }
+
+    /*Functions to enable and disable mobile data (3g/4g). Google currently doesn't have
+   * an API interface for mobile data thus a workaround is needed. This meothod currently
+   * needs a rooted device running android Lolipop 5.1*/
+
+    /**
+     * The functionality provided by the isMobileDataEnabledFromLollipop is check what the
+     * current state of the mobile data is and return it as a boolean value.
+     *
+     * @param state - Stores an input stream to the state file.
+     * @param context - The context of the current state of the application. Used to get info
+     *                on another part of this application.
+     *
+     * @return A boolean value according the the mobile data state is returned.
+     */
+    private static boolean isMobileDataEnabledFromLollipop(Context context) {
+        boolean state = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            state = Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) == 1;
+        }
+        return state;
+    }
+
+    /**
+     * The functionality provided by the getTransactionCode is to get the value of the
+     * "TRANSACTION_setDataEnabled" field view the use of java reflection. This value is needed
+     * to build a command to excecute via runtime. It also makes the field accessible.
+     *
+     * @param context - The context of the current state of the application. Used to get info
+     *                on another part of this application.
+     * @param mTelephonyManager - Stores service to handle telephony features of the device.
+     * @param mTelephonyClass - A class object representing mTelephonyManager.
+     * @param mTelephonyMethod - A method object is created and stored which represents
+     *                         getITelephony.
+     * @param mTelephonyStub - Stores result of dynamically invoking mTelephonyMethod.
+     * @param mTelephonyStubClass - A class object representing mTelephonyStub.
+     * @param mClass - Stores all classes that are apart of mTelephonyStubClass.
+     * @param field - Stores the TRANSACTION_setDataEnabled of the mClass.
+     *
+     * @return A String value representation of the "TRANSACTION_setDataEnabled" is returned.
+     */
+    private static String getTransactionCode(Context context) throws Exception {
+        try {
+            final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            final Class<?> mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
+            final Method mTelephonyMethod = mTelephonyClass.getDeclaredMethod("getITelephony");
+            mTelephonyMethod.setAccessible(true);
+            final Object mTelephonyStub = mTelephonyMethod.invoke(mTelephonyManager);
+            final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
+            final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
+            final Field field = mClass.getDeclaredField("TRANSACTION_setDataEnabled");
+            field.setAccessible(true);
+            return String.valueOf(field.getInt(null));
+        } catch (Exception e) {
+            // The "TRANSACTION_setDataEnabled" field is not available,
+            // or named differently in the current API level, so we throw
+            // an exception and inform users that the method is not available.
+            throw e;
+        }
+    }
+
+    /**
+     * The functionality provided by the executeCommandViaSu is to execute commands that it gets
+     * via su (super user). This executes the command as a runtime call.
+     *
+     * @param context - The context of the current state of the application. Used to get info
+     *                on another part of this application.
+     * @param option - A refrence to extra options that needs to be added to the runtime call.
+     * @param command - A refrence to the command that needs to be executed.
+     * @param success - Stores a boolean value that is used to see if it managed to execute via
+     *                the given path..
+     * @param su - The path to the super user on the device is stored here.
+     */
+    private static void executeCommandViaSu(Context context, String option, String command) {
+        boolean success = false;
+        String su = "su";
+        for (int i=0; i < 3; i++) {
+            // Default "su" command executed successfully, then quit.
+            if (success) {
+                break;
+            }
+            // Else, execute other "su" commands.
+            if (i == 1) {
+                su = "/system/xbin/su";
+            } else if (i == 2) {
+                su = "/system/bin/su";
+            }
+            try {
+                // Execute command as "su".
+                Runtime.getRuntime().exec(new String[]{su, option, command});
+            } catch (IOException e) {
+                success = false;
+                // Oops! Cannot execute `su` for some reason.
+                // Log error here.
+            } finally {
+                success = true;
+            }
+        }
+    }
+    public void test(View v)
+    {
+        try {
+            setMobileNetworkfromLollipop(getApplicationContext(),0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * The functionality provided by the setMobileNetworkfromLollipop is to toggle the state
+     * of mobile data.
+     *
+     * @param context - The context of the current state of the application. Used to get info
+     *                on another part of this application.
+     * @param mobileState - A refrence to which state the mobile data needs to change to.
+     * @param command - The command that will be executed via su is stored here.
+     * @param state - Stores the next state of the mobile data to switch to.
+     * @param transactionCode - Stores the value returned by the getTransactionCode function.
+     * @param mSubscriptionManager - Stores service to handle telephony subscription features of
+     *                             the device.
+     * @param subscriptionId - The subscription id of the SIM is stored here.
+     */
+    public static void setMobileNetworkfromLollipop(Context context,int mobileState) throws Exception {
+        String command = null;
+        int state = mobileState;
+        try {
+            // Get the current state of the mobile network.
+            state = mobileState;
+            // Get the value of the "TRANSACTION_setDataEnabled" field.
+            String transactionCode = getTransactionCode(context);
+            // Android 5.1+ (API 22) and later.
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                //The next comment line is a command for android studio. Do not remove it.
+                //noinspection ResourceType
+                SubscriptionManager mSubscriptionManager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                // Loop through the subscription list i.e. SIM list.
+                for (int i = 0; i < mSubscriptionManager.getActiveSubscriptionInfoCountMax(); i++) {
+                    if (transactionCode != null && transactionCode.length() > 0) {
+                        // Get the active subscription ID for a given SIM card.
+                        int subscriptionId = mSubscriptionManager.getActiveSubscriptionInfoList().get(i).getSubscriptionId();
+                        // Execute the command via `su` to turn off
+                        // mobile network for a subscription service.
+                        command = "service call phone " + transactionCode + " i32 " + subscriptionId + " i32 " + state;
+                        executeCommandViaSu(context, "-c", command);
+                    }
+                }
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+                // Android 5.0 (API 21) only.
+                if (transactionCode != null && transactionCode.length() > 0) {
+                    // Execute the command via `su` to turn off mobile network.
+                    command = "service call phone " + transactionCode + " i32 " + state;
+                    executeCommandViaSu(context, "-c", command);
+                }
+            }
+        } catch(Exception e) {
+            // Oops! Something went wrong, so we throw the exception here.
+            throw e;
+        }
     }
 
     public void unitTests(View v)
