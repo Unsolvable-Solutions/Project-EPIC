@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:text="Enter Room"
         android:id="@+id/button"
-        android:layout_below="@+id/btnSave"
+        android:layout_below="@+id/btnSave"/>
 
     <Button
         android:layout_width="wrap_content"
