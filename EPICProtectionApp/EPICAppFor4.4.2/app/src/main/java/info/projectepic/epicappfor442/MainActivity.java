@@ -63,7 +63,7 @@ public class MainActivity extends ActionBarActivity {
     private String EmpIDFile = "EMPID";
     private List<String> restoreSettings = new ArrayList<String>();
     protected boolean isInSafeMode = false;
-    private int compramized = 0;
+    //private int compramized = 0;
 
     /**
      * The functionality provided by the onCreate function is to act as the constructor of the
@@ -479,8 +479,7 @@ public class MainActivity extends ActionBarActivity {
             }
         };
 
-<<<<<<< HEAD
-=======
+
         /*Start checking if compramized*/
         /*try {
             Thread.sleep(2000);
@@ -507,7 +506,7 @@ public class MainActivity extends ActionBarActivity {
             }
         };
 
->>>>>>> 3d97d5bdb6a54c855a2b15f068387fe550393a74
+
         thread.start();
     }
 
@@ -549,7 +548,7 @@ public class MainActivity extends ActionBarActivity {
      */
     private void LoadSnapShot()
     {
-<<<<<<< HEAD
+
         isInSafeMode = false;
         try
         {
@@ -560,11 +559,11 @@ public class MainActivity extends ActionBarActivity {
         if (compramized>0)
         {//Warn that phone has been comramized
          }
-=======
+
         /*Check if phone is compramized*/
         synchronized (this){
         compramized = false;}
->>>>>>> 3d97d5bdb6a54c855a2b15f068387fe550393a74
+
         //Get data from file if array is empty
         if (restoreSettings.size() == 0)
         {
@@ -695,7 +694,7 @@ public class MainActivity extends ActionBarActivity {
         return id;
     }
 
-<<<<<<< HEAD
+
     /*Functions to enable and disable mobile data (3g/4g). Google currently doesn't have
    * an API interface for mobile data thus a workaround is needed. This meothod currently
    * needs a rooted device running android Lolipop 5.1*/
@@ -854,9 +853,9 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-=======
+
     public ProgressDialog pDialog;
->>>>>>> 3d97d5bdb6a54c855a2b15f068387fe550393a74
+
     public void unitTests(View v)
     {
         ProgressDialog dialog = new ProgressDialog(MainActivity.this);
