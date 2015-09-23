@@ -6,8 +6,6 @@
  */
 
 module.exports = {
-	me: function (req, res) {
-		res.json(req.session.user);
-	}
+
 };
 

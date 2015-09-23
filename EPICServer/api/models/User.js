@@ -29,10 +29,9 @@ var User = {
     email     : { type: 'email',  unique: true },
     deviceID     : { type: 'string',  unique: true },
     password     : { type: 'string',  unique: false },
-    passports : { collection: 'Passport', via: 'user' },
-    meetingsOwned : {collection: 'Meeting', via: 'owner'},
-    meetingsAttended : {collection: 'Meeting', via: 'attendees'},
-    meetingInvites : {collection: 'Meeting', via: 'invitees'}
+    meetingsRSVPed : {collection: 'Meeting', via: 'rsvp'},
+    meetingsAttended : {collection: 'Meeting', via: 'attends'},
+    meetingInvites : {collection: 'Meeting', via: 'invites'}
   },
 
   beforeCreate: function (values, cb) {

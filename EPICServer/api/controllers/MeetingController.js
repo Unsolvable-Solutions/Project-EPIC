@@ -6,14 +6,5 @@
  */
 
 module.exports = {
-	meetings: function (req, res) {
-    
-	Meeting.find({},function(m){
-	    res.view({
-	    	meetings : m,
-	    	errors : req.flash('error')
-	    });
-	});
 
-  }
 };

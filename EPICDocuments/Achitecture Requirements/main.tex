@@ -70,13 +70,14 @@ The different components of the system should work together and the system must 
 
 \subsection{Architecture constraints}
 	\begin{itemize}
-		\item The Mobile application can only be used on Andriod version 4.4 and 5.1.
-		\item The Node can only communite with one device at a time.
+		\item The Mobile application can only be used on Android version 4.4 (for 5.1, we need the release to be able to test fully).
+		\item The Node can only communicate with one device at a time.
 		\item The Node can only work if the specific Mobile Application is installed.
 		\item The Edison  can only be connected to three Nodes maximum at a time.
 		\item The Malware application can only be used on Android version 4.4 and higher.
 		\item The Malware server has a minimum Java version 7.
 		\item The Malware server may run on any operating system that supports Java.
+		\item For the application to work as secure as possible, it should be open at all times when inside a meeting room.
 
 	\end{itemize}
 \newpage	\section{Architectural patterns or styles}
