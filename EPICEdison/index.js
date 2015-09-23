@@ -81,7 +81,7 @@ var auth = function(data, cb)
 		cb('e');
 	};
 
-	int index;
+	var index;
 	if ((index = outList.indexOf(data)) >= 0) 
 	{
 		console.log(data,'found in local cache.');
@@ -132,7 +132,7 @@ var auth = function(data, cb)
 			console.log('Sync complete. looking for',data);
 			if (meeting.rsvp)
 			{
-				int index = rsvp.indexOf(data);
+				var index = rsvp.indexOf(data);
 				if (index >= 0) 
 				{
 					console.log(data,'found in new local cache.');
@@ -237,12 +237,14 @@ io.on('connection', function(socket){
 	});
 });
 
-var Lcd = require('../lcd'),
-lcd = new Lcd({rs: 27, e: 65, data: [23, 26, 46, 47], cols: 8, rows: 1});
+var Lcd = require('lcd');
+var lcd = new Lcd({rs: 8, e: 9, data: [4, 5, 6, 7], cols: 8, rows: 1});
  
-lcd.on('ready', function () {
-  setInterval(function () {
-    lcd.setCursor(0, 0);
-    lcd.print(new Date().toISOString().substring(11, 19));
-  }, 1000);
+lcd.on('ready', function ()
+{
+	setInterval(function ()
+	{
+		lcd.setCursor(0, 0);
+		lcd.print(new Date().toISOString().substring(11, 19));
+	}, 1000);
 });
