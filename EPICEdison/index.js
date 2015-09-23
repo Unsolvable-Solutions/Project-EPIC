@@ -236,15 +236,3 @@ io.on('connection', function(socket){
 		});
 	});
 });
-
-var Lcd = require('lcd');
-var lcd = new Lcd({rs: 8, e: 9, data: [4, 5, 6, 7], cols: 8, rows: 1});
- 
-lcd.on('ready', function ()
-{
-	setInterval(function ()
-	{
-		lcd.setCursor(0, 0);
-		lcd.print(new Date().toISOString().substring(11, 19));
-	}, 1000);
-});
