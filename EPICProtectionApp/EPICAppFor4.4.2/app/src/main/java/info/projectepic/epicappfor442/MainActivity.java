@@ -13,10 +13,13 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -32,8 +35,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +62,8 @@ public class MainActivity extends ActionBarActivity {
     private String UnitFileName="UnitTests";
     private String EmpIDFile = "EMPID";
     private List<String> restoreSettings = new ArrayList<String>();
+    protected boolean isInSafeMode = false;
+    //private int compramized = 0;
 
     /**
      * The functionality provided by the onCreate function is to act as the constructor of the
@@ -123,7 +131,7 @@ public class MainActivity extends ActionBarActivity {
                     public void onClick(View view) {
                         //Implement event handling
                         //Save data to file
-                        TextView uname = (TextView)findViewById(R.id.tvEmpId);
+                        TextView uname = (TextView)findViewById(R.id.etEmpid);
                         TextView upass = (TextView)findViewById(R.id.etPwd);
                         String stext =uname.getText().toString()+":"+upass.getText().toString();
                         StoreEmpID(stext);
@@ -194,13 +202,16 @@ public class MainActivity extends ActionBarActivity {
                 this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
         try {
-            ndef.addDataType("*/*");    /* Handles all MIME based dispatches.
+            ndef.addDataType("text/plain");    /* Handles all MIME based dispatches.
                                        You should specify only the ones that you need. */
         }
         catch (IntentFilter.MalformedMimeTypeException e) {
             throw new RuntimeException("fail", e);
         }
         intentFiltersArray = new IntentFilter[] {ndef, };
+
+        this.onNewIntent(this.getIntent());
+        //m.onNewIntent(this.getIntent());
     }
 
     /**
@@ -390,11 +401,15 @@ public class MainActivity extends ActionBarActivity {
      * @param theData - A string of the devices that were on sperated by a ':'.
      * @param fs - Opens a stream for data to be stored to a private file.
      */
+    protected boolean compramized = false;
+    protected int numCompr = 0;
     private void StoreSnapshot()
     {
+        compramized = true;
+        numCompr = 0;
 
         BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
-        WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+        final WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
 
         if(bt!=null)
         {
@@ -443,7 +458,56 @@ public class MainActivity extends ActionBarActivity {
         }
         catch (Exception e)
         {}
+        isInSafeMode = true;
+        /*Start thread to see if data is compramized*/
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
+                    WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+                    while(isInSafeMode) {
 
+                        /*Check whether anything is turned on*/
+                        if ((wifi.isWifiEnabled())||(bt.isEnabled()))
+                        {compramized++;}
+                        sleep(2000);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+
+        /*Start checking if compramized*/
+        /*try {
+            Thread.sleep(2000);
+        }
+        catch (Exception e){}*/
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
+                    final WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+                    while(compramized) {
+                        if (bt.isEnabled()|| wifi.isWifiEnabled())
+                        {
+                            numCompr++;
+                        }
+                        sleep(2000);
+                        //handler.post(this);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+
+        thread.start();
     }
 
     /**
@@ -484,6 +548,22 @@ public class MainActivity extends ActionBarActivity {
      */
     private void LoadSnapShot()
     {
+
+        isInSafeMode = false;
+        try
+        {
+            Thread.sleep(2000);
+        }
+        catch (Exception e)
+        {}
+        if (compramized>0)
+        {//Warn that phone has been comramized
+         }
+
+        /*Check if phone is compramized*/
+        synchronized (this){
+        compramized = false;}
+
         //Get data from file if array is empty
         if (restoreSettings.size() == 0)
         {
@@ -532,6 +612,21 @@ public class MainActivity extends ActionBarActivity {
         }
         //Reset list
         restoreSettings = new ArrayList<String>();
+        if(numCompr>0)
+        {
+            int i = 10;
+            while(i>0)
+            {
+                i--;
+                setActivityBackgroundColor(Color.BLUE);
+                try {
+                    Thread.sleep(1000);
+                    setActivityBackgroundColor(Color.RED);
+                    Thread.sleep(1000);
+                }
+                catch (Exception e){}
+            }
+        }
     }
 
     /**
@@ -544,13 +639,13 @@ public class MainActivity extends ActionBarActivity {
      *
      * @return A boolean value according the the mobile data state is returned.
      */
-    private static boolean isMobileDataEnabledFromLollipop(Context context) {
+   /* private static boolean isMobileDataEnabledFromLollipop(Context context) {
         boolean state = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             state = Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) == 1;
         }
         return state;
-    }
+    }*/
 
     /**
      * The functionality provided by the StoreEmpID is to store/change a given Employee ID on
@@ -599,148 +694,339 @@ public class MainActivity extends ActionBarActivity {
         return id;
     }
 
+
+    /*Functions to enable and disable mobile data (3g/4g). Google currently doesn't have
+   * an API interface for mobile data thus a workaround is needed. This meothod currently
+   * needs a rooted device running android Lolipop 5.1*/
+
+    /**
+     * The functionality provided by the isMobileDataEnabledFromLollipop is check what the
+     * current state of the mobile data is and return it as a boolean value.
+     *
+     * @param state - Stores an input stream to the state file.
+     * @param context - The context of the current state of the application. Used to get info
+     *                on another part of this application.
+     *
+     * @return A boolean value according the the mobile data state is returned.
+     */
+    private static boolean isMobileDataEnabledFromLollipop(Context context) {
+        boolean state = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            state = Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) == 1;
+        }
+        return state;
+    }
+
+    /**
+     * The functionality provided by the getTransactionCode is to get the value of the
+     * "TRANSACTION_setDataEnabled" field view the use of java reflection. This value is needed
+     * to build a command to excecute via runtime. It also makes the field accessible.
+     *
+     * @param context - The context of the current state of the application. Used to get info
+     *                on another part of this application.
+     * @param mTelephonyManager - Stores service to handle telephony features of the device.
+     * @param mTelephonyClass - A class object representing mTelephonyManager.
+     * @param mTelephonyMethod - A method object is created and stored which represents
+     *                         getITelephony.
+     * @param mTelephonyStub - Stores result of dynamically invoking mTelephonyMethod.
+     * @param mTelephonyStubClass - A class object representing mTelephonyStub.
+     * @param mClass - Stores all classes that are apart of mTelephonyStubClass.
+     * @param field - Stores the TRANSACTION_setDataEnabled of the mClass.
+     *
+     * @return A String value representation of the "TRANSACTION_setDataEnabled" is returned.
+     */
+    private static String getTransactionCode(Context context) throws Exception {
+        try {
+            final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            final Class<?> mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
+            final Method mTelephonyMethod = mTelephonyClass.getDeclaredMethod("getITelephony");
+            mTelephonyMethod.setAccessible(true);
+            final Object mTelephonyStub = mTelephonyMethod.invoke(mTelephonyManager);
+            final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
+            final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
+            final Field field = mClass.getDeclaredField("TRANSACTION_setDataEnabled");
+            field.setAccessible(true);
+            return String.valueOf(field.getInt(null));
+        } catch (Exception e) {
+            // The "TRANSACTION_setDataEnabled" field is not available,
+            // or named differently in the current API level, so we throw
+            // an exception and inform users that the method is not available.
+            throw e;
+        }
+    }
+
+    /**
+     * The functionality provided by the executeCommandViaSu is to execute commands that it gets
+     * via su (super user). This executes the command as a runtime call.
+     *
+     * @param context - The context of the current state of the application. Used to get info
+     *                on another part of this application.
+     * @param option - A refrence to extra options that needs to be added to the runtime call.
+     * @param command - A refrence to the command that needs to be executed.
+     * @param success - Stores a boolean value that is used to see if it managed to execute via
+     *                the given path..
+     * @param su - The path to the super user on the device is stored here.
+     */
+    private static void executeCommandViaSu(Context context, String option, String command) {
+        boolean success = false;
+        String su = "su";
+        for (int i=0; i < 3; i++) {
+            // Default "su" command executed successfully, then quit.
+            if (success) {
+                break;
+            }
+            // Else, execute other "su" commands.
+            if (i == 1) {
+                su = "/system/xbin/su";
+            } else if (i == 2) {
+                su = "/system/bin/su";
+            }
+            try {
+                // Execute command as "su".
+                Runtime.getRuntime().exec(new String[]{su, option, command});
+            } catch (IOException e) {
+                success = false;
+                // Oops! Cannot execute `su` for some reason.
+                // Log error here.
+            } finally {
+                success = true;
+            }
+        }
+    }
+    public void test(View v)
+    {
+        try {
+            setMobileNetworkfromLollipop(getApplicationContext(),0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * The functionality provided by the setMobileNetworkfromLollipop is to toggle the state
+     * of mobile data.
+     *
+     * @param context - The context of the current state of the application. Used to get info
+     *                on another part of this application.
+     * @param mobileState - A refrence to which state the mobile data needs to change to.
+     * @param command - The command that will be executed via su is stored here.
+     * @param state - Stores the next state of the mobile data to switch to.
+     * @param transactionCode - Stores the value returned by the getTransactionCode function.
+     * @param mSubscriptionManager - Stores service to handle telephony subscription features of
+     *                             the device.
+     * @param subscriptionId - The subscription id of the SIM is stored here.
+     */
+    public static void setMobileNetworkfromLollipop(Context context,int mobileState) throws Exception {
+        String command = null;
+        int state = mobileState;
+        try {
+            // Get the current state of the mobile network.
+            state = mobileState;
+            // Get the value of the "TRANSACTION_setDataEnabled" field.
+            String transactionCode = getTransactionCode(context);
+            // Android 5.1+ (API 22) and later.
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                //The next comment line is a command for android studio. Do not remove it.
+                //noinspection ResourceType
+                SubscriptionManager mSubscriptionManager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                // Loop through the subscription list i.e. SIM list.
+                for (int i = 0; i < mSubscriptionManager.getActiveSubscriptionInfoCountMax(); i++) {
+                    if (transactionCode != null && transactionCode.length() > 0) {
+                        // Get the active subscription ID for a given SIM card.
+                        int subscriptionId = mSubscriptionManager.getActiveSubscriptionInfoList().get(i).getSubscriptionId();
+                        // Execute the command via `su` to turn off
+                        // mobile network for a subscription service.
+                        command = "service call phone " + transactionCode + " i32 " + subscriptionId + " i32 " + state;
+                        executeCommandViaSu(context, "-c", command);
+                    }
+                }
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+                // Android 5.0 (API 21) only.
+                if (transactionCode != null && transactionCode.length() > 0) {
+                    // Execute the command via `su` to turn off mobile network.
+                    command = "service call phone " + transactionCode + " i32 " + state;
+                    executeCommandViaSu(context, "-c", command);
+                }
+            }
+        } catch(Exception e) {
+            // Oops! Something went wrong, so we throw the exception here.
+            throw e;
+        }
+    }
+
+
+    public ProgressDialog pDialog;
+
     public void unitTests(View v)
     {
-        /*ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+        ProgressDialog dialog = new ProgressDialog(MainActivity.this);
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         dialog.setMessage("Loading. Please wait...");
         dialog.setIndeterminate(true);
         dialog.setCanceledOnTouchOutside(false);
-        dialog.show();*/
-        String testOne="";
-        String testTwo="";
-        String testThree="";
-        String testFour="";
-        String theData = "";
+        dialog.show();
+        pDialog = dialog;
+        Thread thread = new Thread() {
 
-        BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
-        WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+            @Override
+            public void run() {
+                try {
+                    String testOne="";
+                    String testTwo="";
+                    String testThree="";
+                    String testFour="";
+                    String theData = "";
+
+                    BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
+                    WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
         /*Store and load snapshot needed to be tested together as they work together.*/
 
-        //Store and load snapshot snapshot
-        //Test bt and wifi on
-        bt.enable();
-        wifi.setWifiEnabled(true);
-        try
-        {Thread.sleep(5000);}
-        catch (Exception e)
-        {}
-        StoreSnapshot();
-        try
-        {Thread.sleep(5000);}
-        catch (Exception e)
-        {}
-        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
-        {testOne="Wifi and bluetooth on. Called 'StoreSnapshot'. Test Passed.";}
-        else
-        {testOne="Wifi and bluetooth on. Called 'StoreSnapshot'. Test Failed.";}
-        LoadSnapShot();
-        try
-        {Thread.sleep(5000);}
-        catch (Exception e)
-        {}
-        if ((bt.isEnabled())&&(wifi.isWifiEnabled()))
+                    //Store and load snapshot snapshot
+                    //Test bt and wifi on
+                    bt.enable();
+                    wifi.setWifiEnabled(true);
+                    try
+                    {Thread.sleep(5000);}
+                    catch (Exception e)
+                    {}
+                    StoreSnapshot();
+                    try
+                    {Thread.sleep(5000);}
+                    catch (Exception e)
+                    {}
+                    if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+                    {testOne="Wifi and bluetooth on. Called 'StoreSnapshot'. Test Passed.";}
+                    else
+                    {testOne="Wifi and bluetooth on. Called 'StoreSnapshot'. Test Failed.";}
+                    LoadSnapShot();
+                    try
+                    {Thread.sleep(5000);}
+                    catch (Exception e)
+                    {}
+                    if ((bt.isEnabled())&&(wifi.isWifiEnabled()))
 
-        {testOne+="\r\nWifi and bluetooth were on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
-        else
-        {testOne+="\r\nWifi and bluetooth on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
+                    {testOne+="\r\nWifi and bluetooth were on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
+                    else
+                    {testOne+="\r\nWifi and bluetooth on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
 
-        //Test bt on wifi off
-        bt.enable();
-        wifi.setWifiEnabled(false);
-        try
-        {Thread.sleep(5000);}
-        catch (Exception e)
-        {}
-        StoreSnapshot();
+                    //Test bt on wifi off
+                    bt.enable();
+                    wifi.setWifiEnabled(false);
+                    try
+                    {Thread.sleep(5000);}
+                    catch (Exception e)
+                    {}
+                    StoreSnapshot();
 
-        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
-        {testTwo="Wifi off and bluetooth on. Called 'StoreSnapshot'. Test Passed.";}
-        else
-        {testTwo="Wifi off and bluetooth on. Called 'StoreSnapshot'. Test Failed.";}
-        try
-        {Thread.sleep(5000);}
-        catch (Exception e)
-        {}
-        LoadSnapShot();
-        try
-        {Thread.sleep(5000);}
-        catch (Exception e)
-        {}
-        if ((bt.isEnabled())&&(!wifi.isWifiEnabled()))
-        {testTwo+="\r\nWifi off and bluetooth were on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
-        else
-        {testTwo+="\r\nWifi off and bluetooth on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
+                    if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+                    {testTwo="Wifi off and bluetooth on. Called 'StoreSnapshot'. Test Passed.";}
+                    else
+                    {testTwo="Wifi off and bluetooth on. Called 'StoreSnapshot'. Test Failed.";}
+                    try
+                    {Thread.sleep(5000);}
+                    catch (Exception e)
+                    {}
+                    LoadSnapShot();
+                    try
+                    {Thread.sleep(5000);}
+                    catch (Exception e)
+                    {}
+                    if ((bt.isEnabled())&&(!wifi.isWifiEnabled()))
+                    {testTwo+="\r\nWifi off and bluetooth were on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
+                    else
+                    {testTwo+="\r\nWifi off and bluetooth on before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
 
-        //Test wifi on bt off
-        bt.disable();
-        wifi.setWifiEnabled(true);
-        try
-        {Thread.sleep(5000);}
-        catch (Exception e)
-        {}
-        StoreSnapshot();
+                    //Test wifi on bt off
+                    bt.disable();
+                    wifi.setWifiEnabled(true);
+                    try
+                    {Thread.sleep(5000);}
+                    catch (Exception e)
+                    {}
+                    StoreSnapshot();
 
-        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
-        {testThree="Wifi on and bluetooth off. Called 'StoreSnapshot'. Test Passed.";}
-        else
-        {testThree="Wifi on and bluetooth off. Called 'StoreSnapshot'. Test Failed.";}
-        try
-        {Thread.sleep(5000);}
-        catch (Exception e)
-        {}
-        LoadSnapShot();
-        try
-        {Thread.sleep(5000);}
-        catch (Exception e)
-        {}
-        if ((!bt.isEnabled())&&(wifi.isWifiEnabled()))
-        {testThree+="\r\nWifi on and bluetooth were off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
-        else
-        {testThree+="\r\nWifi on and bluetooth off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
+                    if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+                    {testThree="Wifi on and bluetooth off. Called 'StoreSnapshot'. Test Passed.";}
+                    else
+                    {testThree="Wifi on and bluetooth off. Called 'StoreSnapshot'. Test Failed.";}
+                    try
+                    {Thread.sleep(5000);}
+                    catch (Exception e)
+                    {}
+                    LoadSnapShot();
+                    try
+                    {Thread.sleep(5000);}
+                    catch (Exception e)
+                    {}
+                    if ((!bt.isEnabled())&&(wifi.isWifiEnabled()))
+                    {testThree+="\r\nWifi on and bluetooth were off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
+                    else
+                    {testThree+="\r\nWifi on and bluetooth off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
 
-        //Test both off
-        bt.disable();
-        wifi.setWifiEnabled(false);
-        try
-        {Thread.sleep(5000);}
-        catch (Exception e)
-        {}
-        StoreSnapshot();
+                    //Test both off
+                    bt.disable();
+                    wifi.setWifiEnabled(false);
+                    try
+                    {Thread.sleep(5000);}
+                    catch (Exception e)
+                    {}
+                    StoreSnapshot();
 
-        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
-        {testThree="Wifi off and bluetooth off. Called 'StoreSnapshot'. Test Passed.";}
-        else
-        {testThree="Wifi off and bluetooth off. Called 'StoreSnapshot'. Test Failed.";}
-        try
-        {Thread.sleep(5000);}
-        catch (Exception e)
-        {}
-        LoadSnapShot();
-        try
-        {Thread.sleep(5000);}
-        catch (Exception e)
-        {}
-        if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
-        {testThree+="\r\nWifi off and bluetooth were off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
-        else
-        {testThree+="\r\nWifi off and bluetooth off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
+                    if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+                    {testThree="Wifi off and bluetooth off. Called 'StoreSnapshot'. Test Passed.";}
+                    else
+                    {testThree="Wifi off and bluetooth off. Called 'StoreSnapshot'. Test Failed.";}
+                    try
+                    {Thread.sleep(5000);}
+                    catch (Exception e)
+                    {}
+                    LoadSnapShot();
+                    try
+                    {Thread.sleep(5000);}
+                    catch (Exception e)
+                    {}
+                    if ((!bt.isEnabled())&&(!wifi.isWifiEnabled()))
+                    {testThree+="\r\nWifi off and bluetooth were off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Passed.";}
+                    else
+                    {testThree+="\r\nWifi off and bluetooth off before 'StoreSnapshot' was called. Called 'LoadSnapshot'. Test Failed.";}
 
 
 
         /*Write test results to file*/
-        theData += testOne+"\r\n\r\n"+testTwo+"\r\n\r\n"+testThree+"\r\n\r\n"+testFour;
-        try
-        {
-            FileOutputStream fs = openFileOutput(UnitFileName, Context.MODE_PRIVATE);
-            fs.write(theData.getBytes());
-            fs.close();
-        }
-        catch (Exception e)
-        {}
-       // dialog.dismiss();
-        Toast.makeText(getApplicationContext(), "Unit Tests Done.", Toast.LENGTH_LONG).show();
-        Intent i = new Intent(getApplicationContext(), UnitTest.class);
-        startActivity(i);
+                    theData += testOne+"\r\n\r\n"+testTwo+"\r\n\r\n"+testThree+"\r\n\r\n"+testFour;
+                    try
+                    {
+                        FileOutputStream fs = openFileOutput(UnitFileName, Context.MODE_PRIVATE);
+                        fs.write(theData.getBytes());
+                        fs.close();
+                    }
+                    catch (Exception e)
+                    {}
+                    pDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "Unit Tests Done.", Toast.LENGTH_LONG).show();
+
+                    //dialog.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+
+        thread.start();
+        new CountDownTimer(65000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                //mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                Intent i = new Intent(MainActivity.this, UnitTest.class);
+                startActivity(i);
+                //mTextField.setText("done!");
+            }
+        }.start();
+
+
+
     }
 }
