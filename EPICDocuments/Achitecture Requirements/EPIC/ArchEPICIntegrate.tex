@@ -1,0 +1,14 @@
+
+
+\begin{comment}
+\section{Integration channels}
+\begin{itemize}
+		\item The user interact and have access to the system via the website ( www.project-epic.info ). The user may register as a user, log in, create a meeting,view all upcomming and past meetings and view,delete and edit his own account. The website then sends the requests for these functions to the server. If the user is an administrative user, they may additionally add more administrators, remove meetings, view all user details.
+\item The Edison sends a request to the server for the attendant list by sending the meeting identification. The Edison then have the list of attendees and updates the list every hour or on a request.
+\item The Nodes communicate with the Edison via serial port. The Nodes send the email address and password that they received to the Edison to confirm if the user may enter the meeting. The Edison respond with a true or false, if the user may enter or not. The Nodes neopixels will then turn red if access is denied and green if access is granted.
+\item The Mobile Application communicates with the Node via NFC. It sends the email address and password to the Node and receive a response stating if the user may enter the meeting or not. If access is granted the phones screen turn green and all communication is shut down, otherwise the screen just turns red.
+\item The  user have to install the Mobile Application. If the user wants to scan the phone, he has to open the application before scanning. The first time the user opens the application he has to fill out his details. 
+
+	\end{itemize}
+
+	\end{comment}

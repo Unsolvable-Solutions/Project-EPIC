@@ -1,0 +1,15 @@
+\section{Quality Requirements}
+\subsection{Scalability}
+%iets van die server kan meer as een  foon/device opvang tot en met ?? devices
+%Ook dit kan verewig aanhou record? tot die geheue vol is. -> moet dalk iets soos 'n uur limit maak
+%\item{Malware} :
+The server can handle multiple connections at a time of which a list is created. One device can then be selected from the list from which the live stream will be requested. The server can only handle one live stream recording at a time.
+
+\subsection{Performance}
+The malware application will have a minimal effect to the application it is embedded in such that it is almost invisible. The server will have a number of devices connected but only one device can stream at a time. I will have a minimal effect on the host machine. There is a limit on the recording time as the device will record until the user stops the recording. 
+
+\subsection{Reliability and Availability}
+The malware application will be reliable because if the user closes the application the malware will run as a background task.
+
+\subsection{Portability}
+The malware server is easily portable as it can run on any computer running java.

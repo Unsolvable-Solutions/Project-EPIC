@@ -1,0 +1,60 @@
+\section{Architectural patterns}
+Different structural patterns are used. Some of these patterns stretch over the whole system, while others are just used in parts of the system.
+\subsection{Layering}The whole system is divided into three layers
+\subsubsection{Layers:}
+\begin{enumerate}
+\item The Presentation Layer
+    \begin{itemize}
+    \item The web page
+    \item The mobile application
+    \end{itemize}
+\item The Business Logic Layer
+ \begin{itemize}
+
+
+    \item The Node
+    \item The Gateway
+        \end{itemize}
+\item The Data Access Layer
+    \begin{itemize}
+    \item The server
+    \end{itemize}
+
+\end{enumerate}
+\subsubsection{Advantages of using the Layering pattern}
+\begin{description}
+\item[Pluggability] One layer can be replaced or changed, and only the adjacent layers will have to be updated. For example if another server is needed, or if the Android Mobile Application is not enough and a iOS application is needed.
+\item[Reusability] Since the layers are developed to function relative separately, they can be reused by another system, for example the server or the NFC Node. It is possible for any of the layers to be reused by another system, the code would only have to be adjusted a little if needed.  
+\item[Testability] Since every layer performs its own methods relatively separate from the rest of the layers, unit testing is done very easily. Each of these layers can be tested separately with pseudo input values from the adjacent layers. If the layers perform as it should, they can be tested together.
+\item[Complexity reduction] All the tasks are divided into the different layers, and therefore the system is simplified. Each layer only has to perform its own tasks.
+
+\item[Maintainability] The layers are separate, and are therefore easier to manage and update. It can also be developed by different developers simultaneously. 
+\end{description}
+\subsubsection{Disadvantages of using the Layering pattern}
+\begin{description}
+\item[High Maintenance Cost] If a lower level is changed, the higher level sometimes also need to be adjusted.
+\item[Communication Overheads] The information could be send  unnecessary through many layers. For example when the user scans the mobile device, the email address and password is sends from the phone to the NFC, then gateway, then server, and a respond is send back through the same layers. Now it could be argued that it would be easier for the application to communicate directly with the server, but all the layers in between performs additional tasks in the process, which is needed.
+
+\end{description}
+
+\subsection{Model-View-Controller}
+The server uses a MVC architecture.
+\begin{description}
+\item[Model] It is represented by the document orientated database that the server uses.
+\item[View] The web interface serves as the view.
+\item[Controller] All the tasks and functions that the user may do via the wep page, like creating a meeting or changing the users of a meeting are the controller.
+\end{description}
+The usage of the MVC architecture makes the server more maintainable, testable, reusable and simple.\\ 
+ The \textbf{maintainability} can easily be seen in the development. Each of the MVC can be developed separately and just be merged afterwards.\\
+The separations of the different concerns makes the \textbf{testability} so much easier. Unit testing can be done and the whole server can then also be tested.\\
+The \textbf{reusability} can be seen with the Model, in this case called the database. The database is also used by the Edison for the access control.\\
+ The separation of the different concerns shows the \textbf{simplicity} of the server. 
+
+%\subsection{Java-EE Architecture}
+%The Architecture consist of 3 layers:
+
+%\begin{description}
+%\item{The Access layer} The website and also the Mobile Application
+%\item{The Business Process layer} The Nodes and the Edison
+%\item{The Persistence layer layer} The web server
+%\end{description}
