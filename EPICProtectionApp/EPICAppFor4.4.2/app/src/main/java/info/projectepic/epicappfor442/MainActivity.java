@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -100,68 +101,9 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
 
-        //Event listeners for the buttons
-        View.OnClickListener ListenerEnter=
-                new View.OnClickListener(){
-                    @Override
-                    public void onClick(View view) {
-                        StoreSnapshot();
-                    }
-                };
-        View.OnClickListener ListenerLeave=
-                new View.OnClickListener(){
-                    @Override
-                    public void onClick(View view) {
-                        //Implement event handling
-                        LoadSnapShot();
-                    }
-                };
-        View.OnClickListener EmpIDSelected=
-                new View.OnClickListener(){
-                    @Override
-                    public void onClick(View view) {
-                        //Implement event handling
-                        ((EditText)view).setText("");
-                    }
-                };
-        final TextView tvEmpID = (TextView)findViewById(R.id.tvEmpId);
-        View.OnClickListener saveClicked=
-                new View.OnClickListener(){
-                    @Override
-                    public void onClick(View view) {
-                        //Implement event handling
-                        //Save data to file
-                        TextView uname = (TextView)findViewById(R.id.etEmpid);
-                        TextView upass = (TextView)findViewById(R.id.etPwd);
-                        String stext =uname.getText().toString()+":"+upass.getText().toString();
-                        StoreEmpID(stext);
-                        tvEmpID.setText("Current ID: "+uname.getText());
-                    }
-                };
 
-        Button btnSave = (Button)findViewById(R.id.btnSave);
-        btnSave.setOnClickListener(saveClicked);
-
-        //Load previous ID if it was stored
-        //File file = new File(EmpIDFile);
-        //if(file.exists())
-        //{
-        //Load the data because the file exists
-        try
-        {
-            FileInputStream fs = openFileInput(EmpIDFile);
-            String getData = convertStreamToString(fs);
-            String[] strSplt = getData.split(":");
-            fs.close();
-            tvEmpID.setText("Current ID: "+strSplt[0]);
-        }
-        catch (Exception e)
-        {tvEmpID.setText("No ID Stored");}
-        //}
-        // else
-        //{tvEmpID.setText("file load fail");}
         //=================================================================
-        final EditText empIDText = (EditText)findViewById(R.id.etEmpid);
+        //final EditText empIDText = (EditText)findViewById(R.id.etEmpid);
 
         //Event for enter press on keyboard in empIDText view
         /*empIDText.setOnKeyListener(new View.OnKeyListener() {
@@ -180,16 +122,6 @@ public class MainActivity extends ActionBarActivity {
             }
         });*/
 
-        Button butEnter = (Button)findViewById(R.id.button);
-        butEnter.setOnClickListener(ListenerEnter);
-        Button butLeav = (Button)findViewById(R.id.button2);
-        butEnter.setVisibility(View.GONE);
-        butLeav.setOnClickListener(ListenerLeave);
-        butLeav.setVisibility(View.GONE);
-        TextView tv = (TextView)findViewById(R.id.textView);
-        tv.setText(getDeviceId());
-        //tv.setVisibility(View.GONE);
-        empIDText.setOnClickListener(EmpIDSelected);
 
         mAdapter = NfcAdapter.getDefaultAdapter(this);
         //Check if NFC is enabled and if not open connection manager of the device
@@ -202,7 +134,7 @@ public class MainActivity extends ActionBarActivity {
                 this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
         try {
-            ndef.addDataType("text/plain");    /* Handles all MIME based dispatches.
+            ndef.addDataType("*/*");    /* Handles all MIME based dispatches.
                                        You should specify only the ones that you need. */
         }
         catch (IntentFilter.MalformedMimeTypeException e) {
@@ -235,7 +167,15 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
+        if (!mAdapter.isEnabled())
+        {
+            Toast.makeText(getApplicationContext(), "Please activate NFC and press Back to return to the application!", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+        }
         mAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, null);
+        //mAdapter = NfcAdapter.getDefaultAdapter(this);
+        //Check if NFC is enabled and if not open connection manager of the device
+
     }
 
     /**
@@ -278,9 +218,9 @@ public class MainActivity extends ActionBarActivity {
                 NdefRecord[] inNdefRecords = inNdefMessage.getRecords();
                 NdefRecord NdefRecord_0 = inNdefRecords[0];
                 String inMsg = new String(NdefRecord_0.getPayload());
-
+                //Toast.makeText(getApplicationContext(), inMsg, Toast.LENGTH_LONG).show();
                 //Handle the message that came in:
-                if((inMsg.equals("0"))||inMsg.equals("en0"))
+                if((inMsg.trim().equals("0"))||inMsg.trim().equals("en0"))
                 {
                     //False - Denied access
                     //Flash screen red or someting similiar
@@ -296,7 +236,7 @@ public class MainActivity extends ActionBarActivity {
                     };
                     tim.start();
                 }
-                else if((inMsg.equals("1"))||(inMsg.equals("en1")))
+                else if((inMsg.trim().equals("1"))||(inMsg.trim().equals("en1")))
                 {
                     //True - Allowed Access
                     //Check what was the previous state
@@ -360,10 +300,9 @@ public class MainActivity extends ActionBarActivity {
                     };
                     tim.start();
                 }
-                //Toast.makeText(getApplicationContext(), "Toasty: " + inMsg + action.toString(), Toast.LENGTH_LONG).show();
-                //Proccess the text here
-                TextView tv = (TextView)findViewById(R.id.textView);
-                tv.setText(inMsg);
+                else
+                {Toast.makeText(getApplicationContext(), "Bla", Toast.LENGTH_LONG).show();}
+
             }
         }
         catch(Exception e)
@@ -428,7 +367,7 @@ public class MainActivity extends ActionBarActivity {
             }
         }
         //Turn mobile off (Is trickey to do)
-        /*if (isMobileDataEnabledFromLollipop(getApplicationContext()))
+        if (isMobileDataEnabledFromLollipop(getApplicationContext()))
         {
             try {
                 setMobileNetworkfromLollipop(getApplicationContext(),0);
@@ -436,7 +375,7 @@ public class MainActivity extends ActionBarActivity {
             }
             catch (Exception e)
             {}
-        }*/
+        }
 
         //Store data locally on the device
         String theData = "";
@@ -460,54 +399,8 @@ public class MainActivity extends ActionBarActivity {
         {}
         isInSafeMode = true;
         /*Start thread to see if data is compramized*/
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
-                    WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-                    while(isInSafeMode) {
-
-                        /*Check whether anything is turned on*/
-                        if ((wifi.isWifiEnabled())||(bt.isEnabled()))
-                        {compramized++;}
-                        sleep(2000);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
 
 
-        /*Start checking if compramized*/
-        /*try {
-            Thread.sleep(2000);
-        }
-        catch (Exception e){}*/
-
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
-                    final WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-                    while(compramized) {
-                        if (bt.isEnabled()|| wifi.isWifiEnabled())
-                        {
-                            numCompr++;
-                        }
-                        sleep(2000);
-                        //handler.post(this);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-
-        thread.start();
     }
 
     /**
@@ -549,20 +442,7 @@ public class MainActivity extends ActionBarActivity {
     private void LoadSnapShot()
     {
 
-        isInSafeMode = false;
-        try
-        {
-            Thread.sleep(2000);
-        }
-        catch (Exception e)
-        {}
-        if (compramized>0)
-        {//Warn that phone has been comramized
-         }
 
-        /*Check if phone is compramized*/
-        synchronized (this){
-        compramized = false;}
 
         //Get data from file if array is empty
         if (restoreSettings.size() == 0)
@@ -597,7 +477,7 @@ public class MainActivity extends ActionBarActivity {
             else if(restoreSettings.get(i).equals("mobi"))
             {
                 try {
-                    //setMobileNetworkfromLollipop(getApplicationContext(), 1);
+                    setMobileNetworkfromLollipop(getApplicationContext(), 1);
                 }
                 catch (Exception e)
                 {
@@ -612,21 +492,7 @@ public class MainActivity extends ActionBarActivity {
         }
         //Reset list
         restoreSettings = new ArrayList<String>();
-        if(numCompr>0)
-        {
-            int i = 10;
-            while(i>0)
-            {
-                i--;
-                setActivityBackgroundColor(Color.BLUE);
-                try {
-                    Thread.sleep(1000);
-                    setActivityBackgroundColor(Color.RED);
-                    Thread.sleep(1000);
-                }
-                catch (Exception e){}
-            }
-        }
+
     }
 
     /**
@@ -647,26 +513,7 @@ public class MainActivity extends ActionBarActivity {
         return state;
     }*/
 
-    /**
-     * The functionality provided by the StoreEmpID is to store/change a given Employee ID on
-     * the device that will be used with the NFC messages to see if the person is allowed into
-     * a room
-     *
-     * @param EmployeeID - String representation of an ID inputed by the user.
-     * @param context - The context of the current state of the application. Used to get info
-     */
-    private void StoreEmpID(String EmployeeID)
-    {
-        try
-        {
-            FileOutputStream fs = openFileOutput(EmpIDFile, Context.MODE_PRIVATE);
-            fs.write(EmployeeID.getBytes());
-            fs.close();
 
-        }
-        catch (Exception e)
-        {TextView tvEmpID = (TextView)findViewById(R.id.textView);tvEmpID.setText("Store fail");}
-    }
 
     /**The functionality provided by the StoreEmpID is to simply changes the background color
      * specified by an int value. This is to alert the user whether he was successful or not.
@@ -797,6 +644,7 @@ public class MainActivity extends ActionBarActivity {
     {
         try {
             setMobileNetworkfromLollipop(getApplicationContext(),0);
+            toggleMobileDataOnKitkat(getApplicationContext(),false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -853,6 +701,21 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    private void toggleMobileDataOnKitkat(Context context,Boolean isOn) throws Exception
+    {
+        ConnectivityManager conman = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        @SuppressWarnings("rawtypes")
+        final Class conmanClass = Class.forName(conman.getClass().getName());
+        final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
+        iConnectivityManagerField.setAccessible(true);
+        final Object iConnectivityManager = iConnectivityManagerField.get(conman);
+        @SuppressWarnings("rawtypes")
+        final Class iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
+        @SuppressWarnings("unchecked")
+        final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
+        setMobileDataEnabledMethod.setAccessible(true);
+        setMobileDataEnabledMethod.invoke(iConnectivityManager, isOn);
+    }
 
     public ProgressDialog pDialog;
 
