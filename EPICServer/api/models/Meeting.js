@@ -1,16 +1,21 @@
-var Meeting = {
-	// Enforce model schema in the case of schemaless databases
-	schema: true,
+/**
+* Meeting.js
+*
+* @description :: TODO: You might write a short summary of how this model works and what it represents here.
+* @docs        :: http://sailsjs.org/#!documentation/models
+*/
+
+module.exports = {
 
   attributes: {
-    rsvp  : { collection: 'User', via: 'meetingsRSVPed' },
-    invites : { collection: 'User', via: 'meetingInvites' },
-    attends : { collection: 'User', via: 'meetingsAttended' },
-    title : {type: 'string', required : true},
-    description : {type: 'string', required : true},
-    location : {type: 'string', required : true},
-    dateTime : {type: 'datetime'}
+  	title: { type: "string", required: true},
+  	description: { type: "string"},
+  	room: {model: "Room", via: "meetings"},
+  	timeStart: {type: "DateTime"},
+  	timeEnd: {type: "DateTime"},
+  	owners: { collection: "User", via: "meetings"},
+  	rsvp: { collection: "Rsvp", via: "meeting"},
+  	logs: {collection: "Log", via: "meeting"}
   }
 };
 
-module.exports = Meeting;

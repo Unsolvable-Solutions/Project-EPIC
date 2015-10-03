@@ -1,83 +1,27 @@
-var generatePassword = require("password-maker");
-var Gmailer = require("gmail-sender");
-var Encoder = require('qr').Encoder;
-var encoder = new Encoder;
+/**
+* User.js
+*
+* @description :: TODO: You might write a short summary of how this model works and what it represents here.
+* @docs        :: http://sailsjs.org/#!documentation/models
+*/
 
-// any options can be set here...
-Gmailer.options({
-    smtp: {
-        service: "Gmail",
-        user: "u11013878@tuks.co.za",
-        pass: "Lujazel5226"
-    }
-});
-  
-var options = {
-  uppercase: true,
-  symbols  : false,
-  numbers  : true
-};
-
-var User = {
-  // Enforce model schema in the case of schemaless databases
-  schema: false,
+module.exports = {
 
   attributes: {
-    username  : { type: 'string', unique: true },
-    name  : { type: 'string', required: true },
-    surname  : { type: 'string', required: true },
-    email     : { type: 'email',  unique: true },
-    deviceID     : { type: 'string',  unique: true },
-    password     : { type: 'string',  unique: false },
-    meetingsRSVPed : {collection: 'Meeting', via: 'rsvp'},
-    meetingsAttended : {collection: 'Meeting', via: 'attends'},
-    meetingInvites : {collection: 'Meeting', via: 'invites'}
+  	person: {model: "Person", unique: true},
+  	password: {type: "string", required: true},
+  	meetings: {collection: "Meeting", via: "owners"},
+  	toJSON: function() {
+      var obj = this.toObject();
+      delete obj.password;
+      return obj;
+    }
   },
-
-  beforeCreate: function (values, cb) {
-    console.log("BeforeCreate",values);
-
-      values.password = generatePassword(options, 8);
-
-    cb();    
-  },
-
-  afterCreate: function (values, cb) {
-    console.log("AfterCreate",values);
-    // encoder.on('end', function()
-    // {
-        Gmailer.send({
-          subject: "Secret Meeting Invite",
-          template: "./assets/email.html",
-          from: "ProjectEpic",
-          to: {
-              email: "jaco@peoplesoft.co.za",
-              name: values.name,
-              surname: values.surname
-          },
-          data: {
-              username: values.email,
-              name: values.name,
-              surname: values.surname,
-              deviceID: values.deviceID,
-              password: values.password
-          }
-          // ,
-          // attachments: [
-          //     {
-          //         fileName: "qr.png",
-          //         filePath: "./.tmp/my_qr_file.png",
-          //         cid: "html5@demo"
-          //     }
-          // ]
-        });
-        cb(); 
-    // });
-    // encoder.encode(JSON.stringify(values), './.tmp/my_qr_file.png');
-    
-   
-  }
-
+  beforeCreate: function(values, cb)
+  {
+  	//HASH PASSWORD
+  	// console.dir(values);
+  	cb();
+  }	
 };
 
-module.exports = User;

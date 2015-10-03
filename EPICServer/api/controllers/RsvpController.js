@@ -1,7 +1,7 @@
 /**
- * LogController
+ * RsvpController
  *
- * @description :: Server-side logic for managing logs
+ * @description :: Server-side logic for managing rsvps
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
