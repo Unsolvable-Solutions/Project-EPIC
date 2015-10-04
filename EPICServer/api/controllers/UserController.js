@@ -11,6 +11,7 @@ module.exports = {
 		var obj = req.session.user;
 		User.findOne({id: req.session.user.id})
 		.populate("meetings")
+		.populate("rooms")
 		.exec(function(err,user){
 			if (err) return res.badRequest(err);
 			res.json(user.toJSON());

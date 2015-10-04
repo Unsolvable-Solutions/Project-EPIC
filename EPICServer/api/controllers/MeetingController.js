@@ -42,10 +42,53 @@ module.exports = {
 			return res.forbidden("You are not an owner of this meeting.");
 		});
 	},
+	/*
+	  attributes: {
+	  	title: { type: "string", required: true},
+	  	description: { type: "string"},
+	  	room: {model: "Room", via: "meetings"},
+	  	timeStart: {type: "DateTime"},
+	  	timeEnd: {type: "DateTime"},
+	  	owners: { collection: "User", via: "meetings"},
+	  	rsvp: { collection: "Rsvp", via: "meeting"},
+	  	logs: {collection: "Log", via: "meeting"}
+	  }
+	*/
 	create: function(req,res)
 	{
 		var values = req.allParams();
+		var user = req.session.user;
 		
+		Room.findOne({id: values.room})
+		.populateAll()
+		.exec(function(err,room){
+			if (err) return res.badRequest(err);
+			if (room)
+			{
+				var flag = false;
+				for (var i = 0; i < room.owners.length; i++) {
+					if (room.owners[i].id == user.id)
+					{
+						Meeting.create(values)
+						.populateAll()
+						.exec(function(err,meeting){
+							if (err) return res.badRequest(err);
+							meeting.owners.add(user.id);
+							meeting.save();
+							return res.json(meeting);
+						});
+						flag = true;
+					}
+				};
+				if (!flag)
+					return res.forbidden("You are not the owner of the room");
+			}
+			else
+			{
+				return res.forbidden("You are not the owner of the room");
+			}
+		});
+
 	}
 };
 

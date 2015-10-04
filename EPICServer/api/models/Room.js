@@ -5,12 +5,20 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
+var generateSecret = function()
+{
+	return "12345678";
+}
+
 module.exports = {
 
   attributes: {
-  	name: {type: "string"},
-  	location: {type: "string"},
-  	meetings: {collection: "Meeting", via: "room"}
+  	title: {type: "string", required: true},
+  	location: {type: "string", required: true},
+  	meetings: {collection: "Meeting", via: "room"},
+  	owners: {collection: "User", via: "rooms"},
+  	apiKey: {type: "string", required: true},
+  	apiSecret: {type: "string", defaultsTo: generateSecret()}
   }
 };
 

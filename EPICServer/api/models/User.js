@@ -10,7 +10,8 @@ module.exports = {
   attributes: {
   	person: {model: "Person", unique: true},
   	password: {type: "string", required: true},
-  	meetings: {collection: "Meeting", via: "owners"},
+    meetings: {collection: "Meeting", via: "owners"},
+  	rooms: {collection: "Room", via: "owners"},
   	toJSON: function() {
       var obj = this.toObject();
       delete obj.password;
