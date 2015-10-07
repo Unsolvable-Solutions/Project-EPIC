@@ -11,8 +11,10 @@ module.exports = {
   	title: { type: "string", required: true},
   	description: { type: "string"},
   	room: {model: "Room", via: "meetings"},
-  	timeStart: {type: "DateTime"},
-  	timeEnd: {type: "DateTime"},
+    dateStart: {type: "date"},
+  	timeStart: {type: "time"},
+    dateEnd: {type: "date"},
+  	timeEnd: {type: "time"},
   	owners: { collection: "User", via: "meetings"},
   	rsvp: { collection: "Rsvp", via: "meeting"},
   	logs: {collection: "Log", via: "meeting"}
