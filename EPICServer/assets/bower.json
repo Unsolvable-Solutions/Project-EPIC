@@ -23,6 +23,7 @@
     "angular-formly-templates-bootstrap": "~6.1.5",
     "angular-wizard": "~0.5.5",
     "holderjs": "~2.8.2",
-    "angular-holderjs": "~1.1.0"
+    "angular-holderjs": "~1.1.0",
+    "angular-ui-router": "~0.2.15"
   }
 }
