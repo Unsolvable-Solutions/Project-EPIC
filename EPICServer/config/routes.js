@@ -39,7 +39,15 @@ module.exports.routes = {
   '/login' : 'AuthController.login',
   '/logout' : 'AuthController.logout',
 
-  '/me' : 'UserController.me'
+  '/me' : 'UserController.me',
+  '/invite/add' : 'MeetingController.addInvite',
+  '/invite/rm' : 'MeetingController.rmInvite',
+  
+  '/rsvp/yes' : 'RsvpController.yes',
+  '/rsvp/no' : 'RsvpController.no',
+
+  '/api/in' : 'RsvpController.in',
+  '/api/out' : 'RsvpController.out'
 
   /***************************************************************************
   *                                                                          *

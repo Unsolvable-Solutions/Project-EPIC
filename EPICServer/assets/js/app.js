@@ -1,11 +1,19 @@
 angular.module('epic.main', ['epic.controllers','epic.services','ngHolder', 'ui.router', 'mgo-angular-wizard', 'formly', 'formlyBootstrap'])
-.run(function() {
-  
+.run(function($rootScope,$location) {
+  if (!$rootScope.login)
+  	$location.path("/login");
 })
 .config(function($stateProvider, $urlRouterProvider) {
 
 
 $stateProvider
+
+
+	.state('login', {
+		url: '/login',
+	    templateUrl: 'templates/login.html',
+	    controller: 'LoginCtrl as l'
+	})
 
 	.state('page', {
 		url: '/page',

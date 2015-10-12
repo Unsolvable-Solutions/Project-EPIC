@@ -1,4 +1,17 @@
 angular.module('epic.services', [])
+.factory('AuthFactory', function(){
+	var obj = {};
+
+	obj.login = function(user,cb)
+	{
+		if (user.email && user.password)
+			cb(true);
+		else
+			cb(false);
+	}
+
+	return obj;
+})
 .factory('UserFactory', function(){
 	var obj = {};
 

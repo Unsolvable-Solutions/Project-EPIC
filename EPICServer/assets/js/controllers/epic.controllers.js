@@ -1,4 +1,20 @@
 angular.module('epic.controllers', [])
+.controller('LoginCtrl', function($scope, $rootScope, $location, AuthFactory)
+{
+	var t = this;
+
+	t.login = function(user)
+	{
+		AuthFactory.login(user,function(success,user){
+			console.log(success);
+			if (success)
+			{
+				$rootScope.login = true;
+				$location.path("/page");
+			}
+		});
+	}
+})
 .controller('DashCtrl', function($scope)
 {
 	

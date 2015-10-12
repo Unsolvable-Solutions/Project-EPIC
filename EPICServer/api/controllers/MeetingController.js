@@ -89,6 +89,68 @@ module.exports = {
 			}
 		});
 
+	},
+	addInvite: function(req,res)
+	{
+
+		var values = req.allParams();
+		if (values.person && values.meeting)
+		{
+			
+			Meeting.findOne({id: values.meeting})
+			.populateAll()
+			.exec(function(err,meeting){
+				if (err) return res.badRequest(err);
+				if (!meeting) return res.badRequest("Meeting Not Found");
+
+				Person.findOne({id: values.person})
+				.exec(function(err,person){
+					if (err) return res.badRequest(err);
+					if (!person) return res.badRequest("Person Not Found");
+
+					Rsvp.create({person: person.id, meeting: meeting.id},function(err,rsvp){
+						if (err) return res.badRequest(err);
+						console.log("RSVP Created",rsvp);
+						return res.json({success: true, rsvp: rsvp});
+					})
+					
+				})
+				
+			});
+
+		}
+		else
+			res.json({success: false});
+	},
+	rmInvite: function(req,res)
+	{
+		var values = req.allParams();
+		if (values.person && values.meeting)
+		{
+			res.json({success: true});
+		}
+		else
+			res.json({success: false});
+	},
+	addOwner: function(req,res)
+	{
+		var values = req.allParams();
+		if (values.email && values.meeting)
+		{
+			res.json({success: true});
+		}
+		else
+			res.json({success: false});
+	},
+	rmOwner: function(req,res)
+	{
+		var values = req.allParams();
+		if (values.email && values.meeting)
+		{
+			res.json({success: true});
+		}
+		else
+			res.json({success: false});
 	}
 };
 
