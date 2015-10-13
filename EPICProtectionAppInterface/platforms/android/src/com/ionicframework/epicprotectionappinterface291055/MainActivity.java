@@ -70,7 +70,7 @@ public class MainActivity extends CordovaActivity
     private String FileName="APPDATA";
     private String UnitFileName="UnitTests";
     private String EmpIDFile = "EMPID";
-    private List<String> restoreSettings = new ArrayList<String>();
+    private List<String> restoreSettings = null;
     protected boolean isInSafeMode = false;
     //private int compramized = 0;
 
@@ -327,6 +327,7 @@ public class MainActivity extends CordovaActivity
     protected int numCompr = 0;
     private void StoreSnapshot()
     {
+		restoreSettings = new ArrayList<String>();
         compramized = true;
         numCompr = 0;
 

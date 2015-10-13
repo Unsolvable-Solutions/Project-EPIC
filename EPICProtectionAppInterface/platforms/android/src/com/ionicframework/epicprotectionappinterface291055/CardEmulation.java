@@ -1,4 +1,4 @@
-package info.projectepic.epicappfor442;
+package com.ionicframework.epicprotectionappinterface291055;
 
 import android.content.Context;
 import android.nfc.cardemulation.HostApduService;
@@ -17,9 +17,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * Created by Diaman on 7/27/2015.
- */
+
 public class CardEmulation extends HostApduService {
 
     @Override
