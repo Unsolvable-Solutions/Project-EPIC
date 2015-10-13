@@ -8,156 +8,63 @@ var SerialPort = require("serialport").SerialPort;
 var serialPort = new SerialPort("/dev/ttyACM0", {
 	baudrate: 115200
 });
-
-
-
-http.listen(3000, function(){
-	console.log('listening on *:3000');
-});
-
-function handler (req, res) {
-	fs.readFile(__dirname + '/index.html',
-	function (err, data) {
-		if (err) {
-			res.writeHead(500);
-			return res.end('Error loading index.html');
-		}
-
-		res.writeHead(200);
-		res.end(data);
-	});
-}
-
-var meeting = {};
-var rsvp = [];
 var inList = [];
-var outList = [];
 
-var getAllMeetings = function(cb)
+var login = function(id)
 {
-	unirest.get('http://projectepic.info/meeting').end(function (response) {
-		cb(response.body);
-	});
+	if (id == '351680068967102')
+		return 't';
+	else
+		return 'f';
+	/*unirest.get('http://projectepic.info/in/' + id).end(function (response)
+	{
+		var resp = response.body;
+		if (resp.success)
+			return 't';
+		else
+			return 'f';
+	});*/
 }
 
-var sync = function(id, cb)
+var logout = function(id)
 {
-	unirest.get('http://projectepic.info/meeting/' + id).end(function (response)
+	if (id == '351680068967102')
+		return 't';
+	else
+		return 'f';
+	/*unirest.get('http://projectepic.info/out/' + id).end(function (response)
 	{
-		meeting = response.body;
-		if (meeting.rsvp)
-		{
-			for (var i = 0; i < meeting.rsvp.length; i++)
-			{
-				rsvp.push(meeting.rsvp[i].data);
-			};
-		}
-		if (meeting.inList)
-		{
-			for (var i = 0; i < meeting.inList.length; i++)
-			{
-				inList.push(meeting.inList[i].data);
-			};
-		}
-		if (meeting.outList)
-		{
-			for (var i = 0; i < meeting.outList.length; i++)
-			{
-				outList.push(meeting.outList[i].data);
-			};
-		}
-		cb(meeting);
-	});
+		var resp = response.body;
+		if (resp.success)
+			return 't';
+		else
+			return 'f';
+	});*/
 }
 
 var auth = function(data, cb)
 {
 	data = data.substring(1, data.length - 1);
-	console.log('Looking for',data,'in local cache.');
 
-	if (!meeting)
+	if (inList.indexOf(data) >= 0) 
 	{
-		console.log('No meeting chosen.');
-		cb('e');
-	};
-
-	var index;
-	if ((index = outList.indexOf(data)) >= 0) 
-	{
-		console.log(data,'found in local cache.');
-		unirest.get('http://projectepic.info/meeting/' + meeting.id + '/inList/add/' + outList[index].id).end(function (response1) {
-			unirest.get('http://projectepic.info/meeting/' + meeting.id + '/outList/remove/' + outList[index].id).end(function (response2) {
-				console.log(response2);
-				sync(meeting.id, function(m)
-				{
-					console.log("New synced data: " + m);
-				});
-			});
-		});
-		cb('t');
-	}
-	else if ((index = inList.indexOf(data)) >= 0) 
-	{
-		console.log(data,'found in local cache.');
-		unirest.get('http://projectepic.info/meeting/' + meeting.id + '/outList/add/' + inList[index].id).end(function (response1) {
-			unirest.get('http://projectepic.info/meeting/' + meeting.id + '/inList/remove/' + inList[index].id).end(function (response2) {
-				console.log(response2);
-				sync(meeting.id, function(m)
-				{
-					console.log("New synced data: " + m);
-				});
-			});
-		});
-		cb('t');
-	}
-	else if ((index = rsvp.indexOf(data)) >= 0) 
-	{
-		console.log(data,'found in local cache.');
-		unirest.get('http://projectepic.info/meeting/' + meeting.id + '/inList/add/' + rsvp[index].id).end(function (response1) {
-			unirest.get('http://projectepic.info/meeting/' + meeting.id + '/rsvp/remove/' + rsvp[index].id).end(function (response2) {
-				console.log(response2);
-				sync(meeting.id, function(m)
-				{
-					console.log("New synced data: " + m);
-				});
-			});
-		});
-		cb('t');
-	}
-	else 
-	{
-		console.log('User not found in local cache. Asking server...');
-		sync(meeting.id,function(m)
+		var back = logout(data);
+		if (back == 't')
 		{
-			console.log('Sync complete. looking for',data);
-			if (meeting.rsvp)
-			{
-				var index = rsvp.indexOf(data);
-				if (index >= 0) 
-				{
-					console.log(data,'found in new local cache.');
-					unirest.get('http://projectepic.info/meeting/' + meeting.id + '/inList/add/' + rsvp[index].id).end(function (response1) {
-						unirest.get('http://projectepic.info/meeting/' + meeting.id + '/rsvp/remove/' + rsvp[index].id).end(function (response2) {
-							console.log(response2);
-							sync(meeting.id, function(m)
-							{
-								console.log("New synced data: " + m);
-							});
-						});
-					});
-					cb('t'); 
-				}
-				else 
-				{
-					console.log(data,'not found in new local cache.');
-					cb('f');
-				}
-			}
-			else
-			{
-				cb('e');
-			}
-		});
+			console.log(inList);
+			inList.splice(inList.indexOf(data), 1);
+			console.log(inList);
+		};
+		cb(back);
+	}
+	else
+	{
+		var back = login(data);
+		if (back == 't')
+		{
+			inList.push(data);
+		};
+		cb(back);
 	}
 }
 
@@ -187,48 +94,6 @@ serialPort.on("open", function ()
 		{
 			console.log('SENDING TO SERIAL', result);
 			serialPort.write(new Buffer(result), function(err, results)
-			{
-				console.log('err ' + err);
-				console.log('results ' + results);
-			});
-		});
-	});
-});
-
-io.on('connection', function(socket){
-	console.log('a user connected');
-	socket.on('get',function(data)
-	{
-		if (data.model == 'meeting')
-		{
-			getAllMeetings(function(meetings)
-			{
-				console.log(meetings);
-				socket.emit('meetings',meetings);
-			});
-		}
-	});
-
-	socket.on('set',function(data)
-	{
-		if (data.model == 'meeting')
-		{
-			console.log(data);
-			meeting = data;
-			sync(meeting.id, function(meeting)
-			{
-				socket.emit('meeting',meeting);
-			});
-		}
-	});
-
-	socket.on('auth',function(data)
-	{
-		console.log(data);
-		auth(data, function(result)
-		{
-			socket.emit('auth',result);
-			serialPort.write(new Buffer(result), function(err)
 			{
 				console.log('err ' + err);
 				console.log('results ' + results);
