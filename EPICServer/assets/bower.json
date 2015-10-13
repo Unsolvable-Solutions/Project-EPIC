@@ -1,11 +1,13 @@
 {
-  "name": "assets",
+  "name": "EPICInterface",
   "version": "0.0.0",
   "homepage": "https://github.com/Unsolvable-Solutions/Project-EPIC",
   "authors": [
     "Jaco Bezuidenhout <jaco@peoplesoft.co.za>"
   ],
-  "description": "client side modules for project epic",
+  "description": "",
+  "main": "index.html",
+  "moduleType": [],
   "license": "MIT",
   "ignore": [
     "**/.*",
@@ -15,7 +17,13 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "~2.1.4",
-    "bootstrap": "~3.3.4"
+    "angular": "~1.4.7",
+    "api-check": "~7.5.3",
+    "angular-formly": "~7.1.2",
+    "angular-formly-templates-bootstrap": "~6.1.5",
+    "angular-wizard": "~0.5.5",
+    "holderjs": "~2.8.2",
+    "angular-holderjs": "~1.1.0",
+    "angular-ui-router": "~0.2.15"
   }
 }

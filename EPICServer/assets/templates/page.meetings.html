@@ -1,0 +1,85 @@
+<div class="row">
+	<h1 class="page-header">Meetings
+		<button type="button" class="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
+	  		New Meeting
+		</button>
+	</h1>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">New Meeting</h4>
+      </div>
+      <div class="modal-body" style="text-align:center">
+      	<h3>Create a new meeting</h3>
+		<wizard on-finish="finishedWizard()"> 
+		    <wz-step title="" style="text-align:center" >
+			    	<input class="btn btn-primary" type="submit" wz-next value="Start" /><br/>
+			</wz-step>
+		    <wz-step title="Details" style="text-align:center" >
+				<formly-form model="meeting.newMeeting.meeting" fields="meeting.newMeeting.model[0]">
+		        	<input class="btn btn-primary" type="submit" wz-next value="Next" />
+				</formly-form>		
+		    </wz-step>
+		    <wz-step title="Owners">
+		        <div class="row" style="text-align: center">
+					<formly-form model="owner" fields="meeting.newMeeting.model[1]">
+			        	<input class="btn btn-success pull-right" type="button" value="Add" ng-click="owners.push(owner.email)"/>
+						<table class="table">
+							<tr ng-repeat="o in owners"><td>{{o}}</td><td><input type="button" class="btn btn-small btn-danger" value="-"></td></tr>
+						</table>
+					</formly-form>		
+		        </div>
+		        <div class="row" style="text-align: center">
+		        	<input class="btn btn-primary" type="submit" wz-next value="Invite members" />
+		        </div>
+		    </wz-step>
+		    <wz-step title="Invite">
+		        <p>Even more steps!!</p>
+		        <input type="submit" class="btn btn-primary" wz-next value="Done" />
+		    </wz-step>
+		</wizard>
+		<br/>        
+		<br/>        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+	<h2 class="sub-header">Meetings you own</h2>
+	<div class="table-responsive">
+	<table class="table table-striped">
+	  <thead>
+	    <tr>
+	      <th>#</th>
+	      <th>Title</th>
+	      <th>Description</th>
+	      <th>Room</th>
+	      <th>Date Start</th>
+	      <th>Date End</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="m in meeting.meetings">
+	    
+	      <td><a href="#/page/meetings/{{m.id}}">{{m.id}}</a></td>
+	      <td>{{m.title}}</td>
+	      <td>{{m.description}}</td>
+	      <td>{{m.room.title}}</td>
+	      <td>{{m.dateStart}} {{m.timeStart}}</td>
+	      <td>{{m.dateEnd}} {{m.timeEnd}}</td>
+	    </tr>
+	  </tbody>
+	</table>
+	</div>
+</div>
+

@@ -17,7 +17,7 @@
  * CoffeeScript for the front-end.
  *
  * For more information on configuring custom routes, check out:
- * http://sailsjs.org/#/documentation/concepts/Routes/RouteTargetSyntax.html
+ * http://sailsjs.org/#!/documentation/concepts/Routes/RouteTargetSyntax.html
  */
 
 module.exports.routes = {
@@ -32,29 +32,28 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  '/': {
-    view: 'meeting/meetings'
-  },
+  // '/': {
+  //   view: 'homepage'
+  // },
+  '/register' : 'AuthController.register',
+  '/login' : 'AuthController.login',
+  '/logout' : 'AuthController.logout',
+
+  '/me' : 'UserController.me',
+  '/invite/add' : 'MeetingController.addInvite',
+  '/invite/rm' : 'MeetingController.rmInvite',
   
-  '/admin': {
-    view: 'admin'
-  },
+  '/rsvp/yes' : 'RsvpController.yes',
+  '/rsvp/no' : 'RsvpController.no',
 
-  '/meetings': {
-    view: 'meeting/meetings'
-  },
-
-  'post /me': 'AuthController.me',
-  'post /login': 'AuthController.login',
-  'get /logout': 'AuthController.logout',
-  'post /register': 'AuthController.register'
-
+  '/api/in' : 'RsvpController.in',
+  '/api/out' : 'RsvpController.out'
 
   /***************************************************************************
   *                                                                          *
   * Custom routes here...                                                    *
   *                                                                          *
-  *  If a request to a URL doesn't match any of the custom routes above, it  *
+  * If a request to a URL doesn't match any of the custom routes above, it   *
   * is matched against Sails route blueprints. See `config/blueprints.js`    *
   * for configuration options and examples.                                  *
   *                                                                          *

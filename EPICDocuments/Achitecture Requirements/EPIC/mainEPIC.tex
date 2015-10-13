@@ -1,0 +1,55 @@
+\begin{comment}
+\documentclass[a4paper,12pt,titlepage]{article}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\DeclareGraphicsExtensions{.jpg}
+\graphicspath{{./Images/}}
+\end{comment}
+
+
+
+%\begin{document}
+	\input{titlepageEPIC.tex}
+	
+	% Table of content
+\newpage
+\tableofcontents
+\newpage
+	\section{Introduction}
+	\subsection{Project Background}
+
+The Android Operating System officially took over the smart phone market in 2010 and it is suspected that about 700 000 Android devices are used in South Africa. It is mostly the corporate or more upper class communities that use these smart phone devices. It is also these individuals who sit in the big corporate meetings where extremely sensitive data can be discussed. For this reason, if these individuals could have eavesdropping malware on their smart phone, it could cause sensitive data to be easily leaked out.
+
+
+	\subsection{Project Vision} 
+	The Eavesdropping Protection in Conclave (EPIC) aims to protect the integrity of the information discussed during a meeting by eliminating access to the mobile device during a meeting.
+
+	\subsection{Project Scope}
+		The Eavesdropping Protection in Conclave(EPIC) product consist of a mobile application, a web page, a server, a gateway and a node. 
+		\begin{itemize}
+		\item A meeting is scheduled via the web page. On the creation of the meeting people are invited via email.
+		\item Before the meeting is held, the gateway and node is set up with the list of invited people that may access the meeting room.
+		\item At the meeting, the person opens the application on his phone. He holds the phone over the node, the node then replies if the person has permission to access the room or not. If the person has permission the meeting room is unlocked.
+		\item If access is denied, the gateway sends a refresh request to the server, and the person can try again to gain access.
+		\item When permission is granted, the application will start the protecting mode on the phone.
+		\item The server keeps a log of all the activities. This log can be queried afterwards by the creator of the meeting.
+        \end{itemize}
+
+
+
+\input{ArchEPICAccess.tex}
+
+\input{ArchEPICIntegrate.tex}
+
+\input{ArchEPICPattern.tex}
+
+\input{ArchEPICQualityReq.tex}
+
+\input{ArchEPICConstraints.tex}	
+\input{ArchEPICTechnologies.tex}
+
+\newpage
+
+

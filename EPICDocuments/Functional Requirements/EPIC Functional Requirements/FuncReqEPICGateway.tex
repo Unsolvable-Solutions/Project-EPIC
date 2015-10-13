@@ -1,0 +1,92 @@
+\begin{comment}
+%Template vir elke funksie
+    \paragraph{Funksie naam}
+			\begin{description}
+			    \item{\textbf{Priority}:} %watter prioriteit dit het: Critical, Important of Nic-to-have
+			    \item{\textbf{Service Contract}:}% Wat dit doen
+			    \item{\textbf{Pre-conditions}:}%wat moet waar wees voor die funksie sy ding kan doen
+    			    \begin{itemize}
+    			        \item %precondition 1
+    			        \item %precondition 2
+    			    \end{itemize}
+			    \item{\textbf{Post-conditions}:} % wat moet waar wees na die funksie sy ding gedoen het
+    			    \begin{itemize}
+    			    \item %post condition 1
+    			    \item %post condition2
+    			    \end{itemize}
+			\end{description}
+\end{comment}
+
+
+\subsection{Gateway}
+    \subsubsection{Scope}
+        \begin{itemize}
+            \item The Gateway receives the device ID from the Node. It then verifies the persons access to the meeting and sends a response back to the Node.
+            \item The Gateway synchronises with the server and makes a local copy of the meeting. The local copy minimises the delay and complexity.
+            \item The Gateway updates the meeting on the server.
+        \end{itemize}
+    \subsubsection{Functionality}
+        \paragraph{sync}
+			\begin{description}
+			    \item{\textbf{Priority}:} Critical%watter prioriteit dit het: Critical, Important of Nic-to-have
+			    \item{\textbf{Service Contract}:} Synchronises the content on the server with the copy in the local cache.% Wat dit doen
+			    \item{\textbf{Pre-conditions}:}%wat moet waar wees voor die funksie sy ding kan doen
+    			    \begin{itemize}
+    			        \item The Gateway must be connected to WiFi.
+    			        \item The Server must be running on the domain.
+    			        \item There must be at least one meeting set up.
+    			    \end{itemize}
+			    \item{\textbf{Post-conditions}:} % wat moet waar wees na die funksie sy ding gedoen het
+    			    \begin{itemize}
+    			        \item The local cache copy of the meeting(s) should look exactly like the one on the server.
+    			    \end{itemize}
+			\end{description}
+        
+        \paragraph{receive}
+			\begin{description}
+			    \item{\textbf{Priority}:} Critical%watter prioriteit dit het: Critical, Important of Nic-to-have
+			    \item{\textbf{Service Contract}:} Gets the device ID from the Node via the Serial connection.% Wat dit doen
+			    \item{\textbf{Pre-conditions}:}%wat moet waar wees voor die funksie sy ding kan doen
+    			    \begin{itemize}
+    			        \item The Node should be connected to the Gateway with a Serial connection.
+    			        \item The Node should have scanned a phone and have sent the device ID.
+    			    \end{itemize}
+			    \item{\textbf{Post-conditions}:} % wat moet waar wees na die funksie sy ding gedoen het
+    			    \begin{itemize}
+    			        \item The device ID should be stored in a local variable.
+    			        \item The verify function should be called.
+    			    \end{itemize}
+			\end{description}
+        
+
+		\paragraph{verify}
+			\begin{description}
+			    \item{\textbf{Priority}:} Critical%watter prioriteit dit het: Critical, Important of Nic-to-have
+			    \item{\textbf{Service Contract}:} It calls the sync function if it's necessary and then checks whether the device ID is allowed into the meeting or not..% Wat dit doen
+			    \item{\textbf{Pre-conditions}:}%wat moet waar wees voor die funksie sy ding kan doen
+    			    \begin{itemize}
+    			        \item The receive function should have successfully completed.
+    			        \item The sync function should work.
+    			    \end{itemize}
+			    \item{\textbf{Post-conditions}:} % wat moet waar wees na die funksie sy ding gedoen het
+    			    \begin{itemize}
+    			        \item The send function should be called with the results.
+    			    \end{itemize}
+			\end{description}
+			
+		\paragraph{send}
+			\begin{description}
+			    \item{\textbf{Priority}:} Critical%watter prioriteit dit het: Critical, Important of Nic-to-have
+			    \item{\textbf{Service Contract}:} It returns the results via Serial connection to the Node and updates the information on the server if necessary.% Wat dit doen
+			    \item{\textbf{Pre-conditions}:}%wat moet waar wees voor die funksie sy ding kan doen
+    			    \begin{itemize}
+    			        \item The Gateway should be connected to WiFi.
+    			        \item The Node should be connected to the Gateway via Serial connection.
+    			        \item The verify function should have successfully completed.
+    			    \end{itemize}
+			    \item{\textbf{Post-conditions}:} % wat moet waar wees na die funksie sy ding gedoen het
+    			    \begin{itemize}
+    			        \item The Node should have received the results.
+    			        \item The server should be up to date on who logged in or out.
+    			    \end{itemize}
+			\end{description}

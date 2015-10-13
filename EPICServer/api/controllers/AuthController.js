@@ -1,80 +1,118 @@
-var bcrypt = require('bcrypt');
+var AUTH = {};
 
-var AuthController = {
-  me: function (req, res) {
-    res.json(req.session.owner);
-  },
-  login: function (req, res) {
-    var values = req.allParams();
-    if (values.email && values.password)
-    {
-        console.log("Login Attempt",values);
-        Owner.findOne({email: values.email}).exec(function(err,owner){
-        if (owner)
-        {
-          bcrypt.compare(values.password, owner.password, function(err, result) {
-            if(err) return cb(err);
-            if (result)
-            {
-              console.log(owner);
-              req.session.owner = owner;
-              delete req.session.owner.password;
-              req.session.authenticated = true;
-              res.json({success:true, me: req.session.owner});
-            }
-            else
-            {
-              res.json({success: false, err: "Incorrect username/password"});
-            }
-          });
-        }
-        else
-        {
-          res.json({success: false, err: "Incorrect username/password"});
-        }
-      });
-    }
-    else
-    {
-      res.json({success: false, err: "Incorrect username/password"});
-    }
-  },
+/*
 
-  logout: function (req, res) {
-    req.session.authenticated = false;
-    req.session.owner = {};
-    res.redirect("/");
-  },
+	to rgister a user
+		1. create a person
+		2. create a user and link person
 
-  register: function (req, res) {
-    var values = req.allParams();
-    try 
-    {
-      if (values.email && (values.password.length >= 8) && values.name && values.surname)
-      {
-        Owner.findOne({email: values.email}).exec(function (err, owner) {
-          if (owner)
-          {
-            AuthController.login(req,res);
-          }
-          else
-          {
-            Owner.create({name: values.name, surname: values.surname, email: values.email, password: values.password}).exec(function (err, owner) {
-              AuthController.login(req,res);
-            });
-          }
-        });
-      }
-      else
-      {
-        res.json({success: false});
-      }
-    }
-    catch (e)
-    {
-        res.json({success: false, err: e});
-    }
-  }
-};
+*/
 
-module.exports = AuthController;
+AUTH.register = function(req,res)
+{
+	var values = req.allParams();
+	if (!(values.name && values.surname && values.email && values.password))
+		return res.json({success: false, err: "Fields not set"})
+
+	Person.findOrCreate({email: values.email},{name: values.name, surname: values.surname, email: values.email})
+	.exec(function(err,person){
+		if (err)
+		{
+			return res.json({success: false, err: err});
+		}
+		User.find({person: person.id})
+		.exec(function(err,user){
+			if (err)
+			{	
+				return res.json({success: false, err: err});
+			}
+			if (user.person)
+			{
+				return res.json({success: false, err: "User exists"});
+			}
+
+			User.create({person: person.id, password: values.password})
+			.exec(function(err,user){
+				if (err)
+				{	
+					return res.json({success: false, err: err});
+				}
+				
+				if (user.person)
+				{
+					return res.json({success: true, userId: user.id});
+				}
+			});
+			
+		})
+	});
+}
+
+/*
+
+	to login a user
+		1. find a person with email
+		2. find a user with link to person and has same password
+
+*/
+
+AUTH.login = function(req,res)
+{
+	var values = req.allParams();
+	if (!(values.email && values.password))
+		return res.badRequest();
+
+	Person.findOne({email:values.email})
+	.exec(function(err,person){
+		if (err)
+		{	
+			return res.badRequest(err);
+		}
+		else
+		{
+			if (person)
+			{
+				User.findOne({person: person.id, password: values.password})
+				.populate("meetings")
+				.exec(function(err,user){
+					if (err)
+					{	
+						return res.badRequest(err);
+					}
+					else
+					{
+						if (user)
+						{		
+							req.session.authenticated = true;
+							req.session.user = user;
+							return res.json({success: true, user: {
+								person: person,
+								meetings: user.meetings || []
+							}});
+						}
+						else
+						{
+							return res.json({success: false, err: "Incorrect Username or Password"});
+						}
+					}
+				});
+			}
+			else
+			{
+				return res.notFound();
+			}
+		}
+		
+
+	});
+}
+
+AUTH.logout = function(req,res)
+{
+	req.session.authenticated = false;
+	req.session.user = null;
+
+	res.json({success: true});
+}
+
+module.exports = AUTH;
