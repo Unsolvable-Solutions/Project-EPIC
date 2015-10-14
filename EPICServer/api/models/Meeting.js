@@ -15,9 +15,13 @@ module.exports = {
   	timeStart: {type: "time"},
     dateEnd: {type: "date"},
   	timeEnd: {type: "time"},
-  	owners: { collection: "User", via: "meetings"},
+    owners: { collection: "User", via: "meetings"},
   	rsvp: { collection: "Rsvp", via: "meeting"},
   	logs: {collection: "Log", via: "meeting"}
+  },
+  beforeCreate: function(record,cb)
+  {
+    cb();
   }
 };
 

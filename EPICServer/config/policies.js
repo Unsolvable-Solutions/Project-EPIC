@@ -26,11 +26,9 @@ module.exports.policies = {
   *                                                                          *
   ***************************************************************************/
 
-  '*': true,
+  '*': 'sessionAuth',
   'AuthController': true,
-  // 'UserController': {
-  //   me : 'sessionAuth'
-  // }
+  'RsvpController': true
   /***************************************************************************
   *                                                                          *
   * Here's an example of mapping some policies to run before a controller    *

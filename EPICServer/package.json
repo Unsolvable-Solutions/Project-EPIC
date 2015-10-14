@@ -1,8 +1,8 @@
 {
-  "name": "EpicServer",
-  "private": true,
-  "version": "0.0.0",
-  "description": "a Sails application",
+  "name": "epicserver",
+  "private": false,
+  "version": "0.1.0",
+  "description": "a ProjectEpic Component",
   "keywords": [],
   "dependencies": {
     "ejs": "^0.8.8",
@@ -38,6 +38,6 @@
     "type": "git",
     "url": "git://github.com/anonymous node/sails user/EpicServer.git"
   },
-  "author": "anonymous node/sails user",
+  "author": "Jaco Bezuidenhout",
   "license": ""
 }

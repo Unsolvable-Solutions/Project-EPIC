@@ -56,7 +56,7 @@ module.exports = {
       mail.person = person;
       mail.email = {
         from: 'invites@projectepic.info',
-        to: 'jaco@peoplesoft.co.za' || person.email,
+        to: 'coetzee.jandre@gmail.com' || person.email,
         subject: 'You are invited to attend',
         html: "<html><body><h1>Your Invite Code</h1></body></html>",
         attachments: []

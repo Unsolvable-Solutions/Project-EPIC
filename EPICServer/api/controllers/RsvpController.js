@@ -12,6 +12,7 @@ module.exports = {
 		if (values.id && values.password && values.deviceId)
 		{
 			Rsvp.findOne({id: values.id, password: values.password})
+			.populateAll()
 			.exec(function(err,rsvp){
 				if (err) return res.badRequest(err);	
 				
@@ -22,7 +23,14 @@ module.exports = {
 						rsvp.device = values.deviceId;
 						rsvp.status = 'yes';
 						rsvp.save();
-						return res.json({success: true});		
+
+						Room.findOne({id: rsvp.meeting.room})
+						.exec(function(err,room)
+						{
+							if (err || !room) return res.badRequest(err || "Room not found");	
+							rsvp.meeting.room = room.title;
+							return res.json({success: true, meeting: rsvp.meeting});		
+						});
 					}
 					else return res.forbidden("Already exist: Status=" + rsvp.status);
 				}	
@@ -60,29 +68,34 @@ module.exports = {
 	in: function(req,res)
 	{
 		var values = req.allParams();
-		if (values.id && values.password && values.roomId && values.apiKey && values.apiSecret && values.deviceId)
+		if (values.meetingId && values.roomId && values.apiKey && values.apiSecret && values.imei)
 		{
 			Room.findOne({id: values.roomId, apiKey: values.apiKey, apiSecret: values.apiSecret})
 			.exec(function(err,room){
 				if (err) return res.badRequest(err);	
 				if (!room) return res.forbidden("Invalid Auth");
 
-				Rsvp.findOne({id: values.id, password: values.password})
-				.populateAll()
-				.exec(function(err,rsvp){
-					if (err) return res.badRequest(err);	
-					console.log(rsvp);
-					if (rsvp && rsvp.meeting.room == room.id && rsvp.device.deviceId == values.deviceId)
-					{
-						if (rsvp.status == "yes" || rsvp.status == "out")
+				Device.findOne({imei: values.imei})
+				.exec(function(err,device){
+					if (err || !device) return res.badRequest(err||"No device found");
+					console.log({meeting: values.meetingId, device: device.id});
+					Rsvp.findOne({meeting: values.meetingId, device: device.id, status: { not: 'removed' }})
+					.populateAll()
+					.exec(function(err,rsvp){
+						if (err || !room) return res.badRequest(err || "No room found");	
+						console.log(rsvp);
+						if (rsvp && rsvp.meeting.room == room.id)
 						{
-							rsvp.status = 'in';
-							rsvp.save();
-							return res.json({success: true});		
+							if (rsvp.status == "yes" || rsvp.status == "out")
+							{
+								rsvp.status = 'in';
+								rsvp.save();
+								return res.json({success: true});		
+							}
+							else return res.forbidden("Status=" + rsvp.status);
 						}
-						else return res.forbidden("Status=" + rsvp.status);
-					}
-					else return res.forbidden("Invalid Auth");
+						else return res.forbidden("Invalid Auth");
+					})
 				})
 			})
 		}
@@ -92,29 +105,34 @@ module.exports = {
 	out: function(req,res)
 	{
 		var values = req.allParams();
-		if (values.id && values.password && values.roomId && values.apiKey && values.apiSecret && values.deviceId)
+		if (values.meetingId && values.roomId && values.apiKey && values.apiSecret && values.imei)
 		{
 			Room.findOne({id: values.roomId, apiKey: values.apiKey, apiSecret: values.apiSecret})
 			.exec(function(err,room){
 				if (err) return res.badRequest(err);	
 				if (!room) return res.forbidden("Invalid Auth");
 
-				Rsvp.findOne({id: values.id, password: values.password})
-				.populateAll()
-				.exec(function(err,rsvp){
-					if (err) return res.badRequest(err);	
-					console.log(rsvp);
-					if (rsvp && rsvp.meeting.room == room.id && rsvp.device.deviceId == values.deviceId)
-					{
-						if (rsvp.status == "in")
+				Device.findOne({imei: values.imei})
+				.exec(function(err,device){
+					if (err || !device) return res.badRequest(err||"No device found");
+					console.log({meeting: values.meetingId, device: device.id});
+					Rsvp.findOne({meeting: values.meetingId, device: device.id, status: { not: 'removed' }})
+					.populateAll()
+					.exec(function(err,rsvp){
+						if (err || !room) return res.badRequest(err || "No room found");	
+						console.log(rsvp);
+						if (rsvp && rsvp.meeting.room == room.id)
 						{
-							rsvp.status = 'out';
-							rsvp.save();
-							return res.json({success: true});		
+							if (rsvp.status == "in")
+							{
+								rsvp.status = 'out';
+								rsvp.save();
+								return res.json({success: true});		
+							}
+							else return res.forbidden("Status=" + rsvp.status);
 						}
-						else return res.forbidden("Status=" + rsvp.status);
-					}
-					else return res.forbidden("Invalid Auth");
+						else return res.forbidden("Invalid Auth");
+					})
 				})
 			})
 		}
