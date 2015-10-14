@@ -1,10 +1,10 @@
-<div class="row">
-	<h1 class="page-header">Meetings
+<div class="row"> 
+	<h1 class="page-header"> My Meetings
 		<button type="button" class="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
 	  		New Meeting
 		</button>
 	</h1>
-</div>
+</div> 
 
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -12,50 +12,131 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">New Meeting</h4>
+        <h4 class="modal-title" id="myModalLabel">Create Meeting</h4>
       </div>
       <div class="modal-body" style="text-align:center">
-      	<h3>Create a new meeting</h3>
+      	
 		<wizard on-finish="finishedWizard()"> 
-		    <wz-step title="" style="text-align:center" >
-			    	<input class="btn btn-primary" type="submit" wz-next value="Start" /><br/>
-			</wz-step>
-		    <wz-step title="Details" style="text-align:center" >
+<!--
+Details
+-->
+		     <wz-step title="Details" style="text-align:center" >
 				<formly-form model="meeting.newMeeting.meeting" fields="meeting.newMeeting.model[0]">
 		        	<input class="btn btn-primary" type="submit" wz-next value="Next" />
 				</formly-form>		
 		    </wz-step>
-		    <wz-step title="Owners">
-		        <div class="row" style="text-align: center">
-					<formly-form model="owner" fields="meeting.newMeeting.model[1]">
-			        	<input class="btn btn-success pull-right" type="button" value="Add" ng-click="owners.push(owner.email)"/>
-						<table class="table">
-							<tr ng-repeat="o in owners"><td>{{o}}</td><td><input type="button" class="btn btn-small btn-danger" value="-"></td></tr>
-						</table>
-					</formly-form>		
-		        </div>
-		        <div class="row" style="text-align: center">
-		        	<input class="btn btn-primary" type="submit" wz-next value="Invite members" />
-		        </div>
+<!--
+Notes
+-->
+		    <wz-step title="Notes">
+		    	<form role="form">
+    				<div class="form-group">
+      					<label for="comment">Notes</label>
+     					 <textarea class="form-control" rows="5" id="notes" placeholder="Any Meeting Notes or Comments"></textarea>
+    				</div>
+  				</form>
+		        <input type="submit" class="btn btn-primary" wz-next value="Next" />
 		    </wz-step>
+<!--
+Owners
+
+		    <wz-step title="Owners">
+		    	<form role="form">
+    				<div class="form-group">
+      					<label for="comment">Owners</label>
+     					 <input type="text"/>
+     					 <button type="submit">Add</button>
+    				</div>
+  				</form>
+
+		        <input type="submit" class="btn btn-primary" wz-next value="Next" />
+		    </wz-step>
+-->
+			<wz-step title="Owners">
+			<formly-form model="vm.user" fields="vm.userFields">
+  					<button type="submit" class="btn btn-default" ng-click="vm.submit(vm.user)">Submit</button>
+			</formly-form>
+			<input type="submit" class="btn btn-primary" wz-next value="Next" />
+			</wz-step>
+
+
+<!--
+Invites
+-->			
 		    <wz-step title="Invite">
-		        <p>Even more steps!!</p>
-		        <input type="submit" class="btn btn-primary" wz-next value="Done" />
+		        <p>Add a person</p>
+		        <input type="submit" class="btn btn-primary" wz-next value="Next" />
+		    </wz-step>
+
+		    
+
+		    <wz-step title="Finish">
+		    <table class ="table">
+		    	<tr>
+		    		<td><b>Title</b></td>
+		    		<td>{{createdMeeting.title}}</td>
+		    	</tr>
+		    	<tr>
+		    		<td><b>Description</b></td>
+		    		<td>{{createdMeeting.description}}</td>
+		    	</tr>		    	
+		    	<tr>
+		    		<td><b>Room</b></td>
+		    		<td>{{createdMeeting.room}}</td>
+		    	</tr>
+		    	<tr>
+		    		<td><b>Start</b></td>
+		    		<td>{{createdMeeting.startDate}}{{createdMeeting.startTime}}</td>
+		    	</tr>
+		    	<tr>
+		    		<td><b>End</b></td>
+		    		<td>{{createdMeeting.endDate}} {{createdMeeting.endTime}}</td>
+		    	</tr>
+		    	<tr>
+		    		<td><b>Owners</b></td>
+		    		<td>
+		    			<div class="dropdown">
+  							<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Owner list
+  								<span class="caret"></span></button>
+  								<ul class="dropdown-menu">
+  									<li ng-repeat "o in createdMeeting.owners"> {{o.email}}
+  									</li>
+								</ul>
+						</div>
+		    		</td>
+		    	</tr>
+		    	<tr>
+		    		<td><b>Invited</b></td>
+		    		<td>
+		    			<div class="dropdown">
+  							<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Invited list
+  								<span class="caret"></span></button>
+  								<ul class="dropdown-menu">
+  									<li ng-repeat "i in createdMeeting.invited">{{i.email}}
+  									</li>
+								</ul>
+						</div>
+		    		</td>
+		    	</tr>
+		    </table>
+
+		        <input type="submit" class="btn btn-primary" wz-next value="Finish" />
 		    </wz-step>
 		</wizard>
 		<br/>        
 		<br/>        
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-default" >Discard changes</button>
+        <button type="button" class="btn btn-primary"data-dismiss="modal">Save changes</button>
+
       </div>
     </div>
   </div>
 </div>
 
 <div class="row">
-	<h2 class="sub-header">Meetings you own</h2>
+
 	<div class="table-responsive">
 	<table class="table table-striped">
 	  <thead>
@@ -77,9 +158,14 @@
 	      <td>{{m.room.title}}</td>
 	      <td>{{m.dateStart}} {{m.timeStart}}</td>
 	      <td>{{m.dateEnd}} {{m.timeEnd}}</td>
+	      <td><input type="button" class="btn btn-small" ng-click="m.change" value="Change"> 
+	       <input type="button" class="btn btn-small" ng-click="m.remove" value="Remove"></td>
+	      
 	    </tr>
 	  </tbody>
 	</table>
 	</div>
 </div>
+
+
 

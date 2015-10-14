@@ -1,6 +1,6 @@
 angular.module('epic.services', [])
 .factory('AuthFactory', function(){
-	var obj = {};
+	var obj = {}; 
 
 	obj.login = function(user,cb)
 	{
@@ -23,10 +23,16 @@ angular.module('epic.services', [])
 	obj.getMeetings = function()
 	{
 		return [
-			{id:1,title:"Meeting 1", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
-			{id:2,title:"Meeting 2", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
+			{id:1,title:"Meeting 1", description: "Cool meetingA", timeStart: new Date(), timeEnd: new Date()},
+			{id:2,title:"Meeting 2", description: "Cool meetingA", timeStart: new Date(), timeEnd: new Date()},
 			{id:3,title:"Meeting 3", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
-			{id:4,title:"Meeting 4", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()}
+			{id:4,title:"Meeting 4", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
+			{id:5,title:"Meeting 5", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
+			{id:6,title:"Meeting 6", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
+			{id:7,title:"Meeting 7", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
+			{id:8,title:"Meeting 8", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
+			{id:9,title:"Meeting 9", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
+			{id:10,title:"Meeting 10", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()}
 		];
 	}
 
@@ -60,7 +66,7 @@ angular.module('epic.services', [])
 		  key: "room",
 		  type: "select",
 		  templateOptions: {
-		    label: "Please select the room where the meeting will take place",
+		    label: "Room",
 		    valueProp: "id",
 		    labelProp: "title",
 		    options: UserFactory.getRooms()
@@ -97,4 +103,6 @@ angular.module('epic.services', [])
 	obj.meetings = UserFactory.getMeetings();
 
 	return obj;
+})
+.factory('MeetingFactory', function(UserFactory){
 })
