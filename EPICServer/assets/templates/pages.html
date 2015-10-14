@@ -12,9 +12,8 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#/page/dash">Dashboard</a></li>
-        <li><a href="#/page/settings">Settings</a></li>
-        <li><a href="#/page/profile">Profile</a></li>
+        <!--<li><a href="#/page/dash">Home</a></li>-->
+        <li><a href="#/page/settings">Help</a></li>
         <li><a href="#/page/logout">Logout</a></li>
       </ul><!-- 
       <form class="navbar-form navbar-right">
@@ -28,27 +27,18 @@
 	<div class="row">
 		<div class="col-sm-3 col-md-2 sidebar">
 		  <ul class="nav nav-sidebar">
-		    <li ui-sref="page.dash" ui-sref-active="active"><a href="">Overview <span class="sr-only">(current)</span></a></li>
-		    <li ui-sref="page.meetings" ui-sref-active="active" ><a href="">Meetings</a></li>
-		    <li ui-sref="page.reports" ui-sref-active="active" ><a href="">Reports</a></li>
+		    <li ui-sref="page.dash" ui-sref-active="active"><a href="">Home <span class="sr-only">(current)</span></a></li>
+		    <li ui-sref="page.meetings" ui-sref-active="active" ><a href="">My Meetings</a></li>
+<!--		    <li ui-sref="page.reports" ui-sref-active="active" ><a href="">Reports</a></li>-->
 		    <li ui-sref="page.export" ui-sref-active="active" ><a href="">Export</a></li>
 		  </ul>
-<!-- 		  <ul class="nav nav-sidebar">
-		    <li><a href="">Nav item</a></li>
-		    <li><a href="">Nav item again</a></li>
-		    <li><a href="">One more nav</a></li>
-		    <li><a href="">Another nav item</a></li>
-		    <li><a href="">More navigation</a></li>
-		  </ul>
-		  <ul class="nav nav-sidebar">
-		    <li><a href="">Nav item again</a></li>
-		    <li><a href="">One more nav</a></li>
-		    <li><a href="">Another nav item</a></li>
-		  </ul> -->
 		</div>
+
 		<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 		    <div ui-view name="view.dash"></div>
 		    <div ui-view name="view.meetings"></div>
+		    <div ui-view name="view.reports"></div>	
+		    <div ui-view name="view.export"></div>	    
 		</div>
 	</div>
 </div>

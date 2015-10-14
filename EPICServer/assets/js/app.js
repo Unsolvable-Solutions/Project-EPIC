@@ -1,6 +1,6 @@
 angular.module('epic.main', ['epic.controllers','epic.services','ngHolder', 'ui.router', 'mgo-angular-wizard', 'formly', 'formlyBootstrap'])
 .run(function($rootScope,$location) {
-  if (!$rootScope.login)
+  if ($rootScope.login)
   	$location.path("/login");
 })
 .config(function($stateProvider, $urlRouterProvider) {
@@ -49,13 +49,23 @@ $stateProvider
 	    }
 	  }
 	})
-
-	.state('page.account', {
-	url: '/account',
+	
+	.state('page.reports', {
+	url: '/reports',
 	views: {
-	  	'view.account': {
-	    templateUrl: 'templates/page.account.html',
-	    controller: 'AccountCtrl'
+	  	'view.reports': {
+	    templateUrl: 'templates/page.reports.html',
+	    controller: 'ReportsCtrl as r'
+	  }
+	}
+	})
+
+	.state('page.export', {
+	url: '/export',
+	views: {
+	  	'view.export': {
+	    templateUrl: 'templates/page.export.html',
+	    controller: 'ExportCtrl as r'
 	  }
 	}
 	});
