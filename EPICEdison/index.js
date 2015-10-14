@@ -1,14 +1,16 @@
 var unirest = require('unirest');
-var http = require('http').createServer(handler)
-var io = require('socket.io')(http);
-var fs = require('fs');
-var inputData = "";
+//var http = require('http').createServer(handler)
+//var io = require('socket.io')(http);
+//var fs = require('fs');
+var config = require("config");
+var CryptoJS = require("http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js");
 
 var SerialPort = require("serialport").SerialPort;
 var serialPort = new SerialPort("/dev/ttyACM0", {
 	baudrate: 115200
 });
 var inList = [];
+var inputData = "";
 
 var login = function(id)
 {
@@ -16,14 +18,20 @@ var login = function(id)
 		return 't';
 	else
 		return 'f';
-	/*unirest.get('http://projectepic.info/in/' + id).end(function (response)
+	var encrypted = CryptoJS.AES.encrypt(id, config.apiKey);
+
+	unirest.get('http://projectepic.info/api/in?apiKey=' + config.apiKey 
+										+ '&apiSecret=' + config.apiSecret 
+										+ '&roomId=' + config.roomId 
+										+ '&deviceId=' + encrypted
+	).end(function (response)
 	{
 		var resp = response.body;
 		if (resp.success)
 			return 't';
 		else
 			return 'f';
-	});*/
+	});
 }
 
 var logout = function(id)
@@ -32,7 +40,13 @@ var logout = function(id)
 		return 't';
 	else
 		return 'f';
-	/*unirest.get('http://projectepic.info/out/' + id).end(function (response)
+	var encrypted = CryptoJS.AES.encrypt(id, config.apiKey);
+
+	unirest.get('http://projectepic.info/api/out?apiKey=' + config.apiKey 
+										+ '&apiSecret=' + config.apiSecret 
+										+ '&roomId=' + config.roomId 
+										+ '&deviceId=' + encrypted
+	).end(function (response)
 	{
 		var resp = response.body;
 		if (resp.success)
@@ -95,8 +109,11 @@ serialPort.on("open", function ()
 			console.log('SENDING TO SERIAL', result);
 			serialPort.write(new Buffer(result), function(err, results)
 			{
-				console.log('err ' + err);
-				console.log('results ' + results);
+				if (err)
+				{
+					console.log('err ' + err);
+					console.log('results ' + results);
+				};
 			});
 		});
 	});
