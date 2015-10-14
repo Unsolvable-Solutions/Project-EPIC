@@ -28,6 +28,10 @@ module.exports.policies = {
 
   '*': 'sessionAuth',
   'AuthController': true,
+  'DeviceController': {
+	'*': false,
+	create: true
+  },
   'RsvpController': true
   /***************************************************************************
   *                                                                          *
