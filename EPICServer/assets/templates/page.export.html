@@ -1,0 +1,22 @@
+<div class="row"> 
+	<h1 class="page-header">Export the meetings</h1>
+
+</div>
+
+<div class="row">
+	<div class="meeting-boxes" style="float:left">
+		<div ng-repeat = "m in r.meetings">
+		
+		  	<b>{{m.title}}</b><br>
+			{{m.description}}<br>
+			{{m.room.title}}<br>
+			{{m.dateStart}} {{m.timeStart}}<br>
+	      	{{m.dateEnd}} {{m.timeEnd}}<br><br>
+
+	        <input type="button" class="btn btn-small" ng-click="m.change" value=" As PDF Report"> <input type="button" class="btn btn-small" ng-click="m.remove" value=" As CSV file">
+		</div>
+	  
+	</div>
+</div>
+
+
