@@ -25,6 +25,13 @@ module.exports = [
         "clobbers": [
             "imeiplugin"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-customurlscheme/www/android/LaunchMyApp.js",
+        "id": "cordova-plugin-customurlscheme.LaunchMyApp",
+        "clobbers": [
+            "window.plugins.launchmyapp"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -33,7 +40,8 @@ module.exports.metadata =
     "cordova-plugin-whitelist": "1.0.0",
     "phonegap-plugin-barcodescanner": "4.0.2",
     "cordova-plugin-device": "1.0.1",
-    "com.joandilee.imeiplugin": "0.1"
+    "com.joandilee.imeiplugin": "0.1",
+    "cordova-plugin-customurlscheme": "4.0.0"
 }
 // BOTTOM OF METADATA
 });

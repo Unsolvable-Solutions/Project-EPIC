@@ -10,30 +10,12 @@
 
       <div class="item item-avatar">
         <img ng-src="{{meeting.face}}">
-        <h2>Marty McFly</h2>
-        <p>November 05, 1955</p>
+        <h2>{{meeting.title}}</h2>
+        <p>{{meeting.startDate}}</p>
       </div>
 
       <div class="item item-body">
         <img class="full-image" ng-src="./img/meeting.png">
-        <p>
-          {{meeting.lastText}}  
-        </p>
-        <p>
-          <a href="#" class="subdued">1 Yes</a>
-          <a href="#" class="subdued">5 No</a>
-        </p>
-      </div>
-
-      <div class="item tabs tabs-secondary tabs-icon-left">
-        <a class="tab-item" href="#">
-          <i class="icon {{'balanced'}} ion-checkmark"></i>
-          RSVP - Yes
-        </a>
-        <a class="tab-item" href="#">
-          <i class="icon {{'assertive'}} ion-close"></i>
-          RSVP - No
-        </a>
       </div>
 
     </div>

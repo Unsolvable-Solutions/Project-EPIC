@@ -6,12 +6,32 @@
 // 'epic.services' is found in services.js
 // 'epic.controllers' is found in controllers.js
 
+var openURL = "";
+
+function getQueryParams(qs) {
+    qs = qs.split('+').join(' ');
+
+    var params = {},
+        tokens,
+        re = /[?&]?([^=]+)=([^&]*)/g;
+
+    while (tokens = re.exec(qs)) {
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+
+    return params;
+}
+
+
+
+
+
 var URL = "http://projectepic.info";
 angular.module('epic', ['ionic', 'ngCordova', 'epic.controllers', 'epic.services'])
 
 .run(function($ionicPlatform, $http, $rootScope, $ionicLoading) {
   $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+      // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -40,6 +60,7 @@ angular.module('epic', ['ionic', 'ngCordova', 'epic.controllers', 'epic.services
       if(window.localStorage.deviceObj)
       {
         $rootScope.deviceObj = JSON.parse(window.localStorage.deviceObj);
+
         console.log("Local Storage: " + window.localStorage.deviceObj);
         $rootScope.hide();
         cb();
@@ -51,6 +72,7 @@ angular.module('epic', ['ionic', 'ngCordova', 'epic.controllers', 'epic.services
         $http.post(URL + "/device/create",{imei: imei, deviceObj: deviceInformation})
         .then(function(res)
         {
+          res.data.meetings = [];
           window.localStorage.deviceObj = JSON.stringify(res.data);
           $rootScope.deviceObj = JSON.parse(window.localStorage.deviceObj);
           console.log("rootScopeObject: " + window.localStorage.deviceObj);

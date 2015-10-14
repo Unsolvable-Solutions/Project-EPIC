@@ -1,3 +1,8 @@
+function handleOpenURL(url) {
+  openURL = url;
+  console.log(openURL);
+}
+
 angular.module('epic.controllers', [])
 
 .controller('DashCtrl', function($scope, $cordovaBarcodeScanner, $rootScope, $location, Meetings) {
@@ -16,13 +21,30 @@ angular.module('epic.controllers', [])
       });
   };
 
+  setTimeout(function(){
+      if (openURL != "")
+      {
+        $scope.$applyAsync(function(){
+          var urlObj = getQueryParams(openURL);
+          $scope.inviteCode = urlObj["epicapp://?id"];
+          $scope.secret = urlObj.password;
+          console.log(urlObj["epicapp://?id"],urlObj.password)
+        })
+      }
+  },1000);
+
   $scope.rsvp = function(i,s){
     Meetings.add(i,s, $rootScope.deviceObj.id, function(res){
       console.log(res);
       $scope.inviteCode = "";
       $scope.secret = "";
-      alert(res.meeting.id);
-      $location.path("/meetings/" + res.meeting.id);
+      $rootScope.deviceObj.meetings = $rootScope.deviceObj.meetings || [];
+      $rootScope.deviceObj.meetings.push(res.meeting);
+      window.localStorage.deviceObj = JSON.stringify($rootScope.deviceObj);
+    //  if(res.meeting.id != "undefined")
+    //  {
+        $location.path("/meetings/" + res.meeting.id);
+    //  }
     });
   }
 })
