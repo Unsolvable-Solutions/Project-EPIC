@@ -10,6 +10,7 @@
   #include <avr/power.h>
 #endif
 #define PIN 3
+#define doorPin 5
 
 // ***********************GLOBALS************************** //
 PN532_SPI         pn532spi(SPI, 10);
@@ -19,7 +20,7 @@ NdefMessage       message;
 int               messageSize;
 uint8_t           uid[3] = { 0x12, 0x34, 0x56 };
 PN532             nfc(pn532spi);
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(16, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(8, PIN, NEO_GRB + NEO_KHZ800);
 
 // ***********************SETUP************************** //
 /* The setup() function initializes some global variables and starts some proses that the program will use later. */
@@ -33,6 +34,8 @@ void setup()
       //Serial.print("Didn't find PN53x board");
       while (1); // halt
     }
+    
+    pinMode(doorPin, OUTPUT);
     
     // To see more details about the board in the node, uncomment the following code.
     /*Serial.print("Found chip PN5"); Serial.println((versiondata>>24) & 0xFF, HEX); 
@@ -54,7 +57,7 @@ void setup()
     
     strip.begin();
     strip.show(); // Initialize all pixels to 'off'
-    
+    openDoor();
     //Serial.println("Node is now online");
 }
 
@@ -153,9 +156,9 @@ void waiting()
 /* The isAllowed() function will check the servers' response and return the value. */
 int isAllowed()
 {
-  for (int x=0; x<21; x+=3) // For each light that must turn blue
+  for (int x=0; x<9; x++) // For each light that must turn blue
   {
-    for (int runner=0; runner<17; runner++) // For each light where the runner will go
+    for (int runner=0; runner<9; runner++) // For each light where the runner will go
     {
       strip.setPixelColor(runner, strip.Color(255, 255, 255)); // Move runner to new position
       strip.setPixelColor((runner-1)%16, (runner > x)?0:strip.Color(255, 65, 0)); // Remove runner from previous position
@@ -172,7 +175,7 @@ int isAllowed()
 /* The setColor() function takes the three values that make up the RGB (Red-Green-Blue) value of a color and sets all the lights to that color. */
 void setColor(int red, int green, int blue)
 {
-  for (int x=0; x<16; x++) // For each light
+  for (int x=0; x<8; x++) // For each light
     strip.setPixelColor(x, strip.Color(red, green, blue));
     
   strip.show(); // Apply updates to the lights 
@@ -220,8 +223,19 @@ void sendMessage(int result)
     
     // or start emulation with timeout
     if (!nfcEmulate.emulate(500))
-      //Serial.println("timed out");
-    
-    delay(2000); // Wait a moment
+      Serial.println("");
+      
+    if (result == 116)
+      openDoor();
+    else
+      delay(2000); // Wait a moment
 }
 
+// ***********************OPEN DOOR************************** //
+/* The openDoor() function controls the servo that unlocks and locks the door. */
+void openDoor()
+{
+    digitalWrite(doorPin, HIGH);
+    delay(3000);
+    digitalWrite(doorPin, LOW);
+}
