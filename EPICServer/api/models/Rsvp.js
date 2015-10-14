@@ -58,7 +58,13 @@ module.exports = {
         from: 'invites@projectepic.info',
         to: 'coetzee.jandre@gmail.com' || person.email,
         subject: 'You are invited to attend',
-        html: "<html><body><h1>Your Invite Code</h1></body></html>",
+        html: '
+          <html>
+            <body>
+              <h1>Your Invite Code</h1>
+              <a href="epicapp://?id=' + createdRecord.id + '&password=' + createdRecord.password + '">Add meeting to Epic Protection App</a>
+            </body>
+          </html>',
         attachments: []
       };
       mail.qrData = {id: createdRecord.id, password: createdRecord.password};
