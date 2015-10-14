@@ -1,6 +1,6 @@
 angular.module('epic.services', [])
 
-.factory('Meetings', function() {
+.factory('Meetings', function($http) {
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
@@ -34,6 +34,27 @@ angular.module('epic.services', [])
   return {
     all: function() {
       return chats;
+    },
+    add: function(i,s,d,cb){
+      $http.post(URL + "/rsvp/yes",
+        {
+          id:i,
+          password:s,
+          deviceId:d
+        }
+      ).then(function(res)
+        {
+          console.log("RSVP successful");
+          cb(res.data);
+        },
+        function(res)
+        {
+          //error
+          console.log("ERROR: RSVP failed.");
+          console.log(JSON.stringify(res));
+          alert(res.data);
+          cb(res);
+        });
     },
     remove: function(chat) {
       chats.splice(chats.indexOf(chat), 1);

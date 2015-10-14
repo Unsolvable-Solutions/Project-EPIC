@@ -301,7 +301,7 @@ public class MainActivity extends CordovaActivity
                     tim.start();
                 }
                 else
-                {Toast.makeText(getApplicationContext(), "Bla", Toast.LENGTH_LONG).show();}
+                {Toast.makeText(getApplicationContext(), "Incorrect Response", Toast.LENGTH_LONG).show();}
 
             }
         }

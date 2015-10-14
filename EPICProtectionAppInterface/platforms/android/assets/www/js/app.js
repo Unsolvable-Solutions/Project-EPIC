@@ -5,9 +5,11 @@
 // the 2nd parameter is an array of 'requires'
 // 'epic.services' is found in services.js
 // 'epic.controllers' is found in controllers.js
+delete window.localStorage.deviceObj;
+var URL = "http://projectepic.info";
 angular.module('epic', ['ionic', 'ngCordova', 'epic.controllers', 'epic.services'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $http, $rootScope) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -20,6 +22,31 @@ angular.module('epic', ['ionic', 'ngCordova', 'epic.controllers', 'epic.services
       // org.apache.cordova.statusbar required
       StatusBar.styleLightContent();
     }
+
+    window.plugins.imeiplugin.getImei(function (imei) {
+      if(window.localStorage.deviceObj)
+      {
+        $rootScope.deviceObj = JSON.parse(window.localStorage.deviceObj);
+        console.log("Local Storage: " + window.localStorage.deviceObj);
+      }
+      else
+      {
+        var deviceInformation = ionic.Platform.device();
+
+        $http.post(URL + "/device/create",{imei: imei, deviceObj: deviceInformation})
+        .then(function(res)
+        {
+          window.localStorage.deviceObj = JSON.stringify(res.data);
+          $rootScope.deviceObj = JSON.parse(window.localStorage.deviceObj);
+          console.log("rootScopeObject: " + window.localStorage.deviceObj);
+        },
+        function(res)
+        {
+          //error
+          console.dir("ERROR: Device id not found.");
+        });
+      }
+    });
   });
 })
 

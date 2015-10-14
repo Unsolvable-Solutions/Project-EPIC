@@ -1,11 +1,14 @@
 angular.module('epic.controllers', [])
 
-.controller('DashCtrl', function($scope, $cordovaBarcodeScanner, Meetings) {
+.controller('DashCtrl', function($scope, $cordovaBarcodeScanner, $rootScope, $location, Meetings) {
 
   $scope.scanQRCode = function() {
       console.log("Barcode scan started ");
       $cordovaBarcodeScanner.scan().then(function(imageData) {
-          alert(imageData.text);
+          var obj = JSON.parse(imageData.text);
+
+          $scope.inviteCode = obj.id;
+          $scope.secret = obj.password;
           console.log("Barcode Format -> " + imageData.format);
           console.log("Cancelled -> " + imageData.cancelled);
       }, function(error) {
@@ -13,6 +16,15 @@ angular.module('epic.controllers', [])
       });
   };
 
+  $scope.rsvp = function(i,s){
+    Meetings.add(i,s, $rootScope.deviceObj.id, function(res){
+      console.log(res);
+      $scope.inviteCode = "";
+      $scope.secret = "";
+      alert(res.meeting.id);
+      $location.path("/meetings/" + res.meeting.id);
+    });
+  }
 })
 
 .controller('MeetingsCtrl', function($scope, Meetings) {
@@ -34,7 +46,15 @@ angular.module('epic.controllers', [])
   $scope.meeting = Meetings.get($stateParams.meetingId);
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller('AccountCtrl', function($scope, $http, $rootScope) {
+  $scope.clearCache = function(){
+    delete window.localStorage.deviceObj;
+    $rootScope.registerDevice(function(){
+      console.log("Local cache cleared.")
+      console.log("Registration Complete");
+    });
+  };
+
   $scope.settings = {
     enableFriends: true
   };

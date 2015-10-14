@@ -1,17 +1,28 @@
 angular.module('epic.controllers', [])
 
-.controller('DashCtrl', function($scope, $cordovaBarcodeScanner, Meetings) {
+.controller('DashCtrl', function($scope, $cordovaBarcodeScanner, $rootScope, Meetings) {
 
   $scope.scanQRCode = function() {
       console.log("Barcode scan started ");
       $cordovaBarcodeScanner.scan().then(function(imageData) {
-          alert(imageData.text);
+          var obj = JSON.parse(imageData.text);
+
+          $scope.inviteCode = obj.id;
+          $scope.secret = obj.password;
           console.log("Barcode Format -> " + imageData.format);
           console.log("Cancelled -> " + imageData.cancelled);
       }, function(error) {
           console.log("An error happened -> " + error);
       });
   };
+
+  $scope.rsvp = function(i,s){
+    Meetings.add(i,s, $rootScope.deviceObj.id, function(res){
+      console.log(res);
+      $scope.inviteCode = "";
+      $scope.secret = "";
+    });
+  }
 
 })
 

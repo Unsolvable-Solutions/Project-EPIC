@@ -8,12 +8,12 @@
             <input type="text" ng-model="inviteCode" placeholder="Invite Code">
           </label>
           <label class="item item-input">
-            <input type="text" ng-model="secret" placeholder="Secret">
+            <input type="password" ng-model="secret" placeholder="Secret">
           </label>
         </div>
       </div>
       <div class="item tabs tabs-secondary tabs-icon-left">
-        <a class="tab-item" ng-click="addMeeting(inviteCode,secret)">
+        <a class="tab-item" ng-click="rsvp(inviteCode,secret)">
           <i class="icon ion-plus balanced"></i>
           Add
         </a>

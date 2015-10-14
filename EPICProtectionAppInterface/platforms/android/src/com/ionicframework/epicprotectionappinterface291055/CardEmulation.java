@@ -112,7 +112,7 @@ public class CardEmulation extends HostApduService {
         final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
         String id = tm.getDeviceId();
 
-            return id;
+        return id;
     }
 
     /*The encrypt converts raw byte data to "garbage" to be transfered for protection.*/

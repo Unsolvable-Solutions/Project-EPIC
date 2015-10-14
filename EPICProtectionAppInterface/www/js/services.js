@@ -1,6 +1,18 @@
 angular.module('epic.services', [])
 
-.factory('Meetings', function() {
+.factory('Meetings', function($http, $ionicPopup, $rootScope) {
+
+  // An alert dialog
+  var showAlert = function(t, mes) {
+    var alertPopup = $ionicPopup.alert({
+      title: t,
+      template: mes
+    });
+    alertPopup.then(function(res) {
+      console.log('Alerted message');
+    });
+  };
+
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
@@ -34,6 +46,31 @@ angular.module('epic.services', [])
   return {
     all: function() {
       return chats;
+    },
+    add: function(i,s,d,cb){
+      $rootScope.loading();
+      $http.post(URL + "/rsvp/yes",
+        {
+          id:i,
+          password:s,
+          deviceId:d
+        }
+      ).then(function(res)
+        {
+          $rootScope.hide();
+          console.log("RSVP successful");
+          showAlert("Successful!", "You have RSVP'd for the meeting!");
+          cb(res.data);
+        },
+        function(res)
+        {
+          //error
+          $rootScope.hide();
+          console.log("ERROR: RSVP failed.");
+          console.log(JSON.stringify(res));
+          showAlert("An error has occured!", res.data);
+          cb(res);
+        });
     },
     remove: function(chat) {
       chats.splice(chats.indexOf(chat), 1);
