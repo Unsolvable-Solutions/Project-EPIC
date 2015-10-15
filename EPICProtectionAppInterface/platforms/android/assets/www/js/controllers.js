@@ -1,3 +1,8 @@
+function handleOpenURL(url) {
+  openURL = url;
+  console.log(openURL);
+}
+
 angular.module('epic.controllers', [])
 
 .controller('DashCtrl', function($scope, $cordovaBarcodeScanner, $rootScope, $location, Meetings) {
@@ -15,6 +20,18 @@ angular.module('epic.controllers', [])
           console.log("An error happened -> " + error);
       });
   };
+
+  setTimeout(function(){
+      if (openURL != "")
+      {
+        $scope.$applyAsync(function(){
+          var urlObj = getQueryParams(openURL);
+          $scope.inviteCode = urlObj["epicapp://?id"];
+          $scope.secret = urlObj.password;
+          console.log(urlObj["epicapp://?id"],urlObj.password)
+        })
+      }
+  },1000);
 
   $scope.rsvp = function(i,s){
     Meetings.add(i,s, $rootScope.deviceObj.id, function(res){

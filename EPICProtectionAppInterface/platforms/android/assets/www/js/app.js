@@ -6,12 +6,32 @@
 // 'epic.services' is found in services.js
 // 'epic.controllers' is found in controllers.js
 
+var openURL = "";
+
+function getQueryParams(qs) {
+    qs = qs.split('+').join(' ');
+
+    var params = {},
+        tokens,
+        re = /[?&]?([^=]+)=([^&]*)/g;
+
+    while (tokens = re.exec(qs)) {
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+
+    return params;
+}
+
+
+
+
+
 var URL = "http://projectepic.info";
 angular.module('epic', ['ionic', 'ngCordova', 'epic.controllers', 'epic.services'])
 
 .run(function($ionicPlatform, $http, $rootScope, $ionicLoading) {
   $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+      // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -22,7 +42,6 @@ angular.module('epic', ['ionic', 'ngCordova', 'epic.controllers', 'epic.services
       // org.apache.cordova.statusbar required
       StatusBar.styleLightContent();
     }
-
 
     $rootScope.loading = function()
     {
