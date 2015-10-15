@@ -151,22 +151,34 @@ Invites
 		    
 
 		    <wz-step title="Summary">
+
+
+
+<table class="table table-hover"style="text-align:left">
+	<tr>
+		<td>Title</td>
+		<td>{{createdMeeting.title}}</td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>{{createdMeeting.description}}</td>
+	</tr>
+	<tr>
+		<td>Room</td>
+		<td>{{createdMeeting.room}}</td>
+	</tr>
+	<tr>
+		<td>Start</td>
+		<td>{{createdMeeting.startDate}} {{createdMeeting.startTime}}</td>
+	</tr>
+	<tr>
+		<td>End</td>
+		<td>{{createdMeeting.endDate}}{{createdMeeting.endTime}}</td>
+	</tr>
+</table>
+
+
 <div class="panel-group" style="text-align:left">
-    <div class="panel panel-default">
-      <div class="panel-body">Title: {{createdMeeting.title}}</div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-body">Description: {{createdMeeting.description}}</div>
-    </div>
-        <div class="panel panel-default">
-      <div class="panel-body">Room: {{createdMeeting.room}}</div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-body">Start: {{createdMeeting.startDate}}{{createdMeeting.startTime}}</div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-body">End: {{createdMeeting.endDate}}{{createdMeeting.endTime}}</div>
-    </div>
 	<div class="panel panel-default">
     	<div class="panel-heading">Owners</div>
   		<div class="panel-body">
@@ -218,8 +230,10 @@ Invites
 	      <td>{{m.room.title}}</td>
 	      <td>{{m.dateStart}} {{m.timeStart}}</td>
 	      <td>{{m.dateEnd}} {{m.timeEnd}}</td>
-	      <td><input type="button" class="btn btn-small" ng-click="m.change" value="Change"> 
-	       <input type="button" class="btn btn-small" ng-click="m.remove" value="Remove"></td>
+	      <td>
+				<button type="button" class = "btn btn-small" ng-click="m.change" ><span class="glyphicon glyphicon-pencil"></span></button>
+				<button type="button" class = "btn btn-small" ng-click="m.remove" ><span class="glyphicon glyphicon-remove"></span></button>
+		  </td>
 	      
 	    </tr>
 	  </tbody>
