@@ -46,7 +46,7 @@ Notes
 
       					<label for="owner">Add an owner to the meeting</label>
      					<input type="email" class="form-control" id="ownerEmail" placeholder="owner@email.com"/>
-     					<input type="button" class="btn btn-small" ng-click="m.addOwner" value="Add"></td>
+     					<input type="button" class="btn btn-small" ng-click="m.addOwner" value="Add" style="margin-top:10px">
      					
     				</div>
 
@@ -54,7 +54,8 @@ Notes
   				<div class="panel panel-default" style="text-align:left">
   					<div class="panel-heading">Current Owners</div>
   					<div class="panel-body">
-  						<p ng-repeat "o in newMeeting.owners"> {{o.email}}	</p>
+  					<div ng-repeat "o in newMeeting.owners" style="float:left;clear:right"> {{o.email}}	</div>
+  						
   					</div>
   				</div>
 
@@ -71,25 +72,22 @@ Invites
 				<form role="form">
     				<div class="form-group">
 
-      					<label for="inviteName">Name</label>
+      					<label for="inviteName" style="margin-top:10px">Name</label>
      					<input type="text" label="Name" class="form-control" id="inviteName" placeholder="James"/>
-						<label for="inviteSurname">Surname</label>
+						<label for="inviteSurname" style="margin-top:10px">Surname</label>
      					<input type="text" label="Surname" class="form-control" id="inviteSurname" placeholder="Blunt"/>
-						<label for="inviteEmail">Email</label>
+						<label for="inviteEmail" style="margin-top:10px">Email</label>
      					<input type="email" label="Email Address" class="form-control" id="inviteEmail" placeholder="James@email.com"/>
-     					<input type="button" class="btn btn-small" ng-click="m.addInvite" value="Invite"></td>
+     					<input type="button" class="btn btn-small" ng-click="m.addInvite" value="Invite"style="margin-top:10px">
      					
     				</div>
     				</form>
-
-<div class="dropdown">
-  							<button class="btn btn-small dropdown-toggle" type="button" data-toggle="dropdown">Current list of invites
-  								<span class="caret"></span></button>
-  								<ul class="dropdown-menu">
-  									<li ng-repeat " in newMeeting.invited"> {{i.email}}
-  									</li>
-								</ul>
-						</div>
+				<div class="panel panel-default" style="text-align:left">
+  					<div class="panel-heading">Invited</div>
+  					<div class="panel-body">
+  					<div ng-repeat "i in newMeeting.invited" style="float:left;clear:right"> {{i.email}} </div>
+  					</div>
+  				</div>
 
 		        <input type="submit" class="btn btn-primary" wz-next value="Next" />
 		    </wz-step>
@@ -97,55 +95,38 @@ Invites
 		    
 
 		    <wz-step title="Summary">
-		    <table class ="table">
-		    	<tr>
-		    		<td><b>Title</b></td>
-		    		<td>{{createdMeeting.title}}</td>
-		    	</tr>
-		    	<tr>
-		    		<td><b>Description</b></td>
-		    		<td>{{createdMeeting.description}}</td>
-		    	</tr>		    	
-		    	<tr>
-		    		<td><b>Room</b></td>
-		    		<td>{{createdMeeting.room}}</td>
-		    	</tr>
-		    	<tr>
-		    		<td><b>Start</b></td>
-		    		<td>{{createdMeeting.startDate}}{{createdMeeting.startTime}}</td>
-		    	</tr>
-		    	<tr>
-		    		<td><b>End</b></td>
-		    		<td>{{createdMeeting.endDate}} {{createdMeeting.endTime}}</td>
-		    	</tr>
-		    	<tr>
-		    		<td><b>Owners</b></td>
-		    		<td>
-		    			<div class="dropdown">
-  							<button class="btn btn-small dropdown-toggle" type="button" data-toggle="dropdown">Owner list
-  								<span class="caret"></span></button>
-  								<ul class="dropdown-menu">
-  									<li ng-repeat "o in createdMeeting.owners"> {{o.email}}
-  									</li>
-								</ul>
-						</div>
-		    		</td>
-		    	</tr>
-		    	<tr>
-		    		<td><b>Invited</b></td>
-		    		<td>
-		    			<div class="dropdown">
-  							<button class="btn btn-small dropdown-toggle" type="button" data-toggle="dropdown">Invited list
-  								<span class="caret"></span></button>
-  								<ul class="dropdown-menu">
-  									<li ng-repeat "i in createdMeeting.invited">{{i.email}}
-  									</li>
-								</ul>
-						</div>
-		    		</td>
-		    	</tr>
-		    </table>
+<div class="panel-group" style="text-align:left">
+    <div class="panel panel-default">
 
+      <div class="panel-body">Title: {{createdMeeting.title}}</div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-body">Description: {{createdMeeting.description}}</div>
+    </div>
+        <div class="panel panel-default">
+      <div class="panel-body">Room: {{createdMeeting.room}}</div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-body">Start: {{createdMeeting.startDate}}{{createdMeeting.startTime}}</div>
+    </div>
+    <div class="panel panel-default">
+
+      <div class="panel-body">End: {{createdMeeting.endDate}}{{createdMeeting.endTime}}</div>
+    </div>
+	<div class="panel panel-default">
+    	<div class="panel-heading">Owners</div>
+  		<div class="panel-body">
+  		<div ng-repeat "o in createdMeeting.owners" style="float:left;clear:right"> {{o.email}} </div>
+  	</div>
+  	</div>
+
+  	<div class="panel panel-default">
+  		<div class="panel-heading">Invited</div>
+  		<div class="panel-body">
+  		<div ng-repeat "i in createdMeeting.invited" style="float:left;clear:right"> {{i.email}} </div>
+  	</div>
+  	</div>
+ </div>
 		        <input type="submit" class="btn btn-primary" wz-next value="Done" />
 		    </wz-step>
 		</wizard>
