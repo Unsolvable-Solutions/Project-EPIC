@@ -7,7 +7,7 @@
 </div> 
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -37,40 +37,66 @@ Notes
   				</form>
 		        <input type="submit" class="btn btn-primary" wz-next value="Next" />
 		    </wz-step>
-<!--
-Owners
+
+
 
 		    <wz-step title="Owners">
 		    	<form role="form">
     				<div class="form-group">
-      					<label for="comment">Owners</label>
-     					 <input type="text"/>
-     					 <button type="submit">Add</button>
+
+      					<label for="owner">Add an owner to the meeting</label>
+     					<input type="email" class="form-control" id="ownerEmail" placeholder="owner@email.com"/>
+     					<input type="button" class="btn btn-small" ng-click="m.addOwner" value="Add"></td>
+     					
     				</div>
+
   				</form>
+  				<div class="panel panel-default" style="text-align:left">
+  					<div class="panel-heading">Current Owners</div>
+  					<div class="panel-body">
+  						<p ng-repeat "o in newMeeting.owners"> {{o.email}}	</p>
+  					</div>
+  				</div>
 
 		        <input type="submit" class="btn btn-primary" wz-next value="Next" />
 		    </wz-step>
--->
-			<wz-step title="Owners">
-			<formly-form model="vm.user" fields="vm.userFields">
-  					<button type="submit" class="btn btn-default" ng-click="vm.submit(vm.user)">Submit</button>
-			</formly-form>
-			<input type="submit" class="btn btn-primary" wz-next value="Next" />
-			</wz-step>
+
 
 
 <!--
 Invites
 -->			
 		    <wz-step title="Invite">
-		        <p>Add a person</p>
+		        <p>Invite a person to the meeting</p>
+				<form role="form">
+    				<div class="form-group">
+
+      					<label for="inviteName">Name</label>
+     					<input type="text" label="Name" class="form-control" id="inviteName" placeholder="James"/>
+						<label for="inviteSurname">Surname</label>
+     					<input type="text" label="Surname" class="form-control" id="inviteSurname" placeholder="Blunt"/>
+						<label for="inviteEmail">Email</label>
+     					<input type="email" label="Email Address" class="form-control" id="inviteEmail" placeholder="James@email.com"/>
+     					<input type="button" class="btn btn-small" ng-click="m.addInvite" value="Invite"></td>
+     					
+    				</div>
+    				</form>
+
+<div class="dropdown">
+  							<button class="btn btn-small dropdown-toggle" type="button" data-toggle="dropdown">Current list of invites
+  								<span class="caret"></span></button>
+  								<ul class="dropdown-menu">
+  									<li ng-repeat " in newMeeting.invited"> {{i.email}}
+  									</li>
+								</ul>
+						</div>
+
 		        <input type="submit" class="btn btn-primary" wz-next value="Next" />
 		    </wz-step>
 
 		    
 
-		    <wz-step title="Finish">
+		    <wz-step title="Summary">
 		    <table class ="table">
 		    	<tr>
 		    		<td><b>Title</b></td>
@@ -96,7 +122,7 @@ Invites
 		    		<td><b>Owners</b></td>
 		    		<td>
 		    			<div class="dropdown">
-  							<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Owner list
+  							<button class="btn btn-small dropdown-toggle" type="button" data-toggle="dropdown">Owner list
   								<span class="caret"></span></button>
   								<ul class="dropdown-menu">
   									<li ng-repeat "o in createdMeeting.owners"> {{o.email}}
@@ -109,7 +135,7 @@ Invites
 		    		<td><b>Invited</b></td>
 		    		<td>
 		    			<div class="dropdown">
-  							<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Invited list
+  							<button class="btn btn-small dropdown-toggle" type="button" data-toggle="dropdown">Invited list
   								<span class="caret"></span></button>
   								<ul class="dropdown-menu">
   									<li ng-repeat "i in createdMeeting.invited">{{i.email}}
@@ -120,7 +146,7 @@ Invites
 		    	</tr>
 		    </table>
 
-		        <input type="submit" class="btn btn-primary" wz-next value="Finish" />
+		        <input type="submit" class="btn btn-primary" wz-next value="Done" />
 		    </wz-step>
 		</wizard>
 		<br/>        

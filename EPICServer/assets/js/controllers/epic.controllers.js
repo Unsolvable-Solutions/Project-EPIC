@@ -55,6 +55,16 @@ angular.module('epic.controllers', [])
 			t.meeting.push(o);
 		});
 	}
+	t.addInvite = function(meeting, invited)
+	{
+		//TODO:
+		//the person is created and added to the db
+		//person is added to meeting invite list
+		//email is send to person
+		//data fields is cleared and andothe person can be invited
+		//the 
+	}
+
 
 	t.createdMeeting = {
 		title:"Maret se meeting",
@@ -64,10 +74,9 @@ angular.module('epic.controllers', [])
 		startDate:"16 Oktober",
 		endDate:"17 Okt",
 		endTime:"13:12 PM",
-		owners:[{email:"pietie@pompies", name:"pietie"},{email:"susan@album", name:"susan"}],
-		invited:[{email:"pietie@pompies", name:"pietie"},{email:"susan@album", name:"susan"},{email:"john@travolta",name:"johnny b goode"}]
+	//	owners:[{email:"pietie@pompies", name:"pietie"},{email:"susan@album", name:"susan"}],
+	//	invited:[{email:"pietie@pompies", name:"pietie"},{email:"susan@album", name:"susan"},{email:"john@travolta",name:"johnny b goode"}]
 	};
-
 
 //	t.remove = function(id)
 //	{
