@@ -116,3 +116,8 @@ margin:3px;
 border-radius:5px;
 padding:3px;
 }
+.form-group label
+{
+  margin-top:10px;
+  margin-bottom: 3px;
+}
