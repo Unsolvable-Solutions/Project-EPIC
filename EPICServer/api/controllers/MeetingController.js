@@ -103,7 +103,7 @@ module.exports = {
 				if (err) return res.badRequest(err);
 				if (!meeting) return res.badRequest("Meeting Not Found");
 
-				Person.findOne({id: values.person})
+				Person.findOrCreate({email: values.person.email},values.person)
 				.exec(function(err,person){
 					if (err) return res.badRequest(err);
 					if (!person) return res.badRequest("Person Not Found");

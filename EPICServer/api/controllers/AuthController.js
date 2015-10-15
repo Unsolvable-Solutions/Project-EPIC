@@ -112,7 +112,7 @@ AUTH.logout = function(req,res)
 	req.session.authenticated = false;
 	req.session.user = null;
 
-	res.json({success: true});
+	return res.redirect('#/login');
 }
 
 module.exports = AUTH;

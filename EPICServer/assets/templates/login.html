@@ -31,10 +31,10 @@
       }
 
 </style>
-<form class="form-signin">
+<form class="form-signin" ng-submit="l.login(user)">
 	<h2 class="form-signin-heading">Please sign in</h2>
 	<input type="email" class="form-control" placeholder="Email address" ng-model="user.email" ng-change="l.clearLoginError">
 	<input type="password" class="form-control" placeholder="Password" ng-model="user.password" ng-change="l.clearLoginError">
-	<button class="btn btn-large btn-primary" type="button" ng-click="l.login(user)">Sign in</button>
+	<input class="btn btn-large btn-primary" type="submit" value="Sign in">
   <p class="alert alert-danger">{{l.loginError}}</p>
 </form>

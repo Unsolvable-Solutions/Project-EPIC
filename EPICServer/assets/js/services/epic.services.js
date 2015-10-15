@@ -1,106 +1,103 @@
 angular.module('epic.services', [])
-.factory('AuthFactory', function(){
+.factory('AuthFactory', function($http){
 	var obj = {}; 
 
 	obj.login = function(user,cb)
 	{
 		if (user.email && user.password)
-			cb(true);
+		{
+			$http.post(URL + "/login", {email: user.email, password: user.password})
+			.then(function(res){
+				cb(res.data.success || false);
+			},function(err){
+				cb(false);
+			});
+		}
 		else
 			cb(false);
 	}
 
 	return obj;
 })
-.factory('UserFactory', function(){
+.factory('MeetingFactory', function($http){
 	var obj = {};
-
-	obj.getRooms = function()
+	
+	obj.getRooms = function(cb)
 	{
-		return [{id:1,title:"Room 1"},{id:2,title:"Room 2"},{id:3,title:"Room 3"}];
+		$http.get(URL + "/me")
+		.then(function(res){
+			console.log(res.data);
+			return cb(res.data.rooms || []);
+		},function(err){
+			return cb([]);
+		});
 	}
 
-	obj.getMeetings = function()
+	obj.getMeetings = function(cb)
 	{
-		return [
-			{id:1,title:"Meeting 1", description: "Cool meetingA", timeStart: new Date(), timeEnd: new Date()},
-			{id:2,title:"Meeting 2", description: "Cool meetingA", timeStart: new Date(), timeEnd: new Date()},
-			{id:3,title:"Meeting 3", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
-			{id:4,title:"Meeting 4", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
-			{id:5,title:"Meeting 5", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
-			{id:6,title:"Meeting 6", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
-			{id:7,title:"Meeting 7", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
-			{id:8,title:"Meeting 8", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
-			{id:9,title:"Meeting 9", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()},
-			{id:10,title:"Meeting 10", description: "Cool meeting", timeStart: new Date(), timeEnd: new Date()}
-		];
+		$http.get(URL + "/meeting")
+		.then(function(res){
+			console.log(res.data);
+			return cb(res.data);
+		},function(err){
+			return cb([]);
+		});
 	}
 
-	return obj;
-})
-.factory('MeetingFactory', function(UserFactory){
-	var obj = {};
+	obj.getMeeting = function(id,cb)
+	{
+		$http.get(URL + "/meeting")
+		.then(function(res){
+			console.log(res.data);
+			return cb(res.data);
+		},function(err){
+			return cb([]);
+		});
+	}
 
-	obj.model = [];
-	//step1
-	obj.model.push([
+	obj.updateOrCreate = function(meeting,cb)
+	{
+		if (meeting.id)
 		{
-	      key: 'title',
-	      type: 'input',
-	      templateOptions: {
-	        type: 'text',
-	        label: 'Meeting Title',
-	        placeholder: 'Enter Title'
-	      }
-	    },
-	    {
-	      key: 'description',
-	      type: 'input',
-	      templateOptions: {
-	        type: 'text',
-	        label: 'Meeting Description',
-	        placeholder: 'Enter Description'
-	      }
-	    },
-	    {
-		  key: "room",
-		  type: "select",
-		  templateOptions: {
-		    label: "Room",
-		    valueProp: "id",
-		    labelProp: "title",
-		    options: UserFactory.getRooms()
-		  }
-		},
-	    {
-		  key: "timeStart",
-		  type: "input",
-		  templateOptions: {
-		  	type: "time",
-		  	label: "Start Date/Time"
-		  }
-		},
-	    {
-		  key: "timeEnd",
-		  type: "input",
-		  templateOptions: {
-		  	type: "time",
-		  	label: "End Date/Time"
-		  }
+			///meeting/update/1?title=test
+			$http.post(URL + "/meeting/update/" + meeting.id, meeting)
+			.then(function(res){
+				cb(res.data);
+			},function(err){
+				cb(err);
+			});
 		}
-	]);
-	obj.model.push([
+		else
 		{
-		    type: "input",
-		    key: "email",
-		    templateOptions: {
-		      type: "email",
-		      label: "Owner Email"
-		    }
+			$http.post(URL + "/meeting/create/", meeting)
+			.then(function(res){
+				cb(res.data);
+			},function(err){
+				cb(err);
+			});	
 		}
-	]);
+	}
 
-	obj.meetings = UserFactory.getMeetings();
+	obj.addOwner = function(meeting,owner,cb)
+	{
+		$http.post(URL + "/meeting/addOwner/", {meeting: meeting.id,owner: owner.email})
+		.then(function(res){
+			cb(res.data);
+		},function(err){
+			cb(err);
+		});	
+	}
+
+	obj.addMember = function(meeting,member,cb)
+	{
+		$http.post(URL + "/meeting/addInvite/", {meeting: meeting, person: member})
+		.then(function(res){
+			cb(res.data);
+		},function(err){
+			cb(err);
+		});
+	}
+
 
 	return obj;
 })

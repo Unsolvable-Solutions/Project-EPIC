@@ -41,11 +41,13 @@ angular.module('epic.controllers', [])
 	t.newMeeting.meeting = {};
 	t.newMeeting.model = MeetingFactory.model;
 
-	t.meetings = MeetingFactory.meetings || [];
+	MeetingFactory.getMeetings(function(meetings){
+		t.meetings = meetings;
+	});
 
-	t.createMeeting = function(meeting)
+	t.updateOrCreateMeeting = function(meeting)
 	{
-		MeetingFactory.create(meeting,function(m){
+		MeetingFactory.updateOrCreate(meeting,function(m){
 			t.meetings.push(m);
 		});
 	}

@@ -1,7 +1,21 @@
+// var URL = "http://projectepic.info";
+var URL = "";
 angular.module('epic.main', ['epic.controllers','epic.services','ngHolder', 'ui.router', 'mgo-angular-wizard', 'formly', 'formlyBootstrap'])
-.run(function($rootScope,$location) {
-  if ($rootScope.login)
-  	$location.path("/login");
+.run(function($rootScope,$location,$http) {
+  	
+  	$rootScope.checkLoggedIn = function()
+  	{
+  		$http.get(URL + "/me")
+		.then(function(res){
+			if (!res.data) $location.path("/login");
+		},function(err){
+	  		$location.path("/login");
+		});
+  	}
+
+  	$rootScope.checkLoggedIn();
+  	setInterval($rootScope.checkLoggedIn,10000);	
+
 })
 .config(function($stateProvider, $urlRouterProvider) {
 
