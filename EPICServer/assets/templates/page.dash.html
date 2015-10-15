@@ -2,17 +2,17 @@
  -->
 <div class="row placeholders">
 <div class="col-xs-6 col-sm-3 placeholder">
-  <img holder="holder.js/200x200/sky?text=5" class="img-responsive" alt="Generic placeholder thumbnail">
-  <h4>My Meeting</h4>
+  <img holder="holder.js/200x200/sky?text=5" class="img-responsive" alt="My Meetings">
+  <h4>My Meetings</h4>
   <span class="text-muted">All the meetings I have created</span>
 </div>
 <div class="col-xs-6 col-sm-3 placeholder">
-  <img holder="holder.js/200x200/vine?text=203" class="img-responsive" alt="Generic placeholder thumbnail">
+  <img holder="holder.js/200x200/vine?text=203" class="img-responsive" alt="My Contacts">
   <h4>Known Contacts</h4>
   <span class="text-muted">People I have invited</span>
 </div>
 <div class="col-xs-6 col-sm-3 placeholder">
-  <img holder="holder.js/200x200/sky?text=59%25" class="img-responsive" alt="Generic placeholder thumbnail">
+  <img holder="holder.js/200x200/sky?text=59%25" class="img-responsive" alt="Attendance Rate">
   <h4>Attendance Rate</h4>
   <span class="text-muted">Something</span>
 </div>
@@ -23,19 +23,22 @@
 </div>
 </div>
 
-<h2 class="sub-header">Section title</h2>
+<!--<h2 class="sub-header">Section title</h2>-->
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-5">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Some cool graph...??</h3>
+				<h3 class="panel-title">My Statistics</h3>
 			</div>
 		  	<div class="panel-body">
-				//graph
+		  	<!--
+		  	///sit blaai paneel hier met verskillende graphs
+		  	-->
+				<img holder="holder.js/200x200/vine?text=203" class="img-responsive" alt="Generic placeholder thumbnail">
 			</div>
 		</div>
 	</div>
-	<div class="col-md-6">
+	<div class="col-md-7">
 		<div class="panel panel-default">
 		  <div class="panel-heading">
 		    <h3 class="panel-title">Upcomming Meetings</h3>
@@ -53,12 +56,12 @@
 				    </tr>
 				  </thead>
 				  <tbody>
-				    <tr>
-				      <td>1</td>
-				      <td>Lorem</td>
-				      <td>Lorem</td>
-				      <td>Lorem</td>
-				      <td>ipsum</td>
+				    <tr ng-repeat="m in nextthreeMeetings">
+				      <td>{{m.id}}</td>
+				      <td>{{m.title}}</td>
+				      <td>{{m.room}}</td>
+				      <td>{{m.startDate}}}</td>
+				      <td>{{m.startTime}}</td>
 				    </tr>
 				  </tbody>
 				</table>

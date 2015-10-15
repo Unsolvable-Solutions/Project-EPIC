@@ -30,7 +30,11 @@ angular.module('epic.controllers', [])
 })
 .controller('DashCtrl', function($scope)
 {
-	
+	var t = this;
+	t.nextthreeMeetings = function(meetings)
+	{
+		///TODO get next three upcomming meetings
+	}
 })
 .controller('MeetingsCtrl', function($scope,MeetingFactory)
 {
