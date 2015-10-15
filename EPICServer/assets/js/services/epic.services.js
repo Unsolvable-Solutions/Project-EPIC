@@ -104,5 +104,3 @@ angular.module('epic.services', [])
 
 	return obj;
 })
-.factory('MeetingFactory', function(UserFactory){
-})

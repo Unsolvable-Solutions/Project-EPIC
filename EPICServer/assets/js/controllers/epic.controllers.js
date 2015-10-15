@@ -1,7 +1,7 @@
 angular.module('epic.controllers', [])
 .controller('LoginCtrl', function($scope, $rootScope, $location, AuthFactory)
 {
-	var t = this; 
+	var t = this;  
 	t.loginError="";//"Invalid Email or Password2222";
 		
 	$scope.user={};
@@ -96,11 +96,13 @@ angular.module('epic.controllers', [])
 t.meetings = MeetingFactory.meetings || [];
 t.meetings.csvfile = function(meeting)
 {
+	//TO DO
 //generate csv file with meeting details etc
 }
 
 t.meetings.pdfreport = function(meeting)
 {
+	//TO DO
 //generate pdf report file with meeting details etc
 }
 
