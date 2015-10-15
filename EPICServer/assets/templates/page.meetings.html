@@ -19,15 +19,69 @@
 		<wizard on-finish="finishedWizard()"> 
 <!--
 Details
--->
+
 		     <wz-step title="Details" style="text-align:center" >
 				<formly-form model="meeting.newMeeting.meeting" fields="meeting.newMeeting.model[0]">
 		        	<input class="btn btn-primary" type="submit" wz-next value="Next" />
 				</formly-form>		
 		    </wz-step>
-<!--
+		    -->
+		    <wz-step title="Details">
+		    	<form role="form">
+    				<div class="form-group">
+      					<label for="meetingTitle">Meeting Title</label>
+     					<input type="text" class="form-control" id="meetingTitle" placeholder="Enter Title Here"/>
+     					<label for="meetingDescription">Description</label>
+     					<input type="text" class="form-control" id="meetingDescription" placeholder="Enter Description Here"/>
+     					<label for="meetingRoom">Room</label>
+     					<select class="form-control">
+     					<option>Room 1</option>
+     					<option>Room 2</option>
+     					<option>Room 3</option>
+     					<option>Room 4</option>
+     					</select>
+<table class="table">
+
+<tr>
+<td>
+	<label for="meetingStartDate">Start Date</label>
+     					<input type="date" class="form-control" id="meetingStartDate"/>
+</td>
+<td>
+	<label for="meetingStartTime">Start Time</label>
+     					<input type="time" class="form-control" id="meetingStartTime"/>
+</td>
+<tr>
+<td>
+	<label for="meetingEndDate">End Date</label>
+     					<input type="date" class="form-control" id="meetingEndDate"/>
+</td>
+<td>
+	<label for="meetingEndTime">End Time</label>
+     					<input type="time" class="form-control" id="meetingEndTime"/>
+</td>
+
+</tr>
+
+</table>
+     					
+     					
+
+     					
+
+						
+     					
+     					
+     					<label for="comment">Notes</label>
+     					 <textarea class="form-control" rows="5" id="notes" placeholder="Any Meeting Notes or Comments"></textarea>
+    				</div>
+
+  				</form>
+		        <input type="submit" class="btn btn-primary" wz-next value="Next" />
+		    </wz-step>
+<!--		
 Notes
--->
+
 		    <wz-step title="Notes">
 		    	<form role="form">
     				<div class="form-group">
@@ -38,7 +92,7 @@ Notes
 		        <input type="submit" class="btn btn-primary" wz-next value="Next" />
 		    </wz-step>
 
-
+-->
 
 		    <wz-step title="Owners">
 		    	<form role="form">
@@ -54,7 +108,9 @@ Notes
   				<div class="panel panel-default" style="text-align:left">
   					<div class="panel-heading">Current Owners</div>
   					<div class="panel-body">
-  					<div ng-repeat "o in newMeeting.owners" style="float:left;clear:right"> {{o.email}}	</div>
+<!--  					<div  class="list-people"> YOU	<a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
+  					-->
+  					<div ng-repeat="o in newMeeting.owners" class="list-people"> {{o.email}}	<a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
   						
   					</div>
   				</div>
@@ -73,11 +129,11 @@ Invites
     				<div class="form-group">
 
       					<label for="inviteName" style="margin-top:10px">Name</label>
-     					<input type="text" label="Name" class="form-control" id="inviteName" placeholder="James"/>
+     					<input type="text" label="Name" class="form-control" id="inviteName" placeholder="Insert Name"/>
 						<label for="inviteSurname" style="margin-top:10px">Surname</label>
-     					<input type="text" label="Surname" class="form-control" id="inviteSurname" placeholder="Blunt"/>
+     					<input type="text" label="Surname" class="form-control" id="inviteSurname" placeholder="Enter Surname"/>
 						<label for="inviteEmail" style="margin-top:10px">Email</label>
-     					<input type="email" label="Email Address" class="form-control" id="inviteEmail" placeholder="James@email.com"/>
+     					<input type="email" label="Email Address" class="form-control" id="inviteEmail" placeholder="some@email.address"/>
      					<input type="button" class="btn btn-small" ng-click="m.addInvite" value="Invite"style="margin-top:10px">
      					
     				</div>
@@ -85,7 +141,7 @@ Invites
 				<div class="panel panel-default" style="text-align:left">
   					<div class="panel-heading">Invited</div>
   					<div class="panel-body">
-  					<div ng-repeat "i in newMeeting.invited" style="float:left;clear:right"> {{i.email}} </div>
+  					<div ng-repeat="i in newMeeting.invited" class="list-people"> {{i.email}} <a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
   					</div>
   				</div>
 
@@ -97,7 +153,6 @@ Invites
 		    <wz-step title="Summary">
 <div class="panel-group" style="text-align:left">
     <div class="panel panel-default">
-
       <div class="panel-body">Title: {{createdMeeting.title}}</div>
     </div>
     <div class="panel panel-default">
@@ -110,20 +165,18 @@ Invites
       <div class="panel-body">Start: {{createdMeeting.startDate}}{{createdMeeting.startTime}}</div>
     </div>
     <div class="panel panel-default">
-
       <div class="panel-body">End: {{createdMeeting.endDate}}{{createdMeeting.endTime}}</div>
     </div>
 	<div class="panel panel-default">
     	<div class="panel-heading">Owners</div>
   		<div class="panel-body">
-  		<div ng-repeat "o in createdMeeting.owners" style="float:left;clear:right"> {{o.email}} </div>
+  		<div ng-repeat="o in createdMeeting.owners" class="list-people"> {{o.email}} <a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
   	</div>
   	</div>
-
   	<div class="panel panel-default">
   		<div class="panel-heading">Invited</div>
   		<div class="panel-body">
-  		<div ng-repeat "i in createdMeeting.invited" style="float:left;clear:right"> {{i.email}} </div>
+  		<div ng-repeat="i in createdMeeting.invited" class="list-people"> {{i.email}} <a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
   	</div>
   	</div>
  </div>
