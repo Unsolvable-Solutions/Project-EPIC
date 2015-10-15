@@ -76,8 +76,4 @@ angular.module('epic.controllers', [])
       console.log("Registration Complete");
     });
   };
-
-  $scope.settings = {
-    enableFriends: true
-  };
 });
