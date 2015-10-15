@@ -627,7 +627,7 @@ public class MainActivity extends CordovaActivity
     {
         try {
             setMobileNetworkfromLollipop(getApplicationContext(),0);
-            toggleMobileDataOnKitkat(getApplicationContext(),false);
+          //  toggleMobileDataOnKitkat(getApplicationContext(),false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -678,13 +678,24 @@ public class MainActivity extends CordovaActivity
                     executeCommandViaSu(context, "-c", command);
                 }
             }
+			else if(Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT)
+			{
+				if(mobileState == 0)
+				{
+					toggleMobileDataOnKitkat(context,false);
+				}
+				else if(mobileState == 1)
+				{
+					toggleMobileDataOnKitkat(context,true);
+				}
+			}
         } catch(Exception e) {
             // Oops! Something went wrong, so we throw the exception here.
             throw e;
         }
     }
 
-    private void toggleMobileDataOnKitkat(Context context,Boolean isOn) throws Exception
+    public static void toggleMobileDataOnKitkat(Context context,Boolean isOn) throws Exception
     {
         ConnectivityManager conman = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         @SuppressWarnings("rawtypes")
