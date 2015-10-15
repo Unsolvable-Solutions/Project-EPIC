@@ -54,7 +54,9 @@ Notes
   				<div class="panel panel-default" style="text-align:left">
   					<div class="panel-heading">Current Owners</div>
   					<div class="panel-body">
-  					<div ng-repeat "o in newMeeting.owners" style="float:left;clear:right"> {{o.email}}	</div>
+<!--  					<div  class="list-people"> YOU	<a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
+  					-->
+  					<div ng-repeat="o in newMeeting.owners" class="list-people"> {{o.email}}	<a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
   						
   					</div>
   				</div>
@@ -73,11 +75,11 @@ Invites
     				<div class="form-group">
 
       					<label for="inviteName" style="margin-top:10px">Name</label>
-     					<input type="text" label="Name" class="form-control" id="inviteName" placeholder="James"/>
+     					<input type="text" label="Name" class="form-control" id="inviteName" placeholder="Insert Name"/>
 						<label for="inviteSurname" style="margin-top:10px">Surname</label>
-     					<input type="text" label="Surname" class="form-control" id="inviteSurname" placeholder="Blunt"/>
+     					<input type="text" label="Surname" class="form-control" id="inviteSurname" placeholder="Enter Surname"/>
 						<label for="inviteEmail" style="margin-top:10px">Email</label>
-     					<input type="email" label="Email Address" class="form-control" id="inviteEmail" placeholder="James@email.com"/>
+     					<input type="email" label="Email Address" class="form-control" id="inviteEmail" placeholder="some@email.address"/>
      					<input type="button" class="btn btn-small" ng-click="m.addInvite" value="Invite"style="margin-top:10px">
      					
     				</div>
@@ -85,7 +87,7 @@ Invites
 				<div class="panel panel-default" style="text-align:left">
   					<div class="panel-heading">Invited</div>
   					<div class="panel-body">
-  					<div ng-repeat "i in newMeeting.invited" style="float:left;clear:right"> {{i.email}} </div>
+  					<div ng-repeat="i in newMeeting.invited" class="list-people"> {{i.email}} <a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
   					</div>
   				</div>
 
@@ -97,7 +99,6 @@ Invites
 		    <wz-step title="Summary">
 <div class="panel-group" style="text-align:left">
     <div class="panel panel-default">
-
       <div class="panel-body">Title: {{createdMeeting.title}}</div>
     </div>
     <div class="panel panel-default">
@@ -110,20 +111,18 @@ Invites
       <div class="panel-body">Start: {{createdMeeting.startDate}}{{createdMeeting.startTime}}</div>
     </div>
     <div class="panel panel-default">
-
       <div class="panel-body">End: {{createdMeeting.endDate}}{{createdMeeting.endTime}}</div>
     </div>
 	<div class="panel panel-default">
     	<div class="panel-heading">Owners</div>
   		<div class="panel-body">
-  		<div ng-repeat "o in createdMeeting.owners" style="float:left;clear:right"> {{o.email}} </div>
+  		<div ng-repeat="o in createdMeeting.owners" class="list-people"> {{o.email}} <a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
   	</div>
   	</div>
-
   	<div class="panel panel-default">
   		<div class="panel-heading">Invited</div>
   		<div class="panel-body">
-  		<div ng-repeat "i in createdMeeting.invited" style="float:left;clear:right"> {{i.email}} </div>
+  		<div ng-repeat="i in createdMeeting.invited" class="list-people"> {{i.email}} <a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
   	</div>
   	</div>
  </div>

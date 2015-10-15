@@ -104,3 +104,15 @@ body {
   border-radius: 50%;
 }
 
+.list-people 
+{
+  
+float:left;
+clear:right;
+border-style:solid;
+border-color:grey;
+border-width:1px;
+margin:3px;
+border-radius:5px;
+padding:3px;
+}
