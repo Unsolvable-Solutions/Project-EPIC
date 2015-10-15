@@ -4,10 +4,12 @@
 </div>
 
 <div class="row">
-	<div class="meeting-boxes" style="float:left">
-		<div ng-repeat = "m in r.meetings">
-		
+	
+		<div class="panel panel-default"ng-repeat = "m in r.meetings" style="width:300px;clear:right;float:left;margin:10px">
+		<div class="panel-heading">
 		  	<b>{{m.title}}</b><br>
+		</div>
+		<div class="panel-body">
 			{{m.description}}<br>
 			{{m.room.title}}<br>
 			{{m.dateStart}} {{m.timeStart}}<br>
@@ -15,8 +17,9 @@
 
 	        <input type="button" class="btn btn-small" ng-click="m.pdfreport" value=" As PDF Report"> <input type="button" class="btn btn-small" ng-click="m.csvfile" value=" As CSV file">
 		</div>
+		</div>
 	  
-	</div>
+
 </div>
 
 

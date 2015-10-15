@@ -104,29 +104,3 @@ body {
   border-radius: 50%;
 }
 
-.meeting-boxes div
-{
-  float:left;
-  clear:right;
-    border-radius: 10px;
-    border-style: solid;
-    border-width: 1px;
-    border-color: grey;
-    padding-top:20px;
-    padding-bottom: 20px;
-    padding-right: 20px;
-    padding-left:20px;
-      margin: 20px;
-
-}
-.meeting-boxes :hover
-{
-
-      background-color:lightblue;
-      
-}
-
-.meeting-boxes :hover input  
-{
-border-color: white;
-}
