@@ -35,11 +35,16 @@ module.exports = {
 		Meeting.findOne({id: values.id})
 		.populateAll()
 		.exec(function(err,meeting){
-			for (var i = 0; i < meeting.owners.length; i++) {
-				if (meeting.owners[i].id == user.id)
-					return res.json(meeting);
-			};
-			return res.forbidden("You are not an owner of this meeting.");
+			Rsvp.find({meeting: meeting.id})
+			.populateAll()
+			.exec(function(err,rsvp){
+				meeting.rsvp = rsvp;
+				for (var i = 0; i < meeting.owners.length; i++) {
+					if (meeting.owners[i].id == user.id)
+						return res.json(meeting);
+				};
+				return res.forbidden("You are not an owner of this meeting.");
+			})
 		});
 	},
 	/*
@@ -94,7 +99,7 @@ module.exports = {
 	{
 
 		var values = req.allParams();
-		if (values.person && values.meeting)
+		if (values.email && values.meeting)
 		{
 			
 			Meeting.findOne({id: values.meeting})
@@ -103,12 +108,14 @@ module.exports = {
 				if (err) return res.badRequest(err);
 				if (!meeting) return res.badRequest("Meeting Not Found");
 
-				Person.findOrCreate({email: values.person.email},values.person)
+				Person.findOrCreate({email: values.email},{email: values.email})
 				.exec(function(err,person){
 					if (err) return res.badRequest(err);
 					if (!person) return res.badRequest("Person Not Found");
 
-					Rsvp.create({person: person.id, meeting: meeting.id},function(err,rsvp){
+					Rsvp.create({person: person.id, meeting: meeting.id})
+					.populateAll()
+					.exec(function(err,rsvp){
 						if (err) return res.badRequest(err);
 						console.log("RSVP Created",rsvp);
 						return res.json({success: true, rsvp: rsvp});
@@ -125,7 +132,7 @@ module.exports = {
 	rmInvite: function(req,res)
 	{
 		var values = req.allParams();
-		if (values.person && values.meeting)
+		if (values.email && values.meeting)
 		{
 			res.json({success: true});
 		}
@@ -137,7 +144,22 @@ module.exports = {
 		var values = req.allParams();
 		if (values.email && values.meeting)
 		{
-			res.json({success: true});
+			Meeting.findOne({id: values.meeting})
+			.populateAll()
+			.exec(function(err,meeting){
+				if (err) return res.badRequest(err);
+				if (!meeting) return res.badRequest("Meeting Not Found");
+
+				User.findOne({email: values.email})
+				.exec(function(err,user){
+					if (err || !user) return res.badRequest(err || "User Not Found");
+					meeting.owners.add(user.id);
+					meeting.save(function(err,m){
+						return res.json(m);
+					});
+				})
+				
+			});
 		}
 		else
 			res.json({success: false});

@@ -8,8 +8,8 @@
 module.exports = {
 
   attributes: {
-  	name: { type: "string", required: true},
-  	surname: { type: "string", required: true},
+  	name: { type: "string"},
+  	surname: { type: "string"},
   	email: { type: "string", required: true},
     meetings: {collection: "Rsvp", via: "person"}
   }

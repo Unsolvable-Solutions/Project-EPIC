@@ -30,11 +30,7 @@ angular.module('epic.controllers', [])
 })
 .controller('DashCtrl', function($scope)
 {
-	var t = this;
-	t.nextthreeMeetings = function(meetings)
-	{
-		///TODO get next three upcomming meetings
-	}
+	
 })
 .controller('MeetingsCtrl', function($scope,MeetingFactory)
 {
@@ -45,54 +41,60 @@ angular.module('epic.controllers', [])
 	t.newMeeting.meeting = {};
 	t.newMeeting.model = MeetingFactory.model;
 
+	t.loading = true;
 	MeetingFactory.getMeetings(function(meetings){
+		t.loading = false;
 		t.meetings = meetings;
+	});
+
+	MeetingFactory.getRooms(function(rooms){
+		t.loading = false;
+		t.rooms = rooms;
 	});
 
 	t.updateOrCreateMeeting = function(meeting)
 	{
+		t.loading = true;
 		MeetingFactory.updateOrCreate(meeting,function(m){
-			t.meetings.push(m);
+			MeetingFactory.getMeetings(function(meetings){
+				t.new = m;
+				t.loading = false;
+				t.meetings = meetings;
+			});
 		});
 	}
-	t.addOwner = function(meeting,owner)
+
+	t.changeMeeting = function(meetingId)
 	{
-		MeetingFactory.addOwner(meeting,owner,function(o){
-			t.meeting.push(o);
+		t.loading = true;
+		MeetingFactory.getMeeting(meetingId,function(m){
+			t.new = m;
+			t.loading = false;
 		});
 	}
-	t.addInvite = function(meeting, invited)
+
+	t.addOwner = function(meeting,email)
 	{
-		//TODO:
-		//the person is created and added to the db
-		//person is added to meeting invite list
-		//email is send to person
-		//data fields is cleared and andothe person can be invited
-		//the 
+		MeetingFactory.addOwner(meeting,email,function(meeting){
+			console.log(meeting);
+			t.new = meeting;
+		});
 	}
 
+	t.addInvite = function(meeting,email)
+	{
+		MeetingFactory.addInvite(meeting,email,function(rsvp){
+			console.log(rsvp);
+			rsvp.person = {email: email};
+			t.new.rsvp = t.new.rsvp || [];
+			t.new.rsvp.push(rsvp);
+		});
+	}
 
-	t.createdMeeting = {
-		title:"Maret se meeting",
-		room:"room M",
-		description:"Maret se meeting",
-		startTime:"12:12 PM",
-		startDate:"16 Oktober",
-		endDate:"17 Okt",
-		endTime:"13:12 PM",
-	//	owners:[{email:"pietie@pompies", name:"pietie"},{email:"susan@album", name:"susan"}],
-	//	invited:[{email:"pietie@pompies", name:"pietie"},{email:"susan@album", name:"susan"},{email:"john@travolta",name:"johnny b goode"}]
-	};
+	t.removeMeeting = function(id)
+	{
 
-//	t.remove = function(id)
-//	{
-//		t.
-//	}
-
-//	t.update = function(id, )
-//	{
-//
-//	}
+	}
 
 })
 //.controller('ReportsCtrl', function($scope,MeetingFactory)

@@ -21,8 +21,13 @@ module.exports = {
   beforeCreate: function(values, cb)
   {
   	//HASH PASSWORD
-  	// console.dir(values);
-  	cb();
+    Person.findOne({id: values.person})
+    .exec(function(err,person){
+      if (person)
+        values.email = person.email;
+    	// console.dir(values);
+    	cb();
+    })
   }	
 };
 

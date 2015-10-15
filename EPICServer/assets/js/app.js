@@ -50,7 +50,7 @@ $stateProvider
 		views: {
 			'view.meetings': {
 			templateUrl: 'templates/page.meetings.html',
-			controller: 'MeetingsCtrl as meeting'
+			controller: 'MeetingsCtrl as m'
 			}
 		}
 	})

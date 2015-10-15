@@ -46,7 +46,7 @@ angular.module('epic.services', [])
 
 	obj.getMeeting = function(id,cb)
 	{
-		$http.get(URL + "/meeting")
+		$http.get(URL + "/meeting/" + id)
 		.then(function(res){
 			console.log(res.data);
 			return cb(res.data);
@@ -60,10 +60,15 @@ angular.module('epic.services', [])
 		if (meeting.id)
 		{
 			///meeting/update/1?title=test
+			delete meeting.owners;
+			delete meeting.rsvp;
+			delete meeting.logs;
 			$http.post(URL + "/meeting/update/" + meeting.id, meeting)
 			.then(function(res){
+				console.log(res.data);
 				cb(res.data);
 			},function(err){
+				console.log(err);
 				cb(err);
 			});
 		}
@@ -71,16 +76,18 @@ angular.module('epic.services', [])
 		{
 			$http.post(URL + "/meeting/create/", meeting)
 			.then(function(res){
+				console.log(res.data);
 				cb(res.data);
 			},function(err){
+				console.log(err);
 				cb(err);
 			});	
 		}
 	}
 
-	obj.addOwner = function(meeting,owner,cb)
+	obj.addOwner = function(meeting,email,cb)
 	{
-		$http.post(URL + "/meeting/addOwner/", {meeting: meeting.id,owner: owner.email})
+		$http.post(URL + "/owner/add", {meeting: meeting.id, email: email})
 		.then(function(res){
 			cb(res.data);
 		},function(err){
@@ -88,11 +95,11 @@ angular.module('epic.services', [])
 		});	
 	}
 
-	obj.addMember = function(meeting,member,cb)
+	obj.addInvite = function(meeting,email,cb)
 	{
-		$http.post(URL + "/meeting/addInvite/", {meeting: meeting, person: member})
+		$http.post(URL + "/invite/add", {meeting: meeting.id, email: email})
 		.then(function(res){
-			cb(res.data);
+			cb(res.data.rsvp);
 		},function(err){
 			cb(err);
 		});

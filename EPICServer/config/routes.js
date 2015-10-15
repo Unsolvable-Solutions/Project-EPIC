@@ -42,6 +42,9 @@ module.exports.routes = {
   '/me' : 'UserController.me',
   '/invite/add' : 'MeetingController.addInvite',
   '/invite/rm' : 'MeetingController.rmInvite',
+
+  '/owner/add' : 'MeetingController.addOwner',
+  '/owner/rm' : 'MeetingController.rmOwner',
   
   '/rsvp/yes' : 'RsvpController.yes',
   '/rsvp/no' : 'RsvpController.no',

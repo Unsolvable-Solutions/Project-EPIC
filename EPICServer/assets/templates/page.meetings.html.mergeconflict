@@ -1,0 +1,245 @@
+<div class="row"> 
+	<h1 class="page-header"> My Meetings
+		<button type="button" class="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
+	  		New Meeting
+		</button>
+	</h1>
+</div> 
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create Meeting</h4>
+      </div>
+      <div class="modal-body" style="text-align:center">
+      	
+		<wizard on-finish="finishedWizard()"> 
+<!--
+Details
+
+		     <wz-step title="Details" style="text-align:center" >
+				<formly-form model="meeting.newMeeting.meeting" fields="meeting.newMeeting.model[0]">
+		        	<input class="btn btn-primary" type="submit" wz-next value="Next" />
+				</formly-form>		
+		    </wz-step>
+		    -->
+		    <wz-step title="Details">
+		    	<form role="form">
+    				<div class="form-group">
+      					<label for="meetingTitle">Meeting Title</label>
+     					<input type="text" class="form-control" id="meetingTitle" placeholder="Enter Title Here"/>
+     					<label for="meetingDescription">Description</label>
+     					<input type="text" class="form-control" id="meetingDescription" placeholder="Enter Description Here"/>
+     					<label for="meetingRoom">Room</label>
+     					<select class="form-control">
+     					<option>Room 1</option>
+     					<option>Room 2</option>
+     					<option>Room 3</option>
+     					<option>Room 4</option>
+     					</select>
+<table class="table">
+
+<tr>
+<td>
+	<label for="meetingStartDate">Start Date</label>
+     					<input type="date" class="form-control" id="meetingStartDate"/>
+</td>
+<td>
+	<label for="meetingStartTime">Start Time</label>
+     					<input type="time" class="form-control" id="meetingStartTime"/>
+</td>
+<tr>
+<td>
+	<label for="meetingEndDate">End Date</label>
+     					<input type="date" class="form-control" id="meetingEndDate"/>
+</td>
+<td>
+	<label for="meetingEndTime">End Time</label>
+     					<input type="time" class="form-control" id="meetingEndTime"/>
+</td>
+
+</tr>
+
+</table>
+     					
+     					
+
+     					
+
+						
+     					
+     					
+     					<label for="comment">Notes</label>
+     					 <textarea class="form-control" rows="5" id="notes" placeholder="Any Meeting Notes or Comments"></textarea>
+    				</div>
+
+  				</form>
+		        <input type="submit" class="btn btn-primary" wz-next value="Next" />
+		    </wz-step>
+<!--		
+Notes
+
+		    <wz-step title="Notes">
+		    	<form role="form">
+    				<div class="form-group">
+      					<label for="comment">Notes</label>
+     					 <textarea class="form-control" rows="5" id="notes" placeholder="Any Meeting Notes or Comments"></textarea>
+    				</div>
+  				</form>
+		        <input type="submit" class="btn btn-primary" wz-next value="Next" />
+		    </wz-step>
+
+-->
+
+		    <wz-step title="Owners">
+		    	<form role="form">
+    				<div class="form-group">
+
+      					<label for="owner">Add an owner to the meeting</label>
+     					<input type="email" class="form-control" id="ownerEmail" placeholder="owner@email.com"/>
+     					<input type="button" class="btn btn-small" ng-click="m.addOwner" value="Add" style="margin-top:10px">
+     					
+    				</div>
+
+  				</form>
+  				<div class="panel panel-default" style="text-align:left">
+  					<div class="panel-heading">Current Owners</div>
+  					<div class="panel-body">
+<!--  					<div  class="list-people"> YOU	<a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
+  					-->
+  					<div ng-repeat="o in newMeeting.owners" class="list-people"> {{o.email}}	<a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
+  						
+  					</div>
+  				</div>
+
+		        <input type="submit" class="btn btn-primary" wz-next value="Next" />
+		    </wz-step>
+
+
+
+<!--
+Invites
+-->			
+		    <wz-step title="Invite">
+		        <p>Invite a person to the meeting</p>
+				<form role="form">
+    				<div class="form-group">
+
+      					<label for="inviteName" style="margin-top:10px">Name</label>
+     					<input type="text" label="Name" class="form-control" id="inviteName" placeholder="Insert Name"/>
+						<label for="inviteSurname" style="margin-top:10px">Surname</label>
+     					<input type="text" label="Surname" class="form-control" id="inviteSurname" placeholder="Enter Surname"/>
+						<label for="inviteEmail" style="margin-top:10px">Email</label>
+     					<input type="email" label="Email Address" class="form-control" id="inviteEmail" placeholder="some@email.address"/>
+     					<input type="button" class="btn btn-small" ng-click="m.addInvite" value="Invite"style="margin-top:10px">
+     					
+    				</div>
+    				</form>
+				<div class="panel panel-default" style="text-align:left">
+  					<div class="panel-heading">Invited</div>
+  					<div class="panel-body">
+  					<div ng-repeat="i in newMeeting.invited" class="list-people"> {{i.email}} <a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
+  					</div>
+  				</div>
+
+		        <input type="submit" class="btn btn-primary" wz-next value="Next" />
+		    </wz-step>
+
+		    
+
+		    <wz-step title="Summary">
+
+
+
+<table class="table table-hover"style="text-align:left">
+	<tr>
+		<td>Title</td>
+		<td>{{createdMeeting.title}}</td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>{{createdMeeting.description}}</td>
+	</tr>
+	<tr>
+		<td>Room</td>
+		<td>{{createdMeeting.room}}</td>
+	</tr>
+	<tr>
+		<td>Start</td>
+		<td>{{createdMeeting.startDate}} {{createdMeeting.startTime}}</td>
+	</tr>
+	<tr>
+		<td>End</td>
+		<td>{{createdMeeting.endDate}}{{createdMeeting.endTime}}</td>
+	</tr>
+</table>
+
+
+<div class="panel-group" style="text-align:left">
+	<div class="panel panel-default">
+    	<div class="panel-heading">Owners</div>
+  		<div class="panel-body">
+  		<div ng-repeat="o in createdMeeting.owners" class="list-people"> {{o.email}} <a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
+  	</div>
+  	</div>
+  	<div class="panel panel-default">
+  		<div class="panel-heading">Invited</div>
+  		<div class="panel-body">
+  		<div ng-repeat="i in createdMeeting.invited" class="list-people"> {{i.email}} <a href="#"><span class="glyphicon glyphicon-remove"></span> </a> </div>
+  	</div>
+  	</div>
+ </div>
+		        <input type="submit" class="btn btn-primary" wz-next value="Done" />
+		    </wz-step>
+		</wizard>
+		<br/>        
+		<br/>        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" >Discard changes</button>
+        <button type="button" class="btn btn-primary"data-dismiss="modal">Save changes</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+
+	<div class="table-responsive">
+	<table class="table table-striped">
+	  <thead>
+	    <tr>
+	      <th>#</th>
+	      <th>Title</th>
+	      <th>Description</th>
+	      <th>Room</th>
+	      <th>Date Start</th>
+	      <th>Date End</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="m in meeting.meetings">
+	    
+	      <td><a href="#/page/meetings/{{m.id}}">{{m.id}}</a></td>
+	      <td>{{m.title}}</td>
+	      <td>{{m.description}}</td>
+	      <td>{{m.room.title}}</td>
+	      <td>{{m.dateStart}} {{m.timeStart}}</td>
+	      <td>{{m.dateEnd}} {{m.timeEnd}}</td>
+	      <td>
+				<button type="button" class = "btn btn-small" ng-click="m.change" ><span class="glyphicon glyphicon-pencil"></span></button>
+				<button type="button" class = "btn btn-small" ng-click="m.remove" ><span class="glyphicon glyphicon-remove"></span></button>
+		  </td>
+	      
+	    </tr>
+	  </tbody>
+	</table>
+	</div>
+</div>
+
+
+
