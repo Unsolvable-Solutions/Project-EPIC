@@ -350,16 +350,23 @@ public class MainActivity extends CordovaActivity
                 wifi.setWifiEnabled(false);
             }
         }
+
+
+
         //Turn mobile off (Is trickey to do)
-        if (isMobileDataEnabledFromLollipop(getApplicationContext()))
-        {
+        //if (isMobileDataEnabledFromLollipop(getApplicationContext()))
+      //  {
+
             try {
                 setMobileNetworkfromLollipop(getApplicationContext(),0);
                 restoreSettings.add("mobi");
             }
             catch (Exception e)
-            {}
-        }
+            {
+
+            }
+
+    //    }
 
         //Store data locally on the device
         String theData = "";
@@ -649,13 +656,15 @@ public class MainActivity extends CordovaActivity
     public static void setMobileNetworkfromLollipop(Context context,int mobileState) throws Exception {
         String command = null;
         int state = mobileState;
+        String transactionCode = "";
         try {
             // Get the current state of the mobile network.
             state = mobileState;
-            // Get the value of the "TRANSACTION_setDataEnabled" field.
-            String transactionCode = getTransactionCode(context);
+
             // Android 5.1+ (API 22) and later.
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+              // Get the value of the "TRANSACTION_setDataEnabled" field.
+               transactionCode = getTransactionCode(context);
                 //The next comment line is a command for android studio. Do not remove it.
                 //noinspection ResourceType
                 SubscriptionManager mSubscriptionManager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
@@ -672,6 +681,7 @@ public class MainActivity extends CordovaActivity
                 }
             } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
                 // Android 5.0 (API 21) only.
+                transactionCode = getTransactionCode(context);
                 if (transactionCode != null && transactionCode.length() > 0) {
                     // Execute the command via `su` to turn off mobile network.
                     command = "service call phone " + transactionCode + " i32 " + state;
@@ -695,19 +705,36 @@ public class MainActivity extends CordovaActivity
         }
     }
 
-    public static void toggleMobileDataOnKitkat(Context context,Boolean isOn) throws Exception
+    public static void toggleMobileDataOnKitkat(Context context,boolean enabled) throws Exception
     {
-        ConnectivityManager conman = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        @SuppressWarnings("rawtypes")
-        final Class conmanClass = Class.forName(conman.getClass().getName());
-        final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
-        iConnectivityManagerField.setAccessible(true);
-        final Object iConnectivityManager = iConnectivityManagerField.get(conman);
-        @SuppressWarnings("rawtypes")
-        final Class iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
-        @SuppressWarnings("unchecked")
-        final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
-        setMobileDataEnabledMethod.setAccessible(true);
-        setMobileDataEnabledMethod.invoke(iConnectivityManager, isOn);
+        try{
+       // Requires: android.permission.CHANGE_NETWORK_STATE
+       if(Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT){
+           final ConnectivityManager connMgr = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+           // Gingerbread to KitKat inclusive
+           final Field serviceField = connMgr.getClass().getDeclaredField("mService");
+           serviceField.setAccessible(true);
+           final Object connService = serviceField.get(connMgr);
+           try{
+               final Method setMobileDataEnabled = connService.getClass()
+                   .getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
+               setMobileDataEnabled.setAccessible(true);
+               setMobileDataEnabled.invoke(connService, Boolean.valueOf(enabled));
+           }
+           catch(NoSuchMethodException e){
+               // Support for CyanogenMod 11+
+               final Method setMobileDataEnabled = connService.getClass()
+                   .getDeclaredMethod("setMobileDataEnabled", String.class, Boolean.TYPE);
+               setMobileDataEnabled.setAccessible(true);
+               setMobileDataEnabled.invoke(connService, context.getPackageName(), Boolean.valueOf(enabled));
+           }
+       }
+   }
+   catch(Exception e){
+      // Log.e(TAG, "setMobileConnectionEnabled", e);
+   }
+
+
+
     }
 }
