@@ -27,6 +27,25 @@ module.exports = {
 			console.log(u);
 		});
 	},
+	getMeeting: function(id,cb)
+	{
+		var user = req.session.user;
+
+		Meeting.findOne({id: id})
+		.populateAll()
+		.exec(function(err,meeting){
+			Rsvp.find({meeting: meeting.id})
+			.populateAll()
+			.exec(function(err,rsvp){
+				meeting.rsvp = rsvp;
+				for (var i = 0; i < meeting.owners.length; i++) {
+					if (meeting.owners[i].id == user.id)
+						return cb(meeting);
+				};
+				return cb({});
+			})
+		});
+	},
 	findOne: function(req,res)
 	{
 		var values = req.allParams();

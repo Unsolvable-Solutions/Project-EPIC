@@ -12,7 +12,7 @@ var generatePassword = function()
 
 module.exports = {
 
-  attributes: {
+  attributes: { 
   	status: { 
 	    type: 'string',
 	    enum: ['pending', 'yes', 'no', 'in', 'out', 'removed'],
@@ -56,9 +56,9 @@ module.exports = {
       mail.person = person;
       mail.email = {
         from: 'invites@projectepic.info',
-        to: 'coetzee.jandre@gmail.com' || person.email,
+        to: person.email,
         subject: 'You are invited to attend',
-        html: '<html><body><h1>Your Invite Code</h1><a name="openApp" href="epicapp://?id=' + createdRecord.id + '&password=' + createdRecord.password + '">Add meeting to Epic Protection App</a></body></html>',
+        html: '<html><body><h1>Your Invite Code</h1><h2>RSVP NO</h2><a href="http://projectepic.info/rsvp/no?id=' + createdRecord.id + '&password=' + createdRecord.password + '">I will NOT attend</a><h2>RSVP YES</h2><p>Scan QR code, enter details below or click on app link (GMAIL not supported)</p><p><b>Invite Code: </b>' + createdRecord.id + '</p><p><b>Secret: </b>' + createdRecord.password + '</p><a name="openApp" href="epicapp://?id=' + createdRecord.id + '&password=' + createdRecord.password + '">Add meeting to Epic Protection App</a></body></html>',
         attachments: []
       };
       mail.qrData = {id: createdRecord.id, password: createdRecord.password};

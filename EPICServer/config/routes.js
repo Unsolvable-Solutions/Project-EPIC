@@ -50,7 +50,10 @@ module.exports.routes = {
   '/rsvp/no' : 'RsvpController.no',
 
   '/api/in' : 'RsvpController.in',
-  '/api/out' : 'RsvpController.out'
+  '/api/out' : 'RsvpController.out',
+
+  '/export/pdf' : 'LogController.pdf',
+  '/export/csv' : 'LogController.csv'
 
   /***************************************************************************
   *                                                                          *

@@ -84,6 +84,6 @@ $stateProvider
 	}
 	});
 
-	$urlRouterProvider.otherwise('/page/dash');
+	$urlRouterProvider.otherwise('/page/meetings');
 
 });

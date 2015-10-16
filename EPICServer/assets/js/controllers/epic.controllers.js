@@ -110,19 +110,9 @@ angular.module('epic.controllers', [])
 {
 	var t = this;
 
-t.meetings = MeetingFactory.meetings || [];
-t.meetings.csvfile = function(meeting)
-{
-	//TO DO
-//generate csv file with meeting details + owners + invites and their status logs
-}
-
-t.meetings.pdfreport = function(meeting)
-{
-	//TO DO
-//generate pdf report file with meeting details etc
-}
-
-
+	MeetingFactory.getMeetings(function(meetings){
+		t.loading = false;
+		t.meetings = meetings;
+	});
 
 })

@@ -13,7 +13,7 @@
 			{{m.dateStart}} {{m.timeStart}}<br>
 	      	{{m.dateEnd}} {{m.timeEnd}}<br><br>
 
-	        <input type="button" class="btn btn-small" ng-click="m.change" value=" As PDF Report"> <input type="button" class="btn btn-small" ng-click="m.remove" value=" As CSV file">
+	        <a type="button" class="btn btn-small" href="/export/pdf?meeting={{m.id}}"> As PDF Report</a> <a type="button" class="btn btn-small" href="/export/csv?meeting={{m.id}}" > As CSV file</a>
 		</div>
 	  
 	</div>
