@@ -8,14 +8,14 @@
 module.exports = {
 
   attributes: {
-  	title: { type: "string", required: true},
-  	description: { type: "string"},
-  	room: {model: "Room", via: "meetings"},
+    title: { type: "string", required: true},
+    description: { type: "string"},
+    room: {model: "Room", via: "meetings"},
     dateStart: {type: "datetime"},
     dateEnd: {type: "datetime"},
     owners: { collection: "User", via: "meetings"},
-  	rsvp: { collection: "Rsvp", via: "meeting"},
-  	logs: {collection: "Log", via: "meeting"}
+    rsvp: { collection: "Rsvp", via: "meeting"},
+    logs: {collection: "Log", via: "meeting"}
   },
   beforeCreate: function(record,cb)
   {

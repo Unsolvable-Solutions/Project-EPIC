@@ -8,9 +8,9 @@
 module.exports = {
 
   attributes: {
-  	meeting: {model: "Meeting", via: "logs"},
-  	rsvp: {model: "Rsvp", via: "logs"},
-  	state: {type: "json", required: true}
+	meeting: {model: "Meeting", via: "logs"},
+	rsvp: {model: "Rsvp", via: "logs"},
+	state: {type: "json", required: true}
   }
 };
 

@@ -13,16 +13,16 @@ var generatePassword = function()
 module.exports = {
 
   attributes: { 
-  	status: { 
-	    type: 'string',
-	    enum: ['pending', 'yes', 'no', 'in', 'out', 'removed'],
-	    defaultsTo: 'pending'
-  	},
-	meeting: { model: "Meeting", via: "rsvp", required: true},
-  password: { type: "string", defaultsTo: generatePassword()},
-	person: { model: "Person", via: "meetings", required: true},
-	device: { model: "Device", via: "rsvp"},
-	logs: {collection: "Log", via: "rsvp"}
+    status: { 
+      type: 'string',
+      enum: ['pending', 'yes', 'no', 'in', 'out', 'removed'],
+      defaultsTo: 'pending'
+    },
+    meeting: { model: "Meeting", via: "rsvp", required: true},
+    password: { type: "string", defaultsTo: generatePassword()},
+    person: { model: "Person", via: "meetings", required: true},
+    device: { model: "Device", via: "rsvp"},
+    logs: {collection: "Log", via: "rsvp"}
   },
   afterUpdate: function(updatedRecord, cb)
   {
