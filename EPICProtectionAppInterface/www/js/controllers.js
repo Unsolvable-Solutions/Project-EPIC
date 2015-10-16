@@ -36,15 +36,17 @@ angular.module('epic.controllers', [])
   $scope.rsvp = function(i,s){
     Meetings.add(i,s, $rootScope.deviceObj.id, function(res){
       console.log(res);
-      $scope.inviteCode = "";
-      $scope.secret = "";
+      $scope.$applyAsync(function(){
+        $scope.inviteCode = "";
+        $scope.secret = "";
+      });
       $rootScope.deviceObj.meetings = $rootScope.deviceObj.meetings || [];
       $rootScope.deviceObj.meetings.push(res.meeting);
       window.localStorage.deviceObj = JSON.stringify($rootScope.deviceObj);
-    //  if(res.meeting.id != "undefined")
-    //  {
+      if(res.meeting)
+      {
         $location.path("/meetings/" + res.meeting.id);
-    //  }
+      }
     });
   }
 })
