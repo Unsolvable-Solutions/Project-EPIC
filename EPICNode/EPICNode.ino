@@ -35,7 +35,6 @@ void setup()
       while (1); // halt
     }
     
-    pinMode(doorPin, OUTPUT);
     
     // To see more details about the board in the node, uncomment the following code.
     /*Serial.print("Found chip PN5"); Serial.println((versiondata>>24) & 0xFF, HEX); 
@@ -57,6 +56,7 @@ void setup()
     
     strip.begin();
     strip.show(); // Initialize all pixels to 'off'
+    pinMode(doorPin, OUTPUT);
     openDoor();
     //Serial.println("Node is now online");
 }
@@ -163,11 +163,12 @@ int isAllowed()
       strip.setPixelColor(runner, strip.Color(255, 255, 255)); // Move runner to new position
       strip.setPixelColor((runner-1)%16, (runner > x)?0:strip.Color(255, 65, 0)); // Remove runner from previous position
       strip.show(); // Apply updates to the lights
-      delay(20); // Wait a moment
+      delay(30); // Wait a moment
     }
   }
   
-  int permission = Serial.read(); // Check response from the server
+  int permission; // Check response from the server
+  while ((permission = Serial.read()) == -1){}
   return permission;
 }
 
@@ -193,25 +194,12 @@ void sendMessage(int result)
       msg = "2";
     else
       msg = "0";
-    message.addMimeMediaRecord("text/plain", msg);
-    messageSize = message.getEncodedSize();
-    if (messageSize > sizeof(ndefBuf)) 
-    {
-        //Serial.println("ndefBuf is too small");
-        while (1);
-    }
-  
-    //Serial.print("Ndef encoded message size: ");
-    //Serial.println(messageSize);
 
+    message.addTextRecord(msg);
+    messageSize = message.getEncodedSize();
     message.encode(ndefBuf);
-  
-    // comment out this command for no ndef message
     nfcEmulate.setNdefFile(ndefBuf, messageSize);
-  
-    // uid must be 3 bytes!
     nfcEmulate.setUid(uid);
-  
     nfcEmulate.init();
   
     if (result == 116)
